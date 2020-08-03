@@ -92,6 +92,9 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
+  .el-scrollbar__view/deep/.is-active{
+    background-color: red;
+  }
   a{
     text-decoration:none;
     color: #fff;
@@ -113,6 +116,8 @@ export default {
   &-level1{
     font-size: 0.9vw;
     font-weight: bold;
+    text-align: center;
   }
+
 }
 </style>

@@ -8,39 +8,40 @@
         <!-- </el-scrollbar> -->
       </div>
       <div class="mainRight">
-        <el-scrollbar>
-            <div class="enroll-manage-main">
                 <div class="enroll-manage-container" ref="container">
-                    <div class="enroll-manage-container-title">人员列表</div>
                     <div class="enroll-manage-container-handle" >
                             <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
-                            <label for="" class="enroll-manage-container-handle-label">活动状态</label>
-                            <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResult" class="seclect">
-                                <el-option
-                                v-for="item in activeOptions"
-                                :key="item.value"
-                                :label="item.label"
-                                style="width:10vw"
-                                :value="item.value">
-                                </el-option>
-                            </el-select>
-                            <label for="" class="enroll-manage-container-handle-label">设备状态</label>
-                            <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResultW" class="seclect">
-                                <el-option
-                                v-for="item in equipmentOptions"
-                                :key="item.value"
-                                :label="item.label"
-                                style="width:10vw"
-                                :value="item.value">
-                                </el-option>
-                            </el-select>
+                            <div>
+                              <label for="" class="enroll-manage-container-handle-label">活动状态</label>
+                              <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResult" class="seclect"  style="width:10vw">
+                                  <el-option
+                                  v-for="item in activeOptions"
+                                  :key="item.value"
+                                  :label="item.label"
+
+                                  :value="item.value">
+                                  </el-option>
+                              </el-select>
+                            </div>
+                            <div>
+                              <label for="" class="enroll-manage-container-handle-label">设备状态</label>
+                              <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResultW" class="seclect"  style="width:10vw">
+                                  <el-option
+                                  v-for="item in equipmentOptions"
+                                  :key="item.value"
+                                  :label="item.label"
+
+                                  :value="item.value">
+                                  </el-option>
+                              </el-select>
+                            </div>
                     </div>
                     <el-table
                         :data="tables.slice((page-1)*pageSize,page*pageSize)"
                         border stripe highlight-current-row
                         size="mini" v-loading="listLoading"
                         class="myTable" ref="table"
-                        height="calc(100vh - 325px)"
+                        height="calc(100% - 110px)"
                         :row-key="getRowKeys">
                          <!-- <el-table-column type="selection" width="55" :reserve-selection="true">
                          </el-table-column> -->
@@ -50,9 +51,9 @@
                              <template slot-scope="scope">
                                  <el-link type="primary" v-if="item.type=='link'" @click="userDetails(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
                                  <div v-else-if="item.type=='handle'">
-                                   <el-button  type="primary" icon="el-icon-search" content="查看"  size="small" round @click="handleSearch(scope.$index, scope.row)">查看监护人</el-button>
+                                   <el-button  type="primary" icon="el-icon-search" content="查看"  size="small" round @click="handleSearch(scope.$index, scope.row)">监护人</el-button>
                                    <!-- <el-button  type="primary" icon="el-icon-edit" size="small" round @click="stateDetails(scope.$index, scope.row)">状态详情</el-button> -->
-                                   <el-button  type="primary" icon="el-icon-edit" size="small" round @click="peopleAndEquiment(scope.$index, scope.row)">人员与设备信息</el-button>
+                                   <el-button  type="primary" icon="el-icon-search" size="small" round @click="peopleAndEquiment(scope.$index, scope.row)">人员与设备信息</el-button>
                                  </div>
                                  <div v-else-if="item.name=='guardianMess'">
 
@@ -77,9 +78,7 @@
                             </el-pagination>
                        </div>
                      </div>
-                </div>
             </div>
-        </el-scrollbar>
       </div>
     </div>
     <guardian-mess ref='guardianMess'></guardian-mess>
@@ -109,13 +108,13 @@
         disableda:true,
         pageSize:20,
         tableTitle:[
-            { title : "姓名", name : "name", type:"link",minwidth:"150"},
+            { title : "姓名", name : "name", type:"link",width:"120"},
             { title : "活动状态", name : "activeState", type:"input",width:'120'},
             { title : "设备状态", name : "equState", type:"input",width:'120'},
             { title : "所属组织", name : "belongPlatform", type:"input",minwidth:'300'},
-            { title : "设备编号", name : "equAccount", type:"input",minwidth:'100'},
+            { title : "设备编号", name : "equAccount", type:"input",minwidth:'200'},
             // { title : "监护人信息",type : "input", name:"guardianMess",button:[],width:'120'},
-            { title : "操作", type : "handle",button:[],width:'300'}
+            { title : "操作", type : "handle",button:[],width:'255'}
         ],
         tableData:[
           {
@@ -127,21 +126,21 @@
           },
           {
             name:'李',
-            activeState:'预警',
+            activeState:'异常',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'002',
           },
           {
             name:'李',
-            activeState:'预警',
+            activeState:'异常',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'003',
           },
           {
             name:'李',
-            activeState:'预警',
+            activeState:'异常',
             equState:0,
             belongPlatform:'南宁总局',
             equAccount:'004',
@@ -155,7 +154,7 @@
           },
           {
             name:'李',
-            activeState:'预警',
+            activeState:'异常',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'006',
@@ -169,7 +168,7 @@
           },
           {
             name:'李',
-            activeState:'预警',
+            activeState:'异常',
             equState:0,
             belongPlatform:'南宁总局',
             equAccount:'008',
@@ -319,14 +318,16 @@
                 return row[column.property]
       },
       arrFormatter (value,name) {
-           if(name=='sex')
+          if(name=='name')
+            return '<span style="color:#409EFF;font-weight:bold">'+value+'</span>';
+          else if(name=='sex')
            return value == 1 ? '男' : value == 0 ? '女' : '';
           else if(name=='multiplexMark')
            return value == 1 ? '是' : value == 0 ? '否' : '';
-          else if(name=='isEnable')
-           return value == 1 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">是</span>' :( value == 2 ? '<span style="color:#909399;font-weight:bold">否</span>' : ( value == 3 ? '<span style="color:#67C23A;font-weight:bold">进行中</span>' : ( value == 4 ? '<span style="color:#909399;font-weight:bold">已结束</span>' : '')));
+          else if(name=='activeState')
+           return value == '正常' ? '<span style="color:rgb(112, 182, 3)">正常</span>' :'<span style="color:#e6a23c">异常</span>';
           else if(name=='equState')
-           return value == 0 ? '<span style="color:#f79898;font-weight:bold">离线</span>' :( value == 1 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">在线</span>' : ( value == 2 ? '<span style="color:#e6a23c;font-weight:bold">低电量</span>' : '' ));
+           return value == 0 ? '<span style="color:#909399">离线</span>' :( value == 1 ? '<span style="color:rgb(112, 182, 3)">在线</span>' : ( value == 2 ? '<span style="color:#e6a23c">低电量</span>' : '' ));
           else
            return value;
 
@@ -438,7 +439,7 @@
     .mainLeft{
       width: 200px;
       min-width: 200px;
-      height: calc(100vh - 125px);
+      height: calc(100vh - 105px);
       box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
       box-sizing: border-box;
       padding: 0.5vw;
@@ -450,7 +451,7 @@
       }
     }
     .mainRight{
-      height: calc(100vh - 125px);
+      height: calc(100vh - 105px);
       width: calc(100vw - 260px);
       box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
       box-sizing: border-box;
@@ -458,22 +459,16 @@
         .enroll-manage-container{
             box-sizing: border-box;
             padding: 20px;
-
+            height: 100%;
+            box-shadow: border-box;
             background: #fff;
-            &-title{
-                margin-bottom: 20px;
-                padding: 2px 0;
-                border-left: 4px solid #409EFF;
-                text-indent: 20px;
-                font-size: 18px;
-                font-weight: 700;
-            }
             &-handle{
                 display: flex;
                 margin-bottom: 20px;
-                justify-content: space-between;
+                justify-content: flex-start;
                 align-items: center;
                 &-label{
+                  margin-left: 20px;
                     font-size: 0.8vw;
                     color: #606266;
                     font-weight: 700;

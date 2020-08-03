@@ -17,7 +17,7 @@
     },
     methods:{
       getMap(){
-        var map = new BMap.Map("container");
+        var map = new BMap.Map("container",{enableMapClick:false})
         // 创建地图实例
         var point = new BMap.Point(116.404, 39.915);
         // 创建点坐标
@@ -69,16 +69,13 @@
         //开启鼠标滚轮缩放
 
         var opts = {
-            width: 300,     // 信息窗口宽度
-            height: 300,    // 信息窗口高度
+            width: 250,     // 信息窗口宽度
+            height: 100,    // 信息窗口高度
             title: "Hello"  // 信息窗口标题
         }
 
         var infoWindow = new BMap.InfoWindow("World", opts);  // 创建信息窗口对象
-        // 点击坐标,出现弹窗
-        marker.addEventListener("click",function(){
-          map.openInfoWindow(infoWindow, map.getCenter());        // 打开信息窗口
-        })
+
 
         var scaleCtrl = new BMap.ScaleControl();  // 添加比例尺控件
         map.addControl(scaleCtrl);

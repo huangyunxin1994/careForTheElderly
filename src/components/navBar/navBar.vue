@@ -105,12 +105,12 @@
   	width: 20%;
   	box-sizing: border-box;
   	padding-left: 3vw;
-  	font-size: 1.5vw;
+  	font-size: 1.3vw;
   	font-weight: 600;
   	color: white;
   }
   .titleSwarp .iconfont{
-  	font-size: 2vw;
+  	font-size: 1.8vw;
   }
   .titleSwarp  .title{
   	margin-left: 2px;

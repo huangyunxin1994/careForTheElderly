@@ -1,7 +1,7 @@
 <template>
       <div class="tree">
         <el-input  v-model="filterText" placeholder="请输入内容" suffix-icon="el-icon-search"></el-input>
-        <div class="people">
+        <div class="people" v-if='people'>
           <el-button :type="isAllPeople" size='mini' @click="allPeople">全部人员</el-button>
           <el-button :type="isWarnPeople" size='mini' @click="warnPeople">预警人员</el-button>
         </div>
@@ -10,6 +10,9 @@
             :props="defaultProps"
             @node-click="handleNodeClick"
             :filter-node-method="filterNode"
+             node-key="id"
+            highlight-current
+            :default-expanded-keys="[1]"
             ref="tree"></el-tree>
       </div>
 </template>
@@ -17,21 +20,39 @@
 <script>
 export default {
   name: 'tree',
+  props:{
+    people:{
+      type:Boolean,
+      default:false
+    },
+    allPeople1:{
+      type:Object,
+      default:function(){
+        return{
+
+        }
+      }
+    }
+  },
   data(){
     return{
       filterText:"",
       isWarnPeople:'',
       isAllPeople:'primary',
       data: [{
+          id:1,
           label: '南宁公安局',
           children: [
               {
+                id:11,
                 label: '仙湖派出所',
               },
               {
+                id:12,
                 label: '南湖派出所',
               },
               {
+                id:13,
                 label: '凤岭派出所',
               }
            ]

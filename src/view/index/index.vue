@@ -3,7 +3,7 @@
     <nav-bar></nav-bar>
     <div class="main">
       <div class="mainLeft">
-        <tree></tree>
+        <tree :people='true' :allPeople1='allpeople'></tree>
       </div>
       <div class="mainCenter">
         <my-map></my-map>
@@ -95,7 +95,11 @@
             type:'外出rtyu拉圣诞节福利卡三等奖偶发rt围栏'
           }
         ],
-        warnList:false
+        warnList:false,
+        allpeople:{
+          name:'wang',
+          age:22
+        }
       }
     },
     methods:{

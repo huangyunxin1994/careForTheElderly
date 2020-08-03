@@ -63,7 +63,7 @@
         pageSize:20,
         tableTitle:[
           {title:'姓名',name:'name',type:'input',width:'100'},
-          {title:'关系',name:'relation',type:'input',width:'100'},
+          {title:'对老人称呼',name:'relation',type:'input',width:'120'},
           {title:'联系号码',name:'ophoneNum',type:'input',width:'150'},
           {title:'身份证号码',name:'IDCardNum',type:'input',width:'200'},
           {title:'家庭住址',name:'homeAddress',type:'input',minwidth:'300'}
@@ -201,6 +201,7 @@
 <style lang="scss" scoped>
 
   .foot{
+    margin-top: 20px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
