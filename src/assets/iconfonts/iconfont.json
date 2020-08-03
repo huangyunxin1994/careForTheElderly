@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "705711",
+      "name": "暂停",
+      "font_class": "zanting",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
       "icon_id": "792415",
       "name": "electric quantity-电池电量",
       "font_class": "electricquantitydianchidianliang",

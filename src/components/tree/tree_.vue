@@ -2,8 +2,8 @@
       <div class="tree">
         <el-input  v-model="filterText" placeholder="请输入内容" suffix-icon="el-icon-search"></el-input>
         <div class="people">
-          <el-button size='mini' @click="allPeople">全部人员</el-button>
-          <el-button size='mini' @click="warnPeople">预警人员</el-button>
+          <el-button :type="isAllPeople" size='mini' @click="allPeople">全部人员</el-button>
+          <el-button :type="isWarnPeople" size='mini' @click="warnPeople">预警人员</el-button>
         </div>
         <el-tree
             :data="data"
@@ -20,6 +20,8 @@ export default {
   data(){
     return{
       filterText:"",
+      isWarnPeople:'',
+      isAllPeople:'primary',
       data: [{
           label: '南宁公安局',
           children: [
@@ -47,7 +49,15 @@ export default {
        filterNode(value, data) {
         if (!value) return true;
         return data.label.indexOf(value) !== -1;
-      }
+      },
+      allPeople(){
+        this.isAllPeople = 'primary'
+        this.isWarnPeople = ''
+      },
+      warnPeople(){
+        this.isAllPeople = ''
+        this.isWarnPeople = 'primary'
+      },
     },
     watch: {
       filterText(val) {

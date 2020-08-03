@@ -33,11 +33,6 @@
           <!-- <router-link tag="i" class=""></router-link> -->
           <i class="iconfont icon-wo"></i>
           <el-dropdown-menu slot="dropdown" class="user-dropdown">
-            <router-link to="/">
-              <el-dropdown-item>
-                回到首页
-              </el-dropdown-item>
-            </router-link>
             <el-dropdown-item  @click.native="changePass">
                 修改密码
             </el-dropdown-item>
@@ -100,8 +95,7 @@
   }
   .nav{
   	width: 100%;
-    // min-width: 1250px;
-  	height: 85px;
+  	height: 65px;
   	background-color: #4b97eb;
   	display: flex;
   	justify-content: space-between;
@@ -109,16 +103,14 @@
   }
   .titleSwarp{
   	width: 20%;
-  	/* text-align: right; */
   	box-sizing: border-box;
   	padding-left: 3vw;
-  	font-size: 2vw;
+  	font-size: 1.5vw;
   	font-weight: 600;
   	color: white;
-  	// line-height: 85px;
   }
   .titleSwarp .iconfont{
-  	font-size: 2.5vw;
+  	font-size: 2vw;
   }
   .titleSwarp  .title{
   	margin-left: 2px;
@@ -127,27 +119,32 @@
   }
   /* 中间部分 */
   .contentSwarp{
-  	width: 50%;
+  	width: 60%;
   	display: flex;
   	justify-content: space-around;
-  	font-size: 1.2vw;
+  	font-size: 1vw;
+    box-sizing: border-box;
+    padding: 0px 1vw;
   	color: #dad5d5;
   	font-weight: 600;
-  	// line-height: 85px;
   }
 
   /*右边部分*/
   .userSwarp{
   	width: 20%;
-  	font-size: 0.8vw;
-  	// line-height: 85px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    padding-right: 3vw;
+  	font-size: 0.7vw;
   	color: white;
   }
   .userSwarp>span{
     cursor: pointer;
   }
   .userSwarp .iconfont{
-  	font-size: 1.5vw;
+  	font-size: 1.2vw;
   }
   .userSwarp>span{
   	// padding-left: 30px;
