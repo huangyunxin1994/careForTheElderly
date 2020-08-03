@@ -29,7 +29,7 @@
       <div class="map" >
         <p class="title">家庭住址坐标</p>
         <div class="mapContent">
-          <my-map :icon="icon" :dragging="true" :zooming="true" :markers="markers" :polylines="polylines"></my-map>
+          <my-map :icon="icon" :dragging="true" :zooming="true" :markers="markers" :center="center"></my-map>
         </div>
       </div>
     </div>
@@ -71,6 +71,10 @@
     data(){
       return{
         icon:home,
+        center:{
+          longitude:"116.404",
+          latitude:"39.915", 
+        },
         markers:[{
           longitude:"116.404",
           latitude:"39.915", 
@@ -80,20 +84,20 @@
             anchor:[24, 48]
           }
         }],
-        polylines:[
-          [
-            {longitude:"116.399",latitude:"39.910"},
-            {longitude:"116.405",latitude:"39.920"},
-            {longitude:"116.425",latitude:"39.900"}
-          ],
-          [
-            {longitude:"116.387112",latitude:"39.920977"},
-            {longitude:"116.385243",latitude:"39.913063"},
-            {longitude:"116.394226",latitude:"39.917988"},
-            {longitude:"116.401772",latitude:"39.921364"},
-            {longitude:"116.41248",latitude:"39.927893"}
-          ],
-        ],
+        // polylines:[
+        //   [
+        //     {longitude:"116.399",latitude:"39.910"},
+        //     {longitude:"116.405",latitude:"39.920"},
+        //     {longitude:"116.425",latitude:"39.900"}
+        //   ],
+        //   [
+        //     {longitude:"116.387112",latitude:"39.920977"},
+        //     {longitude:"116.385243",latitude:"39.913063"},
+        //     {longitude:"116.394226",latitude:"39.917988"},
+        //     {longitude:"116.401772",latitude:"39.921364"},
+        //     {longitude:"116.41248",latitude:"39.927893"}
+        //   ],
+        // ],
         dialogVisible:false,
         isBaseMess:true,//判断是否是基本信息，是，则显示基本信息，否则显示紧急联系人
         form: {
