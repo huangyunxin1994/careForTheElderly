@@ -1,12 +1,15 @@
 <template>
       <div class="tree">
         <el-input  v-model="filterText" placeholder="请输入内容" suffix-icon="el-icon-search"></el-input>
-
-        <el-tree 
-            :data="data" 
-            :props="defaultProps" 
-            @node-click="handleNodeClick" 
-            :filter-node-method="filterNode" 
+        <div class="people">
+          <el-button size='mini' @click="allPeople">全部人员</el-button>
+          <el-button size='mini' @click="warnPeople">预警人员</el-button>
+        </div>
+        <el-tree
+            :data="data"
+            :props="defaultProps"
+            @node-click="handleNodeClick"
+            :filter-node-method="filterNode"
             ref="tree"></el-tree>
       </div>
 </template>
@@ -65,6 +68,13 @@ export default {
     // .el-input{
     //   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
     // }
+    .people{
+      height: 10%;
+      padding: 5% 2%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
     .el-tree{
       height: 90%;
       padding: 5% 2%;
