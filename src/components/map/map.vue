@@ -3,39 +3,70 @@
 </template>
 
 <script>
-  import startMarker from '@/icons/png/startMarker.png'
-
 /**
+ * @property {Object} center 地图中心点 (默认{longitude:116.399,latitude:39.910})
+ * @property {Array} markers 地图上自定义的覆盖物
+ * @property {Array} polylines 地图上自定义的线 
+ * @property {Array} circles 地图上自定义的圆
+ * @property {Object} polyLineOpt 地图线的样式 (默认{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5})
+ * @property {Object} circleOpt 地图圆的样式 (默认{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8})
  * @property {Boolean} dragging 地图是否禁止拖动（默认false）
+ * @property {Boolean} zomming 地图是否禁止缩放（默认false）
  */
   export default {
     props:{
+      //地图中心
       center:{
         type:Object,
         default(){
           return {
             longitude:116.399,
             latitude:39.910
-          }
-          
+          } 
         }
       },
+      //地图标注点
       markers:{
         type:Array,
         default(){
           return []
         }
       },
+      //地图线
       polylines:{
         type:Array,
         default(){
           return []
         }
       },
+      //地图线样式
+      polyLineOpt:{
+        type:Object,
+        default(){
+          return {
+            strokeColor:"blue", 
+            strokeWeight:2, 
+            strokeOpacity:0.5
+          }
+          
+        }
+      },
+      //地图圆
        circles:{
         type:Array,
         default(){
           return []
+        }
+      },
+      //地图圆样式
+      circleOpt:{
+        type:Object,
+        default(){
+          return{
+            strokeColor:"#F56C6C", 
+            strokeWeight:6, 
+            strokeOpacity:0.8
+          }
         }
       },
       //是否禁止拖动
@@ -43,15 +74,16 @@
         type: Boolean,
         default: false
       },
+      //是否禁止缩放
       zooming:{
         type: Boolean,
         default: false
       },
-      //是否禁止拖动
-      icon:{
-        type: String,
-        default: ""
-      },
+      //默认缩放等级
+      zoomLevel:{
+        type:[String, Number],
+        default:"16"
+      }
       
     },
     data(){
@@ -62,7 +94,8 @@
     methods:{
       getMap(){
          // 创建地图实例
-        var map = new BMap.Map("container");
+        var map = new BMap.Map("container",{enableMapClick:false});
+
        //创建标注
         if(this.markers.length>0){
           this.markers.forEach( i => {
@@ -82,7 +115,7 @@
           
         }
 
-        //折线
+        //创建折线
         if(this.polylines.length>0){
           this.polylines.forEach( i => {
             let polyLineArr = [] 
@@ -90,40 +123,23 @@
              let polyLinePoint =  new BMap.Point(n.longitude, n.latitude)
               polyLineArr.push(polyLinePoint)
             })
-            var polyline = new BMap.Polyline([
-                  new BMap.Point(116.399, 39.910),
-                  new BMap.Point(116.405, 39.920),
-                  new BMap.Point(116.425, 39.900)
-                ], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
+            var polyline = new BMap.Polyline(polyLineArr, this.polyLineOpt);
             map.addOverlay(polyline);
           })
-            var polyline = new BMap.Polyline([
-                  new BMap.Point(116.399, 39.910),
-                  new BMap.Point(116.405, 39.920),
-                  new BMap.Point(116.425, 39.900)
-                ], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
-            map.addOverlay(polyline);
-
-            var polygon = new BMap.Polygon([
-                    new BMap.Point(116.387112,39.920977),
-                    new BMap.Point(116.385243,39.913063),
-                    new BMap.Point(116.394226,39.917988),
-                    new BMap.Point(116.401772,39.921364),
-                    new BMap.Point(116.41248,39.927893)
-                ], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
-            map.addOverlay(polygon);
         }
-        
 
-        // map.addOverlay(marker);
-        // 将标注添加到地图中
+        //创建圆
+         if(this.circles.length>0){
+            this.circles.forEach(i => {
+              var point = new BMap.Point(i.longitude,i.latitude);
+              var circle = new BMap.Circle(point,i.radius,this.circleOpt);
+              map.addOverlay(circle);
+            })
+         }
+
+        // 创建地图中心
         var point = new BMap.Point(this.center.longitude, this.center.latitude);
-        map.centerAndZoom(point, 15);
-        // 初始化地图，设置中心点坐标和地图级别
-        // map.enableScrollWheelZoom(true);
-        //开启鼠标滚轮缩放
-        var scaleCtrl = new BMap.ScaleControl();  // 添加比例尺控件
-        map.addControl(scaleCtrl);
+        map.centerAndZoom(point, this.zoomLevel);
 
         //控制地图禁止拖动
         if(this.dragging){
