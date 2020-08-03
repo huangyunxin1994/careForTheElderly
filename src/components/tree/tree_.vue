@@ -10,6 +10,9 @@
             :props="defaultProps"
             @node-click="handleNodeClick"
             :filter-node-method="filterNode"
+             node-key="id"
+            highlight-current
+            :default-expanded-keys="[1]"
             ref="tree"></el-tree>
       </div>
 </template>
@@ -21,15 +24,19 @@ export default {
     return{
       filterText:"",
       data: [{
+          id:1,
           label: '南宁公安局',
           children: [
               {
+                id:11,
                 label: '仙湖派出所',
               },
               {
+                id:12,
                 label: '南湖派出所',
               },
               {
+                id:13,
                 label: '凤岭派出所',
               }
            ]

@@ -9,6 +9,7 @@
           :props="defaultProps"
           node-key="uid"
           ref="tree"
+          :default-expanded-keys="[1]"
           highlight-current
           :render-content="renderContent" 
           @node-click="handleNodeClick"
