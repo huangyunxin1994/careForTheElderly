@@ -1,112 +1,132 @@
 <template>
   <div>
     <nav-bar></nav-bar>
-    <div class="main">
-      <el-link class="enroll-details-nav" :underline="false" @click="backpage"><i class="el-icon-arrow-left"></i> 返回上一级 </el-link>
-      <div class="userMess">
-        <div class="user">
-          <div class="userLeft">
-            <p class="userName">张三</p>
-            <div class="state">
-              <div class="onLine">
-                <div v-if="state == 1" class="onLineContent">
-                  <i class="iconfont icon-electricquantity2dianchidianliang" style="color: #f8b62e;;"></i><span>低电</span>
-                </div>
-                <div v-else-if="state == 2">
-                  <i class="iconfont icon-electricquantitydianchidianliang" style="color: green"></i><span>在线</span>
-                </div>
-                <div v-else>
-                  <i class="iconfont icon-electricquantity3dianchidianliang" style="color: green;"></i><span>离线</span>
-                </div>
-              </div>
-              <div class="stepNumber">
-                <i class="iconfont icon-bushu"></i><span>800步</span>
-              </div>
+      <el-container class="contain">
+        <el-header height="90px" class="contain-head"> 
+          <el-avatar :size="70" :src="circleUrl"></el-avatar>
+          <div class="contain-head-mes">
+            <span class="contain-head-mes-name">张三</span>
+            <div class="contain-head-mes-state">
+              <div class="contain-head-mes-state-item" style="margin:0 10px"><i class="iconfont icon-bushu" style="color: #f8b62e;;"></i><span>800步</span></div>
+              <div class="contain-head-mes-state-item"><i class="iconfont icon-electricquantity2dianchidianliang" style="color: #f8b62e;;"></i><span>低电</span></div>
             </div>
           </div>
-          <div class="userRight">
+          <div class="contain-head-detais">
+            <div class="top-detais">
+                <div class="baseMess">
+                <i class="iconfont icon-shoubiao" style="color: #f8b62e;"></i><span>465467984546456</span>
+              </div>
+              <div class="baseMess">
+                <i class="iconfont icon-shenfenzhenghao" style="color: #f8b62e;"></i><span>524512563256235698</span>
+              </div>
+              <div class="baseMess">
+                <i class="iconfont icon-dianhua" style="color: #f8b62e;"></i><span>15685458569</span>
+              </div>
+            </div>
             <div class="baseMess">
               <i class="iconfont icon-dizhi" style="color: #f8b62e;"></i><span>南宁市青秀区东葛路长</span>
             </div>
-            <div class="baseMess">
-              <i class="iconfont icon-shoubiao" style="color: #f8b62e;"></i><span>465467984546456</span>
-            </div>
-            <div class="baseMess">
-              <i class="iconfont icon-shenfenzhenghao" style="color: #f8b62e;"></i><span>524512563256235698</span>
-            </div>
-            <div class="baseMess">
-              <i class="iconfont icon-dianhua" style="color: #f8b62e;"></i><span>15685458569</span>
-            </div>
           </div>
-        </div>
-        <div class="guardian">
-          <div class="guardianBase">
-            <p class="guardianName">张小二</p>
-            <p class="relation">父子</p>
-          </div>
-          <div class="guardianPhone">
-            <i class="iconfont icon-dianhua" style="color: #f8b62e;"></i><span>15685458569</span>
-          </div>
-          <div class="btn">
-            <el-button type="primary">其他监护人信息</el-button>
-          </div>
-        </div>
-      </div>
-      <div class="picWrap">
+            <div class="contain-head-phone">
+              <div class="top-phone">
+                <div style="margin-bottom:20px">主监护人：张小二</div> 
+                <div class="phone"><i class="iconfont icon-dianhua" style="color: #f8b62e;"></i><span>15685458569</span></div> 
+              </div>
+             
+             <el-button type="primary" size="small">所有监护人信息</el-button>
+           </div>
+        </el-header>
+        <el-main class="main">
+          <div class="picWrap">
         <div class="selectTime">
-          <el-date-picker
+          <!-- <el-date-picker
                 v-model="time"
                 type="date"
-                placeholder="选择日期">
-              </el-date-picker>
-          <el-button type="primary">确定</el-button>
+                placeholder="选择日期"
+                size="small"
+                >
+              </el-date-picker> -->
+              <my-date @getData="setDateTime" :size="'small'"></my-date>
+          <el-button type="primary" size="small">确定</el-button>
         </div>
-        <div class="picContent">
-          <div id="heartrate" class="echartItem" :class="{'echartItemAlert':heartrate==1}"/>
+          <div id="heartrate" class="echartItem" :class="{'echartItemAlert':heartrate==1}" style="margin-bottom:20px"/>
           <div id="bloodpress" class="echartItem" :class="{'echartItemAlert':bloodpress==1}"/>
-        </div>
       </div>
       <div class="mapWrap">
-        <div class="selectTime">
-          <span class="demonstration">选择时间段</span>
-          <el-date-picker
-            v-model="time1"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期">
-          </el-date-picker>
-        </div>
+        
         <div class="mapContent">
           <div class="mapContentLeft">
-            <div class="getNewAdress">
-              <p>最新地址获取时间：XX年XX月XX日    XX时XX分</p>
-              <p><el-button type="primary">当前位置</el-button></p>
+            <div class="selectTime">
+              <span class="demonstration">选择时间段</span>
+              <el-date-picker
+                v-model="time1"
+                type="datetimerange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                value-format="yyyy-MM-dd hh:mm:ss"
+                end-placeholder="结束日期"  size="small" @change="searchLocus">
+              </el-date-picker>
             </div>
             <div class="mapPictrue">
-              <my-map></my-map>
+              <div class="map-location">
+               <el-tag type="primary" >最新地址获取时间:2020年7月18日 18时54分</el-tag>
+              </div>
+               <div class="mapPictrue-icon" style="">
+                  <i class="el-icon-aim" ></i>
+                </div>
+              <my-map ref="map" :center="center" :markers="markers" :polylines="polylines"></my-map>
             </div>
           </div>
           <div class="mapContentRight">
             <div class="warnList">
-              <p>预警列表</p>
-              <div class="warnContent">
-                <p class="warnTime">2020-3-23 13:13:00</p>
-                <div class="warnContentItem">
-                  <div class="warnType">围栏预警</div>
-                  <div class="warnName">围栏名称  XXXX围栏</div>
+              <div class="warnListTitle">预警列表</div>
+              <el-scrollbar style="height:calc(100% - 30px)">
+                <div class="warnContent">
+                  <div class="warnContent-top">
+                    <span class="warnTime">2020-3-23 13:13:00 </span>
+                    <div>
+                      <i class="el-icon-s-promotion location" ></i>
+                    </div>
+                  </div>
+                  <div class="warnName">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX围栏</div>
+                  <div class="warnBtn">
+                    <el-button type="info" size="mini">忽略</el-button>
+                    <el-button type="primary" size="mini" @click="writeResult">填写处理结果</el-button>
+                  </div>
                 </div>
-                <div class="warnBtn">
-                  <p>定位</p>
-                  <p @click="writeResult">填写处理结果</p>
-                  <p>忽略</p>
+                 <div class="warnContent">
+                  <div class="warnContent-top">
+                    <span class="warnTime">2020-3-23 13:13:00 </span>
+                    <div>
+                      <i class="el-icon-s-promotion location" style="color:"></i>
+                    </div>
+                  </div>
+                  <div class="warnName">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX围栏</div>
+                  <div class="warnBtn">
+                    <el-button type="info" size="mini">忽略</el-button>
+                    <el-button type="primary" size="mini" @click="writeResult">填写处理结果</el-button>
+                  </div>
                 </div>
-              </div>
+                 <div class="warnContent">
+                  <div class="warnContent-top">
+                    <span class="warnTime">2020-3-23 13:13:00 </span>
+                    <div>
+                      <i class="el-icon-s-promotion location" style="color:"></i>
+                    </div>
+                  </div>
+                  <div class="warnName">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX围栏</div>
+                  <div class="warnBtn">
+                    <el-button type="info" size="mini">忽略</el-button>
+                    <el-button type="primary" size="mini" @click="writeResult">填写处理结果</el-button>
+                  </div>
+                </div>
+               </el-scrollbar>
             </div>
           </div>
         </div>
       </div>
-    </div>
+        </el-main>
+      </el-container>
     <write-result ref="WriteResult"></write-result>
   </div>
 </template>
@@ -115,27 +135,63 @@
   import echarts from 'echarts'
   import NavBar from '@/components/navBar/navBar.vue'
   import MyMap from '@/components/map/map.vue'
+  import myDate from "@/components/date/index"
   import WriteResult from '@/components/dialogHandleResult/dialogHandleResult'
-  export default{
+  import home from '@/icons/png/jia.png'
+  import dian from '@/icons/png/dian.png'
+  import startMarker from '@/icons/png/startMarker.png'
+  import endMarker from '@/icons/png/endMarker.png'
+  import person from '@/icons/png/person.png'
+  export default {
     components:{
       NavBar,
       MyMap,
-      WriteResult
+      WriteResult,
+      myDate
     },
     data(){
       return{
+        center:{
+          longitude:"116.408",
+          latitude:"39.919", 
+        },
+        markers:[
+          {
+          longitude:"116.404",
+          latitude:"39.915", 
+          icon:{
+            name:home,
+            size:[48, 48],
+            anchor:[24, 48]
+          }
+        },{
+          longitude:"116.414",
+          latitude:"39.923", 
+          icon:{
+            name:person,
+            size:[48, 48],
+            anchor:[24, 48]
+          }
+        }],
+        polylines:[
+          
+        ],
+        circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
         state:1,
         time:'',
         time1:'',//选择时间段
-        heartrate:'2',
-        bloodpress:'2',
+        heartrate:'1',
+        bloodpress:'1',
         time:["00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
       }
     },
     methods:{
-      //返回上一页
-      backpage(){
-        this.$router.go(-1);
+       setDateTime(val){
+        if(val)
+          this.dateTime=val.getTime();
+        else
+          this.dateTime=""
+
       },
       drawChart(){
         let heartrate = echarts.init(document.getElementById('heartrate'));
@@ -259,6 +315,37 @@
       writeResult(){
         this.$refs.WriteResult.dialogHandleResult = true
       },
+      //轨迹查询
+      searchLocus(val){
+       
+        let points = [
+            {longitude:"116.387112",latitude:"39.920977"},
+            {longitude:"116.385243",latitude:"39.913063"},
+            {longitude:"116.394226",latitude:"39.917988"},
+            {longitude:"116.401772",latitude:"39.921364"},
+            {longitude:"116.41248",latitude:"39.927893"}
+          ]
+          this.polylines.splice(0,this.polylines.length)
+          this.polylines.push(points)
+          this.markers.splice(0,this.markers.length)
+        
+          points.forEach( (i,key) => {
+            console.log(key)
+            let para = {
+              longitude:i.longitude,
+              latitude:i.latitude, 
+              icon:{
+                name:key==0 ? startMarker :( key== points.length-1 ? endMarker : dian) ,
+                size:[32, 32],
+                anchor:[16, 16]
+              }
+            }
+            this.markers.push(para)
+          })
+           console.log( this.markers)
+            console.log( this.polylines)
+            this.$refs.map.getMap()
+      }
     },
     mounted() {
       this.drawChart()
@@ -270,177 +357,238 @@
   ul>li{
     list-style: none;
   }
-  .main{
-    width: 90vw;
-    height: 80vh;
-    margin: 0 auto;
-    // min-width: 1250px;
-
-    .enroll-details-nav{
-        height: 50px;
-        line-height: 50px;
-    }
-    .userMess{
-      height: 12vh;
+  .contain{
+     width: calc(100% - 40px);
+      height: calc(100vh - 105px);
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+    margin: 20px;
+    &-head{
       display: flex;
-      min-width: 1250px;
+      justify-content: center;
       align-items: center;
-      justify-content: space-between;
-
-      .user{
-        width: 42vw;
-        height: 12vh;
-        border: 1px solid #ccc;
-        display: flex;
-        align-items: center;
-
-        .userLeft{
-          width: 14vw;
-          background-color: #e1f1f8;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-
-          .userName{
-            width: 7vw;
-            text-align: center;
-            font-size: 1.5vw;
-          }
-          .state{
-            width: 7vw;
-
-            .onLine{
-              .onLineContent{
-                display: flex;
-                align-items: center;
-
-                .iconfont{
-                  font-size: 2.5vw;
-                }
-              }
-
-            }
-            .stepNumber{
-              display: flex;
-              align-items: center;
-                .iconfont{
-                  color: #656060;
-                  font-size: 2.5vw;
-                }
-            }
-          }
+      border-bottom: 1px solid #DCDFE6;
+      &-mes{
+         display: flex;
+         flex-direction: column;
+        justify-content: space-around;
+        align-items: flex-start;
+        &-name{
+          font-size: 1.5vw;
+          margin-bottom: 20px;
+          margin-left: 10px;
         }
-        .userRight{
-          width: 28vw;
+        &-state{
           display: flex;
-          flex-wrap:wrap;
+          justify-content: flex-start;
           align-items: center;
-          .baseMess{
-            display: flex;
-            align-items: center;
+          
+          &-item{
+             display: flex;
             justify-content: flex-start;
-            width: 14vw;
-            height: 6vh;
-            box-sizing: border-box;
-            padding: 5px;
-
-            .iconfont{
-              font-size: 1.5vw;
-              width: 2vw;
-            }
+            align-items: center;
+            font-size: 0.8vw;
+            color: #606266;
+          }
+          .iconfont{
+            font-size: 1.2vw;
           }
         }
       }
-      .guardian{
-        width: 42vw;
-        height: 12vh;
-        border: 1px solid #ccc;
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-
-        .guardianPhone{
-          display: flex;
-          align-items: center;
-          .iconfont{
-            font-size: 1.5vw;
-            width: 2vw;
+      &-detais{
+        margin-left: 40px;
+         display: flex;
+         flex-direction: column;
+          justify-content: space-around;
+          align-items: flex-start;
+          font-size: 0.8vw;
+          color:#909399 ;
+          .top-detais{
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            
           }
-        }
+          .baseMess{
+              margin-right: 20px;
+               display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            }
+          .iconfont{
+            font-size: 1.2vw;
+          }
+      }
+      &-phone{
+        margin-left: 40px;
+         display: flex;
+         justify-content: space-around;
+         align-items: center;
+         font-size: 0.8vw;
+          color: #909399;
+         .top-phone{
+           margin-right: 20px;
+           display: flex;
+           flex-direction: column;
+          justify-content: space-around;
+          align-items: flex-start;
+          .iconfont{
+            font-size: 1.2vw;
+          }
+          .phone{
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+          }
+         }
       }
     }
+     
+  }
+  .aside{
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    &-top{
+      width: 100%;
+      height: calc(50% - 20px);
+      box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+    }
+    &-bottom{
+     width: 100%;
+      height: 50%;
+      box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+    }
+  }
+  .main{
+    // min-width: 1250px;
+    height: calc(100vh - 195px);
+    display: flex;
+      justify-content: space-between;
     .picWrap{
-      padding: 40px 0px 20px 0px;
-
+      width: 30%;
+      height: 100%;
+      margin-right: 20px;
       .selectTime{
-        width: 18vw;
+        width: 100%;
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
+        margin-bottom: 20px;
+        .el-button{
+          margin-left: 20px;
+        }
       }
-      .picContent{
-        display: flex;
-        justify-content: space-between;
-
-        .echartItem{
-          width: 50%;
-          height: 40vh;
-          padding:20px;
-          margin:20px;
-          border-radius: 0.8vw;
-        }
-        .echartItemAlert{
-          background: rgb(254, 240, 240)
-        }
+      .echartItem{
+        width: 100%;
+        height: calc(50% - 30px);
+        border-radius: 0.8vw;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      .echartItemAlert{
+        // background: rgb(254, 240, 240);
+        border:1px solid #F56C6C;
       }
     }
     .mapWrap{
+      width: calc(70% - 20px);
+       height: 100%;
       .mapContent{
         display: flex;
         justify-content: space-between;
-        width: 90vw;
+        width: 100%;
+         height: 100%;
         .mapContentLeft{
-          width: 68vw;
-
-          .getNewAdress{
-            display: flex;
-            width: 30vw;
-            align-items: center;
-            justify-content: space-between;
-          }
+          width: 75%;
+           height: 100%;
+           margin-right: 20px;
+            .selectTime{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-bottom: 20px;
+        .demonstration{
+          font-size: 0.8vw;
+          min-width: 55px;
+          margin-right: 20px;
+        }
+      }
           .mapPictrue{
-            width: 68vw;
-            height: 600px;
-            border: 1px solid #ccc;
+            width: 100%;
+            height: calc(100% - 50px);
+            position: relative;
+            .map-location{
+              position: absolute;
+              top:20px;
+              left:20px;
+              z-index: 1;
+            }
+            &-icon{
+              z-index: 1;
+              position: absolute;
+              top:20px;
+              right:20px;
+              width:40px;
+              height:40px;
+              border-radius:50%;
+              color:#606266;
+              font-size: 22px;
+              background:#fff;
+               box-shadow:  0 2px 12px 0 rgba(0, 0, 0, 0.3);
+               display: flex;
+              align-items: center;
+              justify-content: center;
+              cursor: pointer;
+            }
           }
         }
         .mapContentRight{
-          width: 20vw;
-          height: 700px;
-          border: 1px solid #ccc;
-          min-width: 287px;
-
+          width: 25%;
+          height: 100%;
+          border: 1px solid #EBEEF5;
+          min-width: 210px;
           .warnList{
             padding: 10px;
-
+            height: 100%;
+            box-sizing: border-box;
+            .warnListTitle{
+              font-size: 1vw;
+              font-weight: 700;
+              height: 30px;
+            }
             .warnContent{
-              border: 1px solid #ccc;
-              border-radius: 10px;
+              background-color: #f2f2f2;
               box-sizing: border-box;
               padding: 10px;
-              min-width: 270px;
-
+              font-size: 0.8vw;
+              margin-bottom: 10px;
+              &-top{
+                 display: flex;
+                align-items: center;
+                justify-content: space-between;
+                .location{
+                  color: #E6A23C;
+                  font-size: 20px;
+                  position: relative;
+                }
+              }
               .warnContentItem{
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
               }
-
+              .warnName{
+                margin: 10px 0 20px;
+                overflow: hidden;
+text-overflow:ellipsis;
+white-space: nowrap;
+              }
               .warnBtn{
               	display: flex;
-              	justify-content: space-between;
-              	padding: 10px;
+              	justify-content: flex-end;
               }
               .warnBtn>p{
               	padding: 5px 10px;

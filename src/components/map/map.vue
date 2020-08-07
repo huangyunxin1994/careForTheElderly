@@ -95,6 +95,8 @@
     },
     methods:{
       getMap(){
+       console.log(this.markers) 
+       console.log(this.polylines) 
          // 创建地图实例
         this.map = new BMap.Map("container",{enableMapClick:false});//构造底图时，关闭底图可点功能
 

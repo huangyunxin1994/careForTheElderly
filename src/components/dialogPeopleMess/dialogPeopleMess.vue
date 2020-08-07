@@ -38,8 +38,8 @@
         <el-form-item label="紧急联系人号码1">
           <el-input v-model="form.name" readonly></el-input>
         </el-form-item>
-        <el-form-item label="紧急联系人号码2" readonly>
-          <el-input v-model="form.organization"></el-input>
+        <el-form-item label="紧急联系人号码2" >
+          <el-input v-model="form.organization" readonly></el-input>
         </el-form-item>
         <el-form-item label="紧急联系人号码3" style="text-align: left !important;">
           <el-input v-model="form.IDCard" readonly></el-input>
@@ -70,7 +70,6 @@
     },
     data(){
       return{
-        icon:home,
         center:{
           longitude:"116.404",
           latitude:"39.915", 
@@ -128,13 +127,30 @@
 </script>
 
 <style lang="scss" scoped>
-  .enroll-manage-container-title{
-    margin-bottom: 20px;
-    padding: 2px 0;
-    border-left: 4px solid #409EFF;
-    text-indent: 20px;
-    font-size: 18px;
-    font-weight: 700;
+.baseMess{
+  position: relative;
+}
+  .baseMess:after{
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  
+  .addressList{
+    position: relative;
+  }
+  .addressList:after{
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
   }
   .el-form-item .el-form-item__label{
     text-align: right !important;
