@@ -11,7 +11,7 @@
                 <div class="enroll-manage-container" ref="container">
                     <div class="enroll-manage-container-handle" >
                             <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
-                            <div>
+                            <div class="selectItem">
                               <label for="" class="enroll-manage-container-handle-label">活动状态</label>
                               <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResult" class="seclect"  style="width:10vw">
                                   <el-option
@@ -23,7 +23,7 @@
                                   </el-option>
                               </el-select>
                             </div>
-                            <div>
+                            <div class="selectItem">
                               <label for="" class="enroll-manage-container-handle-label">设备状态</label>
                               <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResultW" class="seclect"  style="width:10vw">
                                   <el-option
@@ -472,6 +472,11 @@
                     font-size: 0.8vw;
                     color: #606266;
                     font-weight: 700;
+                }
+                .selectItem{
+                  display: flex;
+                  align-items: center;
+                  justify-content: flex-start;
                 }
             }
             &-tools{

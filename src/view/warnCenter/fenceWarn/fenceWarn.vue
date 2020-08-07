@@ -6,30 +6,38 @@
              <div class="enroll-manage-main">
                  <div class="enroll-manage-container" ref="container">
                      <div class="enroll-manage-container-handle" >
-                             <el-input v-model="inputValue" placeholder="请输入要搜索内容" class="select" style="width: 20vw;" ></el-input>
-                             <label for="" class="enroll-manage-container-handle-label">处理状态</label>
-                             <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResult">
-                                 <el-option
-                                 v-for="item in activeOptions"
-                                 :key="item.value"
-                                 :label="item.label"
-                                 class="seclect"
-                                 style="width: 10vw;"
-                                 :value="item.value">
-                                 </el-option>
-                             </el-select>
-                           <label for="" class="enroll-manage-container-handle-label">预警时间</label>
-                           <el-date-picker
-                             v-model="time"
-                             type="daterange"
-                             class="seclectTime"
-                             style="width:10vw"
-                             range-separator="至"
-                             start-placeholder="开始日期"
-                             end-placeholder="结束日期">
-                           </el-date-picker>
-                            <el-button class="btn"  type="primary" @click="handleSearch" :disabled="this.sels.length===0">忽略</el-button>
-                            <el-button class="btn"  type="primary" @click="peopleAndEquiment" :disabled="this.sels.length===0">填写处理结果</el-button>
+                            <div class="handleItem">
+                              <el-input v-model="inputValue" placeholder="请输入要搜索内容" class="select" style="width: 20vw;" ></el-input>
+                              <div class="selectItem">
+                                <label for="" class="enroll-manage-container-handle-label">处理状态</label>
+                                <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResult">
+                                    <el-option
+                                    v-for="item in activeOptions"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    class="seclect"
+                                    style="width: 10vw;"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
+                              </div>
+                              <div class="selectItem">
+                                <label for="" class="enroll-manage-container-handle-label">预警时间</label>
+                                <el-date-picker
+                                  v-model="time"
+                                  type="daterange"
+                                  class="seclectTime"
+                                  style="width:10vw"
+                                  range-separator="至"
+                                  start-placeholder="开始日期"
+                                  end-placeholder="结束日期">
+                                </el-date-picker>
+                              </div>
+                            </div>
+                            <div class="handleItem">
+                              <el-button class="btn"  type="primary" @click="handleSearch" :disabled="this.sels.length===0">忽略</el-button>
+                              <el-button class="btn"  type="primary" @click="peopleAndEquiment" :disabled="this.sels.length===0">填写处理结果</el-button>
+                            </div>
                      </div>
                      <el-table
                          :data="tables.slice((page-1)*pageSize,page*pageSize)"
@@ -37,7 +45,7 @@
                          size="mini" v-loading="listLoading"
                          @selection-change="selsChange"
                          class="myTable" ref="table"
-                         height="calc(100vh - 240px)"
+                         height="calc(100vh - 220px)"
                          :row-key="getRowKeys">
                           <el-table-column type="selection" width="55" :reserve-selection="true">
                           </el-table-column>
@@ -48,7 +56,7 @@
                                   <el-link type="primary" v-if="item.type=='link'" @click="userDetails(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
                                   <div v-else-if="item.type=='handle' &&scope.row['handleState'] ==1" align="center">
                                     <!-- <el-button  type="primary" content="查看"  size="small" round @click="handleSearch(scope.$index, scope.row)">忽略</el-button> -->
-                                    <el-button   type="primary" icon="el-icon-edit" size="small" round @click="findHandleResult(scope.$index, scope.row)">查看处理结果</el-button>
+                                    <el-button   type="primary" icon="el-icon-search" size="small" round @click="findHandleResult(scope.$index, scope.row)">处理结果</el-button>
                                   </div>
                                   <div v-else-if="item.name=='guardianMess'">
 
@@ -107,8 +115,8 @@
          pageSize:20,
          time:'',
          tableTitle:[
-             { title : "姓名", name : "name", type:"link",width:"150"},
-             { title : "预警类型", name : "activeState", type:"input",width:'120'},
+             { title : "姓名", name : "name", type:"link",width:"120"},
+             { title : "预警类型", name : "activeState", type:"input",width:'150'},
              { title : "围栏名称", name : "fenceName", type:"input",minwidth:'120'},
              { title : "所属组织", name : "belongPlatform", type:"input",minwidth:'120'},
              { title : "预警时间", name : "warnTime", type:"input",width:'120'},
@@ -258,12 +266,15 @@
                  return row[column.property]
        },
        arrFormatter (value,name) {
-            if(name=='sex')
+           if(name == 'name'){
+            return '<span style="color:#409EFF;font-weight:bold">'+value+'</span>';
+           }
+           else if(name=='sex')
             return value == 1 ? '男' : value == 0 ? '女' : '';
            else if(name=='multiplexMark')
             return value == 1 ? '是' : value == 0 ? '否' : '';
-           else if(name=='activeState')
-            return value == 1 ? '<span style="color:#909399;font-weight:bold">心率异常</span>' :( value == 2 ? '<span style="color:#909399;font-weight:bold">血压异常</span>' : ( value == 3 ? '<span style="color:#909399;font-weight:bold">离家异常</span>' : ( value == 4 ? '<span style="color:#909399;font-weight:bold">SOS</span>' : '')));
+           // else if(name=='activeState')
+           //  return value == 1 ? '<span style="color:#909399;font-weight:bold">心率异常</span>' :( value == 2 ? '<span style="color:#909399;font-weight:bold">血压异常</span>' : ( value == 3 ? '<span style="color:#909399;font-weight:bold">离家异常</span>' : ( value == 4 ? '<span style="color:#909399;font-weight:bold">SOS</span>' : '')));
            else if(name=='handleState')
             return value == 1 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">已处理</span>' :( value == 2 ? '<span style="color:#f79898;font-weight:bold">未处理</span>' : ( value == 3 ? '<span style="color:#909399;font-weight:bold">已忽略</span>' : '' ));
            else
@@ -405,7 +416,6 @@
     }
    .main{
      .mainRight{
-       /* height: 80vh; */
        box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
 
          .enroll-manage-container{
@@ -426,7 +436,13 @@
                  justify-content: space-between;
                  margin-bottom: 20px;
                  align-items: center;
+                 .handleItem{
+                   display: flex;
+                   justify-content: flex-start;
+                   align-items: center;
+                 }
                  &-label{
+                   margin-left: 20px;
                      font-size: 0.8vw;
                      color: #606266;
                      font-weight: 700;
@@ -434,6 +450,11 @@
                  .seclectTime{
                    width: 20vw;
                    max-width: 300px;
+                 }
+                 .selectItem{
+                   display: flex;
+                   align-items: center;
+                   justify-content: flex-start;
                  }
              }
              &-tools{

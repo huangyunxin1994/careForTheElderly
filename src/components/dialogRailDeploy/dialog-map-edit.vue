@@ -4,7 +4,10 @@
             <el-form-item label="电子围栏名称" prop="name" required>
                 <el-input v-model="form.name" placeholder="请输入"></el-input>
             </el-form-item>
-            <el-form-item label="电子围栏范围" prop="radius" required>
+            <el-form-item label="电子围栏范围" prop="radius" required class="deployRange">
+                <el-input v-model="form.radius"  @change="changeRound" placeholder="请输入"></el-input>km
+            </el-form-item>
+            <!-- <el-form-item label="电子围栏范围" prop="radius" required>
                 <el-select v-model="form.radius" placeholder="请选择"  @change="changeRound">
                     <el-option
                     v-for="item in options"
@@ -14,18 +17,18 @@
                     >
                     </el-option>
                 </el-select>
-            </el-form-item>
+            </el-form-item> -->
         </el-form>
         <div class="dialog-map">
             <i class="dialog-map-icon iconicon-test-copy"></i>
             <div id="allmap" ref="allmap" class="dialog-map">
-                
-            </div> 
+
+            </div>
         </div>
     <div slot="footer" class="dialog-footer">
-            <el-button @click.native="handleClose">取消</el-button>
+            <el-button type="primary" @click.native="handleClose">取消</el-button>
             <el-button type="primary" @click.native="addSubmit" :loading="loading">提交</el-button>
-            <el-button type="danger" @click.native="removeSubmit" :loading="loadingD">删除</el-button>
+            <el-button type="primary" @click.native="removeSubmit" :loading="loadingD">删除</el-button>
         </div>
     </el-dialog>
 </template>
@@ -39,7 +42,7 @@ export default {
         return{
             formRule:{
                 name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-                radius: [{ required: true, message: '请选择范围', trigger: 'blur' }],
+                radius: [{ required: true, message: '请输入范围', trigger: 'blur' }],
             },
             formVisible:false,
             loading:false,
@@ -80,7 +83,7 @@ export default {
         getMapData(){
         },
         getmap () {
-            this.map = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例 
+            this.map = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例
             this.map.centerAndZoom(new BMap.Point(this.form.longitude,this.form.latitude), 16) // 初始化地图,设置中心点坐标和地图级别
             this.map.setCurrentCity('北京') // 设置地图显示的城市 此项是必须设置的
             this.map.enableScrollWheelZoom(true)// 开启鼠标滚轮缩放
@@ -108,7 +111,7 @@ export default {
                     that.map.clearOverlays()
                     that.map.addOverlay(that.circle);
             });
-            
+
         },
         changeRound(val){
             this.longitude = this.map.getCenter().lng
@@ -122,7 +125,7 @@ export default {
             this.formVisible=true
             this.$nextTick(() => {
                 this.getmap();
-            })  
+            })
         },
         handleClose(){
             this.form={
@@ -177,7 +180,7 @@ export default {
                                 type: 'error'
                             });
                         })
-                    });  
+                    });
                 }
             });
         },
@@ -211,18 +214,24 @@ export default {
                         type: 'error'
                     });
                 })
-            }); 
+            });
         }
     },
     mounted(){
-        
-       
+
+
     }
 }
 </script>
 <style lang="scss" scoped>
   .el-dialog__wrapper /deep/.el-dialog{
     min-width: 680px;
+  }
+  /deep/ .el-dialog__header{
+    text-align: center;
+  }
+  .deployRange /deep/ .el-input{
+    width: 85%;
   }
 .dialog-map{
     width: 100%;

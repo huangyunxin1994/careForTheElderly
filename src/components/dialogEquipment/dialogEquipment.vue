@@ -3,8 +3,8 @@
     <el-dialog title="关联组织"  :visible.sync="dialogVisible" center :append-to-body='true' :before-close="handleClose" :lock-scroll="false" :close-on-click-modal="false" width="500px">
         <tree></tree>
         <div class="btnWrap">
-          <el-button type="primary"  class="btn" @click="sureBtn">确定</el-button>
           <el-button type="primary"  class="btn" @click="cancelBtn">取消</el-button>
+          <el-button type="primary"  class="btn" @click="sureBtn">确定</el-button>
         </div>
     </el-dialog>
   </div>

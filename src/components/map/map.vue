@@ -7,7 +7,7 @@
 /**
  * @property {Object} center 地图中心点 (默认{longitude:116.399,latitude:39.910})
  * @property {Array} markers 地图上自定义的覆盖物
- * @property {Array} polylines 地图上自定义的线 
+ * @property {Array} polylines 地图上自定义的线
  * @property {Array} circles 地图上自定义的圆
  * @property {Object} polyLineOpt 地图线的样式 (默认{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5})
  * @property {Object} circleOpt 地图圆的样式 (默认{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8})
@@ -23,7 +23,7 @@
           return {
             longitude:116.399,
             latitude:39.910
-          } 
+          }
         }
       },
       //地图标注点
@@ -45,11 +45,11 @@
         type:Object,
         default(){
           return {
-            strokeColor:"blue", 
-            strokeWeight:2, 
+            strokeColor:"blue",
+            strokeWeight:2,
             strokeOpacity:0.5
           }
-          
+
         }
       },
       //地图圆
@@ -64,8 +64,8 @@
         type:Object,
         default(){
           return{
-            strokeColor:"#F56C6C", 
-            strokeWeight:6, 
+            strokeColor:"#F56C6C",
+            strokeWeight:6,
             strokeOpacity:0.8
           }
         }
@@ -85,47 +85,93 @@
         type:[String, Number],
         default:"16"
       }
-      
+
     },
     data(){
       return{
-
+        marker:[],
+        map:'',
       }
     },
     methods:{
       getMap(){
          // 创建地图实例
-        var map = new BMap.Map("container",{enableMapClick:false});
+        this.map = new BMap.Map("container",{enableMapClick:false});//构造底图时，关闭底图可点功能
 
+        BMap.Icon.prototype.name = "";
+        BMap.Icon.prototype.setName = function(name){
+            this.name = name;
+        }
+        let pointArray = []
+        let homeMarkerItem = '' //用来存放房屋覆盖物的中间变量
+        let lineMarkerItem = '' //用来存放折线覆盖物的中间变量
        //创建标注
         if(this.markers.length>0){
           this.markers.forEach( i => {
-            console.log(i.icon.size)
              var point = new BMap.Point(i.longitude, i.latitude);
-             console.log(point)
+             pointArray.push(point)
             // 创建点坐标
             var myIcon = new BMap.Icon(i.icon.name, new BMap.Size(i.icon.size[0],i.icon.size[1]), {
                 anchor: new BMap.Size(i.icon.anchor[0], i.icon.anchor[1]),
             });
+            if(i.type == 0){
+              myIcon.setName("0");
+            }else{
+              myIcon.setName("1");
+            }
             // 创建标注对象并添加到地图
             var marker = new BMap.Marker(point, {icon: myIcon});
-            console.log(66)
-            map.addOverlay(marker);
+            this.map.addOverlay(marker);
+            let opts = {
+              width:250,  //信息窗口
+              height: 100,    // 信息窗口高度
+              enableMessage:true//设置允许信息窗发送短息
+            }
+            if(i.type == 0 || i.type == 1){
+              marker.addEventListener("click",function(e){
+                if(homeMarkerItem != ''){
+                  this.map.removeOverlay(homeMarkerItem)
+                }
+                if(lineMarkerItem != ''){
+                  this.map.removeOverlay(lineMarkerItem)
+                }
+                let _this = this
+                let p = e.target;
+                var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+                this.map.panTo(point);
+                var infoWindow = new BMap.InfoWindow("World", opts);  // 创建信息窗口对象
+                this.map.openInfoWindow(infoWindow, point);        // 打开信息窗口
 
+
+                //添加房屋图标
+                let homePoint = new BMap.Point(i.home.longitude, i.home.latitude);
+                let homeIcon = new BMap.Icon(i.home.icon.name, new BMap.Size(i.home.icon.size[0],i.icon.size[1]), {
+                    anchor: new BMap.Size(i.home.icon.anchor[0], i.home.icon.anchor[1]),
+                });
+                let homemarker = new BMap.Marker(homePoint, {icon: homeIcon});
+                homeMarkerItem = homemarker
+                this.map.addOverlay(homemarker);
+
+                //添加折线
+                let polyline = new BMap.Polyline([point,homePoint], {strokeColor:"blue", strokeWeight:2,strokeStyle:"dashed", strokeOpacity:0.5});
+                lineMarkerItem = polyline
+                this.map.addOverlay(polyline);
+              })
+            }
           })
-          
+
         }
 
         //创建折线
         if(this.polylines.length>0){
           this.polylines.forEach( i => {
-            let polyLineArr = [] 
+            let polyLineArr = []
             i.forEach( n => {
              let polyLinePoint =  new BMap.Point(n.longitude, n.latitude)
               polyLineArr.push(polyLinePoint)
             })
             var polyline = new BMap.Polyline(polyLineArr, this.polyLineOpt);
-            map.addOverlay(polyline);
+            this.map.addOverlay(polyline);
           })
         }
 
@@ -134,18 +180,74 @@
             this.circles.forEach(i => {
               var point = new BMap.Point(i.longitude,i.latitude);
               var circle = new BMap.Circle(point,i.radius,this.circleOpt);
-              map.addOverlay(circle);
+              this.map.addOverlay(circle);
             })
          }
 
         // 创建地图中心
         var point = new BMap.Point(this.center.longitude, this.center.latitude);
-        map.centerAndZoom(point, this.zoomLevel);
 
+        const view = this.map.getViewport(pointArray)//获取最佳视野
+        console.log(view)
+        let zoom = this.zoomLevel
+        if(view.center.lng != 0 && view.center.lat != 0 && view.zoom != 3){
+          point = view.center
+          zoom = view.zoom
+        }
+        this.map.centerAndZoom(point, zoom); // 初始化地图,设置中心点坐标和地图级别
+        this.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+
+      },
+      //显示所有的预警人员
+      showWarnPeople(val){
+        let allOverlay = this.map.getOverlays()
+        for(let i in allOverlay){
+          if(allOverlay[i].toString() == "[object Marker]"){
+            if(allOverlay[i].getIcon().name == val){
+              allOverlay[i].show()
+            }else{
+              allOverlay[i].hide()
+            }
+          }
+        }
+      },
+      //显示所有人员
+      showAllPeople(val){
+        let allOverlay = this.map.getOverlays()
+        for(let i in allOverlay){
+          if(allOverlay[i].toString() == "[object Marker]"){
+            allOverlay[i].show()
+          }
+        }
+      },
+      //定位
+      movePosBypoint(x,y){
+        let that = this
+        let point = new BMap.Point(x,y);
+        this.map.panTo(point);
+      },
+      //绑定人员点击显示新窗口
+      addClikPeople(marker){
+
+      },
+      //获取电子围栏中心坐标，并且定位
+      moveDeploy(x,y){
+        let that = this
+        let point = new BMap.Point(x,y);
+        this.map.panTo(point);
       }
     },
     mounted() {
       this.getMap()
+    },
+    watch:{
+      markers:(oval,val)=>{
+        this.marker = oval
+        // console.log(this)
+        // this.markers = oval
+        // this.map.clearOverlays()
+        // this.a.methods.getMap()
+      }
     }
   }
 </script>

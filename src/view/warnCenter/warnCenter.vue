@@ -4,7 +4,7 @@
     <el-container class="warningcenter-container">
                 <el-row>
                   <el-col :span="3">
-                    <el-scrollbar style="height:calc(100vh - 85px);background-color: rgb(244, 244, 245)">
+                    <el-scrollbar style="height:calc(100vh - 65px);background-color: rgb(244, 244, 245);">
                       <el-menu
                         default-active="1"
                         class="el-menu-vertical-demo"
@@ -92,8 +92,10 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
-  .el-scrollbar__view/deep/.is-active{
-    background-color: red;
+
+  .is-active {
+      color: #303133;
+      background-color: #a5a2a2 !important;
   }
   a{
     text-decoration:none;

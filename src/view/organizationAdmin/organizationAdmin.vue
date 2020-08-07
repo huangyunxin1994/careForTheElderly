@@ -3,16 +3,14 @@
     <nav-bar></nav-bar>
     <div class="main">
       <div class="mainLeft">
-        <tree @newOrganization="newOrganization" @adminOrganization="adminOrganization"></tree>
+        <tree @newOrganization="newOrganization" @adminOrganization="adminOrganization" :organization="true"></tree>
       </div>
       <div class="mainRight">
         <el-scrollbar>
             <div class="enroll-manage-main">
                 <div class="enroll-manage-container" ref="container">
                     <div class="enroll-manage-container-handle" >
-                        <div style="width:40%" class="selectItem">
-                            <el-input v-model="inputValue" placeholder="请输入要搜索内容"></el-input>
-                        </div>
+                        <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
                         <div class="btnWrap selectItem">
                           <el-button type="primary"  class="btn" @click="newUser">新建用户</el-button>
                         </div>
@@ -22,7 +20,7 @@
                         border stripe highlight-current-row
                         size="mini" v-loading="listLoading"
                         class="myTable" ref="table"
-                        height="calc(100vh - 280px)"
+                        height="calc(100vh - 260px)"
                         :row-key="getRowKeys">
                          <!-- <el-table-column type="selection" width="55" :reserve-selection="true">
                          </el-table-column> -->
@@ -32,10 +30,14 @@
                              <template slot-scope="scope">
                                  <el-link type="primary" v-if="item.type=='link'" @click="userDetails(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
                                  <div v-else-if="item.type=='handle' && scope.row['identity'] ==1" align="center">
-                                   <el-button  type="primary" icon="el-icon-edit" size="small" round @click="changePass(scope.$index, scope.row)">修改密码</el-button>
+                                   <el-tooltip content="修改密码" placement="top">
+                                      <el-button circle type="primary" icon="el-icon-edit" size="small" @click="changePass(scope.$index, scope.row)"></el-button>
+                                   </el-tooltip>
                                  </div>
                                  <div v-else-if="item.type=='handle' && scope.row['identity'] ==2" align="center">
-                                   <el-button  type="primary" icon="el-icon-edit" content="编辑"  size="small" round @click="adminMess(scope.$index, scope.row)">编辑</el-button>
+                                   <el-tooltip content="编辑" placement="top">
+                                     <el-button circle type="primary" icon="el-icon-edit"   size="small"  @click="adminMess(scope.$index, scope.row)"></el-button>
+                                   </el-tooltip>
                                  </div>
                                  <p v-else :formatter="formatSex" v-html="arrFormatter(scope.row[item.name],item.name)"></p>
                              </template>
@@ -73,7 +75,7 @@
 
 <script>
   import NavBar from '@/components/navBar/navBar.vue'
-  import Tree from '@/components/tree/organizeTree.vue'
+  import Tree from '@/components/tree/tree_.vue'
   import GuardianMess from '@/components/dialogGuardianMess/dialogGuardianMess.vue'
   import DialogOrganization from '@/components/dialogOrganizationAdmin/organizationAdmin.vue'
   import DialogChangePass from '@/components/dialogOrganizationAdmin/changePass.vue'
@@ -100,7 +102,7 @@
             { title : "账号", name : "account", type:"input",width:"200"},
             { title : "用户名", name : "name", type:"input",width:"200"},
             { title : "所属组织", name : "belongPlatform", type:"input"},
-            { title : "操作", type : "handle",button:[],width:'140'}
+            { title : "操作", type : "handle",button:[],width:'100'}
         ],
         tableData:[
           {
@@ -346,19 +348,26 @@
       //新建组织
       newOrganization(val){
         this.$refs.organization.dialogVisible = true
+        this.$refs.organization.addBtn = true
+        this.$refs.organization.removeBtn = false
       },
       //编辑组织
       adminOrganization(val){
-        console.log(val)
         this.$refs.organization.dialogVisible = true
+        this.$refs.organization.addBtn = true
+        this.$refs.organization.removeBtn = true
       },
       // 新建用户
       newUser(){
         this.$refs.editeditMess.dialogVisible = true
+        this.$refs.editeditMess.superiorOrg = true
+        this.$refs.editeditMess.removeBtn = false
       },
       //编辑用户
       adminMess(){
         this.$refs.editeditMess.dialogVisible = true
+        this.$refs.editeditMess.superiorOrg = false
+        this.$refs.editeditMess.removeBtn = true
       },
       //修改密码
       changePass(){
@@ -404,7 +413,7 @@
     .mainLeft{
       width: 200px;
       min-width: 200px;
-      height: calc(100vh - 125px);
+      height: calc(100vh - 105px);
       box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
       box-sizing: border-box;
       padding: 0.5vw;
@@ -431,7 +440,7 @@
                 font-weight: 700;
             }
             &-handle{
-                /* margin-bottom:2%; */
+                margin-bottom:20px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -439,9 +448,6 @@
                     font-size: 14px;
                     color: #606266;
                     font-weight: 700;
-                }
-                .selectItem{
-                  margin-bottom: 20px;
                 }
                 .seclect{
                   width: 20vw;

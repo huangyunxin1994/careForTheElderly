@@ -31,7 +31,10 @@
 
         <el-dropdown class="avatar-container" trigger="click">
           <!-- <router-link tag="i" class=""></router-link> -->
-          <i class="iconfont icon-wo"></i>
+          <div>
+            <i class="iconfont icon-wo"></i>
+            <span class="user-name">你好,小李</span>
+          </div>
           <el-dropdown-menu slot="dropdown" class="user-dropdown">
             <el-dropdown-item  @click.native="changePass">
                 修改密码
@@ -41,7 +44,7 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <span>你好,小李</span>
+        <!-- <span>你好,小李</span> -->
       </span>
   	</div>
     <change-pass ref="changePass"></change-pass>
@@ -152,5 +155,8 @@
   }
   .name i{
     color: #fff;
+  }
+  .user-name{
+    color: white;
   }
 </style>

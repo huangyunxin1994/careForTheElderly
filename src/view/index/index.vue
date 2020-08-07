@@ -3,16 +3,14 @@
     <nav-bar></nav-bar>
     <div class="main">
       <div class="mainLeft">
-        <tree :people='true' :allPeople1='allpeople'></tree>
+        <tree :people='true'  @allPeople="allPeople" @warnPeople="warnPeople"></tree>
       </div>
       <div class="mainCenter">
-        <my-map></my-map>
+        <my-map ref="myMap" :dragging="true" :zooming="true" :markers="markers"></my-map>
       </div>
       <div class="mainRight">
-        <transition name="warnList"
-                    enter-active-class="animated animate__backInRight"
-                    leave-active-class="animated animate__backOutRight">
-            <div class="warnSwarp" v-if="warnList == true">
+        <transition name="el-zoom-in-center">
+            <div class="warnSwarp" v-show="warnList">
               <p class="newWarnTitle">
                 <i class="iconfont icon-deng"></i>最新预警信息
               </p>
@@ -33,7 +31,7 @@
                       <div class="contentList type"><p>{{item.type}}</p></div>
                     </div>
                     <div class="warnBtn">
-                      <el-button type="danger" size="mini">定位</el-button>
+                      <el-button type="danger" size="mini" @click="getLocation(116.310,39.90)">定位</el-button>
                       <el-button type="danger" size="mini" @click="goPeopleDetails">详情</el-button>
                     </div>
                   </div>
@@ -50,6 +48,14 @@
   import NavBar from '@/components/navBar/navBar.vue'
   import MyMap from '@/components/map/map.vue'
   import Tree from '@/components/tree/tree_.vue'
+
+  // 图标
+  import startMarker from '@/icons/png/startMarker.png'
+  import endMarker from '@/icons/png/endMarker.png'
+  import normal from '@/icons/png/zaijia.png'
+  import warn from '@/icons/png/yujing.png'
+  // import home from '@/icons/png/jiating.png'
+  import home from '@/icons/png/jia.png'
   export default{
     components:{
       NavBar,
@@ -99,7 +105,89 @@
         allpeople:{
           name:'wang',
           age:22
-        }
+        },
+        markers:[
+          {
+            longitude:"115.304",
+            latitude:"39.945",
+            icon:{
+              name:normal,
+              size:[48, 48],
+              anchor:[24, 48]
+            },
+            type:'0',
+            home:{
+              longitude:"116.468",
+              latitude:"39.902",
+              icon:{
+                name:home,
+                size:[48, 48],
+                anchor:[24, 48]
+              },
+              type:'2'
+            }
+          },
+          {
+            longitude:"116.300",
+            latitude:"39.955",
+            icon:{
+              name:normal,
+              size:[48, 48],
+              anchor:[24, 48]
+            },
+            type:'0',
+            home:{
+              longitude:"116.560",
+              latitude:"39.902",
+              icon:{
+                name:home,
+                size:[48, 48],
+                anchor:[24, 48]
+              },
+              type:'2'
+            }
+          },
+          {
+            longitude:"116.310",
+            latitude:"39.90",
+            icon:{
+              name:warn,
+              size:[48, 48],
+              anchor:[24, 48]
+            },
+            type:'1',
+            home:{
+              longitude:"116.480",
+              latitude:"39.902",
+              icon:{
+                name:home,
+                size:[48, 48],
+                anchor:[24, 48]
+              },
+              type:'2'
+            }
+          },
+          {
+            longitude:"116.360",
+            latitude:"39.922",
+            icon:{
+              name:warn,
+              size:[48, 48],
+              anchor:[24, 48]
+            },
+            type:'1',
+            home:{
+              longitude:"116.460",
+              latitude:"39.902",
+              icon:{
+                name:home,
+                size:[48, 48],
+                anchor:[24, 48]
+              },
+              type:'2'
+            }
+          }
+        ]
       }
     },
     methods:{
@@ -108,10 +196,31 @@
       },
       goPeopleDetails(){
         this.$router.push('/peopleDetails')
+      },
+      getWarnData(){
+        this.warnList = !this.warnList
+      },
+      //显示全部人员
+      allPeople(){
+        // let myMarkers = []
+        // this.markers = myMarkers
+        this.$refs.myMap.showAllPeople(0)
+      },
+      //显示预警人员
+      warnPeople(){
+        this.$refs.myMap.showWarnPeople(1)
+      },
+      //定位
+      getLocation(x,y){
+        this.$refs.myMap.movePosBypoint(x,y)
       }
+    },
+    created() {
+      this.allPeople()
     },
     mounted() {
       this.getWarnList()
+
     }
   }
 </script>
@@ -144,7 +253,7 @@
     }
     .mainCenter{
       width: 100vw;
-      height: calc(100vh - 85px);
+      height: calc(100vh - 65px);
     }
     .mainRight{
       position: absolute;

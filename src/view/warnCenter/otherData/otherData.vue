@@ -6,8 +6,8 @@
             <div class="enroll-manage-main">
                 <div class="enroll-manage-container" ref="container">
                     <div class="enroll-manage-container-handle" >
-                        <div style="width:20%" class="selectItem">
-                            <el-input v-model="inputValue" placeholder="请输入要搜索内容"></el-input>
+                        <div class="selectItem">
+                            <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw;"></el-input>
                         </div>
                         <div class="selectItem">
                             <label for="" class="enroll-manage-container-handle-label">处理状态</label>
@@ -28,6 +28,7 @@
                             v-model="time"
                             type="daterange"
                             class="seclectTime"
+                            style="width:10vw"
                             range-separator="至"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期">
@@ -54,7 +55,7 @@
                         border stripe highlight-current-row
                         size="mini" v-loading="listLoading"
                         class="myTable" ref="table"
-                        height="64vh"
+                        height="calc(100vh - 220px)"
                         :row-key="getRowKeys">
                          <!-- <el-table-column type="selection" width="55" :reserve-selection="true">
                          </el-table-column> -->
@@ -62,7 +63,8 @@
                          </el-table-column>
                          <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" :sortable="item.type!='button'&&item.type!='handle'?true:false" show-overflow-tooltip>
                              <template slot-scope="scope">
-                                 <div v-if="item.type=='handle'" align="center">
+                                 <el-link type="primary" v-if="item.type=='link'" @click="userDetails(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
+                                 <div v-else-if="item.type=='handle'" align="center">
                                    <el-button  type="primary" icon="el-icon-edit" size="small" round @click="changeSMI(scope.$index, scope.row)">修改</el-button>
 
                                  </div>
@@ -114,10 +116,10 @@
         pageSize:20,
         time:'',
         tableTitle:[
-            { title : "姓名", name : "name", type:"link",width:"100"},
+            { title : "姓名", name : "name", type:"link",width:"120"},
             { title : "预警类型", name : "activeState", type:"input",width:"150"},
-            { title : "围栏名称", name : "fenceName", type:"input",minwidth:'120'},
-            { title : "所属组织", name : "belongPlatform", type:"input",minwidth:'120'},
+            { title : "详情", name : "warnDetails", type:"input",minwidth:'150'},
+            { title : "所属组织", name : "belongPlatform", type:"input",minwidth:'150'},
             { title : "预警时间", name : "warnTime", type:"input",width:"150"},
             { title : "处理状态", name : "handleState", type:"input",width:"100"},
             { title : "处理时间", name : "handleTime", type:"input",width:"150"},
@@ -128,108 +130,108 @@
           {
             account:'001',
             name:'王',
-            activeState:'电子围栏触发',
+            activeState:'1',
             equState:1,
-            fenceName:'南宁青秀围栏',
+            warnDetails:'心率过快',
             belongPlatform:'南宁总局',
             warnTime:'2020-06-02',
-            handleState:'已处理',
+            handleState:'1',
             handleTime:'2020-08-12',
             handleName:'赵二',
           },
           {
             account:'002',
             name:'王',
-            activeState:'电子围栏触发',
+            activeState:'2',
             equState:1,
-            fenceName:'南宁青秀围栏',
+            warnDetails:'血压低',
             belongPlatform:'南宁总局',
             warnTime:'2020-06-02',
-            handleState:'已处理',
+            handleState:'2',
             handleTime:'2020-08-12',
             handleName:'赵二',
           },
           {
             account:'003',
             name:'王',
-            activeState:'电子围栏触发',
+            activeState:'3',
             equState:1,
-            fenceName:'南宁青秀围栏',
+            warnDetails:'',
             belongPlatform:'南宁总局',
             warnTime:'2020-06-02',
-            handleState:'已处理',
+            handleState:'1',
             handleTime:'2020-08-12',
             handleName:'赵二',
           },
           {
             account:'004',
             name:'王',
-            activeState:'电子围栏触发',
+            activeState:'4',
             equState:1,
-            fenceName:'南宁青秀围栏',
+            warnDetails:'',
             belongPlatform:'南宁总局',
             warnTime:'2020-06-02',
-            handleState:'已处理',
+            handleState:'1',
             handleTime:'2020-08-12',
             handleName:'赵二',
           },
           {
             account:'005',
             name:'王',
-            activeState:'电子围栏触发',
+            activeState:'2',
             equState:1,
-            fenceName:'南宁青秀围栏',
+            warnDetails:'血压低',
             belongPlatform:'南宁总局',
             warnTime:'2020-06-02',
-            handleState:'已处理',
+            handleState:'2',
             handleTime:'2020-08-12',
             handleName:'赵二',
           },
           {
             account:'006',
             name:'王',
-            activeState:'电子围栏触发',
+            activeState:'2',
             equState:1,
-            fenceName:'南宁青秀围栏',
+            warnDetails:'血压高',
             belongPlatform:'南宁总局',
             warnTime:'2020-06-02',
-            handleState:'已处理',
+            handleState:'2',
             handleTime:'2020-08-12',
             handleName:'赵二',
           },
           {
             account:'007',
             name:'王',
-            activeState:'电子围栏触发',
+            activeState:'3',
             equState:1,
-            fenceName:'南宁青秀围栏',
+            warnDetails:'',
             belongPlatform:'南宁总局',
             warnTime:'2020-06-02',
-            handleState:'已处理',
+            handleState:'1',
             handleTime:'2020-08-12',
             handleName:'赵二',
           },
           {
             account:'008',
             name:'王',
-            activeState:'电子围栏触发',
+            activeState:'4',
             equState:1,
-            fenceName:'南宁青秀围栏',
+            warnDetails:'',
             belongPlatform:'南宁总局',
             warnTime:'2020-06-02',
-            handleState:'已处理',
+            handleState:'2',
             handleTime:'2020-08-12',
             handleName:'赵二',
           },
           {
             account:'009',
             name:'王',
-            activeState:'电子围栏触发',
+            activeState:'1',
             equState:1,
-            fenceName:'南宁青秀围栏',
+            warnDetails:'心率过高',
             belongPlatform:'南宁总局',
             warnTime:'2020-06-02',
-            handleState:'已处理',
+            handleState:'2',
             handleTime:'2020-08-12',
             handleName:'赵二',
           }
@@ -267,12 +269,17 @@
                 return row[column.property]
       },
       arrFormatter (value,name) {
-           if(name=='sex')
+          if(name == 'name'){
+           return '<span style="color:#409EFF;font-weight:bold">'+value+'</span>';
+          }
+          else if(name=='sex')
            return value == 1 ? '男' : value == 0 ? '女' : '';
           else if(name=='multiplexMark')
            return value == 1 ? '是' : value == 0 ? '否' : '';
-          else if(name=='isEnable')
-           return value == 1 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">是</span>' :( value == 2 ? '<span style="color:#909399;font-weight:bold">否</span>' : ( value == 3 ? '<span style="color:#67C23A;font-weight:bold">进行中</span>' : ( value == 4 ? '<span style="color:#909399;font-weight:bold">已结束</span>' : '')));
+          else if(name=='handleState')
+           return value == 1 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">已处理</span>' :( value == 2 ? '<span style="color:#f79898;font-weight:bold">未处理</span>' : '');
+          else if(name=='activeState')
+           return value == 1 ? '<span style="color:#606266;">心率异常</span>' :( value == 2 ? '<span style="color:#606266;">血压异常</span>' : ( value == 3 ? '<span style="color:#606266;">离家异常</span>' : ( value == 4 ? '<span style="color:#606266;">SOS</span>' : '' ) ));
           else if(name=='equState')
            return value == 0 ? '<span style="color:#f79898;font-weight:bold">离线</span>' :( value == 1 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">在线</span>' : ( value == 2 ? '<span style="color:#e6a23c;font-weight:bold">低电量</span>' : '' ));
           else
@@ -405,8 +412,6 @@
     }
   .main{
     .mainRight{
-      /* min-width: 1000px; */
-      /* min-height: 80vh; */
       box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
 
         .enroll-manage-container{
@@ -414,7 +419,7 @@
             padding: 20px;
             background: #fff;
             &-title{
-                /* margin-bottom: 20px; */
+                margin-bottom: 20px;
                 padding: 2px 0;
                 border-left: 4px solid #409EFF;
                 text-indent: 20px;
@@ -422,18 +427,21 @@
                 font-weight: 700;
             }
             &-handle{
-                /* margin-bottom:20px; */
+                margin-bottom:20px;
                 display: flex;
-                justify-content: space-between;
+                justify-content: flex-start;
                 align-items: center;
-                flex-wrap:wrap ;
                 &-label{
-                    font-size: 14px;
+                   margin-left: 20px;
+                    font-size: 0.8vw;
                     color: #606266;
                     font-weight: 700;
                 }
                 .selectItem{
-                  margin-bottom: 20px;
+                  /* margin-bottom: 20px; */
+                  display: flex;
+                  align-items: center;
+                  justify-content: flex-start;
                 }
                 .seclect{
                   width: 20vw;

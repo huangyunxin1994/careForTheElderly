@@ -8,11 +8,19 @@
       	<el-form-item label="密码" prop="password">
       	    <el-input v-model="ruleForm2.password" auto-complete="off" placeholder="请输入密码" ></el-input>
       	</el-form-item>
-      	<el-form-item label="所属组织" prop="superiorOrganization">
-      	    <el-select v-model="ruleForm2.superiorOrganization" auto-complete="off" placeholder="请选择上级组织">
+      	<el-form-item label="所属组织" prop="superiorOrganization" >
+      	    <!-- <el-select v-model="" disabled   placeholder="请选择上级组织">
       	      <el-option label="南宁总局" value="shanghai"></el-option>
       	      <el-option label="青秀分局" value="beijing"></el-option>
-      	    </el-select>
+      	    </el-select> -->
+            <el-select v-model="ruleForm2.superiorOrganization" :disabled="superiorOrg" placeholder="请选择上级组织">
+                <el-option
+                  v-for="item in options"
+                  :key="item.index"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
       	  </el-form-item>
         <el-form-item label="姓名" prop="name">
             <el-input v-model="ruleForm2.username" placeholder="请输入单位名称" ></el-input>
@@ -22,9 +30,9 @@
       	</el-form-item>
       </el-form>
     <div class="btnWrap">
-      <el-button   class="btn" @click="cancelBtn">取消</el-button>
+      <el-button type="primary"  class="btn" @click="cancelBtn">取消</el-button>
       <el-button type="primary"  class="btn" @click="sureBtn">确定</el-button>
-      <el-button type="danger" v-if="true"  class="btn" @click="sureBtn">删除</el-button>
+      <el-button type="primary" v-if="removeBtn"  class="btn" @click="removeBtn">删除</el-button>
     </div>
   </el-dialog>
 </template>
@@ -85,7 +93,26 @@
           superiorOrganization:'',
           phone:'',
           username:'',
+          superiorOrg:false,//所属组织是否可选
+          removeBtn:false,//删除按钮是否存在
         },
+        options:[
+          {
+            value:'南宁总局',
+            label:'南宁总局',
+            index:'01'
+          },
+          {
+            value:'邕宁分局',
+            label:'邕宁分局',
+            index:'02'
+          },
+          {
+            value:'青秀分局',
+            label:'青秀分局',
+            index:'03'
+          }
+        ],
         rules2: {
         	account:[
         		{ required: true,validator: validateAccount, trigger: 'blur' }
@@ -109,10 +136,14 @@
             { required: true,validator: validateOrganization, trigger: 'blur' }
           ]
         },
+
       }
     },
     methods:{
       sureBtn() {
+        this.dialogVisible = false
+      },
+      removeBtn(){
         this.dialogVisible = false
       },
       cancelBtn(){
@@ -131,6 +162,6 @@
 <style lang="scss" scoped>
   .btnWrap{
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
   }
 </style>

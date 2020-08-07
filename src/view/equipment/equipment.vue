@@ -5,8 +5,9 @@
         <div class="enroll-manage-main">
             <div class="enroll-manage-container" ref="container">
                 <div class="enroll-manage-container-handle" >
-                        <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
-
+                    <div class="handleItem">
+                      <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
+                      <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">设备状态</label>
                         <el-select v-model="valueW" filterable placeholder="请选择" @change="eqstateW">
                             <el-option
@@ -17,6 +18,8 @@
                             :value="item.value">
                             </el-option>
                         </el-select>
+                      </div>
+                      <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">是否关联人员</label>
                         <el-select v-model="valueW" filterable placeholder="请选择" @change="haveRelevanceW">
                             <el-option
@@ -27,6 +30,8 @@
                             :value="item.value">
                             </el-option>
                         </el-select>
+                      </div>
+                      <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">所属组织</label>
                         <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResultW">
                             <el-option
@@ -38,6 +43,8 @@
 
                             </el-option>
                         </el-select>
+                      </div>
+                      <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">是否可用</label>
                         <el-select v-model="valueW" filterable placeholder="请选择" @change="isUseW">
                             <el-option
@@ -48,8 +55,13 @@
                             :value="item.value">
                             </el-option>
                         </el-select>
+                      </div>
+                    </div>
+                    <div class="handleItem">
                       <el-button type="primary" @click="relevance">关联组织</el-button>
                       <el-button type="danger" @click="deletePlatform" :disabled="this.sels.length===0">批量删除</el-button>
+                    </div>
+
 
                 </div>
                 <el-table
@@ -58,9 +70,9 @@
                     size="mini" v-loading="listLoading"
                     @selection-change="selsChange"
                     class="myTable" ref="table"
-                    height="calc(100vh - 320px)"
+                    height="calc(100vh - 300px)"
                     :row-key="getRowKeys">
-                     <el-table-column type="selection" width="55" :reserve-selection="true">
+                     <el-table-column type="selection" width="55" :reserve-selection="true" :selectable="selectTable">
                      </el-table-column>
                      <el-table-column type="index" width="60" label="序号">
                      </el-table-column>
@@ -309,6 +321,14 @@
       selsChange(sels){
           this.sels = sels
       },
+      selectTable(row,index){
+        if(row.isUse == 1){
+          //可用，不可点击，需禁用
+          return false
+        }else{
+          return true
+        }
+      },
       getRowKeys(row) {
           return row.account;
       },
@@ -348,7 +368,7 @@
           this.$msgbox({
             title: '警告',
             message: h('p', null, [
-              h('span', null, '删除平台'),
+              h('span', null, '确认删除所选设备吗？'),
             ]),
             showCancelButton: true,
             confirmButtonText: '确定',
@@ -412,13 +432,13 @@
       padding: 0px;
     }
   .newTime{
-    width: calc(100vw - 80px);
+    width: calc(100vw - 40px);
     height: 20px;
     margin: 20px auto 20px;
   }
   .enroll-manage-main {
-      width: calc(100vw - 80px);
-      height: calc(100vh - 165px);
+      width: calc(100vw - 40px);
+      height: calc(100vh - 145px);
       box-sizing: border-box;
       box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
       margin: 0 auto;
@@ -438,10 +458,21 @@
               margin-bottom: 20px;
               justify-content: space-between;
               align-items: center;
+              .handleItem{
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+              }
               &-label{
-                  font-size: 14px;
+                  margin-left: 20px;
+                  font-size: 0.8px;
                   color: #606266;
                   font-weight: 700;
+              }
+              .selectItem{
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
               }
           }
           &-tools{

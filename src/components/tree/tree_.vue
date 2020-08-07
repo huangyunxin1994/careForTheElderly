@@ -5,6 +5,10 @@
           <el-button :type="isAllPeople" size='mini' @click="allPeople">全部人员</el-button>
           <el-button :type="isWarnPeople" size='mini' @click="warnPeople">预警人员</el-button>
         </div>
+        <div class="people" v-if="organization">
+          <el-button type="primary" size="mini" @click="newOrganization">新建组织</el-button>
+          <el-button type="primary" size="mini" @click="adminOrganization">编辑组织</el-button>
+        </div>
         <el-tree
             :data="data"
             :props="defaultProps"
@@ -22,6 +26,10 @@ export default {
   name: 'tree',
   props:{
     people:{
+      type:Boolean,
+      default:false
+    },
+    organization:{
       type:Boolean,
       default:false
     },
@@ -74,10 +82,20 @@ export default {
       allPeople(){
         this.isAllPeople = 'primary'
         this.isWarnPeople = ''
+        this.$emit('allPeople',1)
       },
       warnPeople(){
         this.isAllPeople = ''
         this.isWarnPeople = 'primary'
+        this.$emit('warnPeople',1)
+      },
+      //新建组织
+      newOrganization(){
+        this.$emit("newOrganization",1)
+      },
+      //编辑组织
+      adminOrganization(){
+        this.$emit("adminOrganization",2)
       },
     },
     watch: {
@@ -100,7 +118,7 @@ export default {
     //   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
     // }
     .people{
-      height: 10%;
+      height: 5vh;
       padding: 5% 2%;
       display: flex;
       align-items: center;

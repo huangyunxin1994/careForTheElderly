@@ -52,7 +52,13 @@
   }
 </script>
 
+<style>
+  .warnList /deep/ .el-textarea__inner{
+    min-height: 200px !important;
+  }
+</style>
 <style lang="scss" scoped>
+  
   .warnList{
     display: flex;
     justify-content: space-around;

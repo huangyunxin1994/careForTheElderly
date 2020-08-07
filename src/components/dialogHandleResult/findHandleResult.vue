@@ -1,15 +1,14 @@
 <template>
-  <el-dialog  :visible.sync="dialogHandleResult" class="warp" center :append-to-body='true' :lock-scroll="false" width="50%">
+  <el-dialog title="处理结果" :visible.sync="dialogHandleResult" class="warp" center :append-to-body='true' :lock-scroll="false" width="50%">
   <div class="warnList">
-    <div class="contentWrap">
-      <p class="title">处理结果</p>
-      <p class="content" style="text-indent:2em;">就按了斯柯达将发生了的咖啡机爱搜if我去啊啊是的会计法拉水电费看见啊搜我IE的吉拉斯卡的积分拉速度快放假哦阿萨德飞机啦烧烤</p>
+    
+    <div class="title">
+      <p><span class="time"><span>时间:&nbsp;</span></span><span>2020-06-02</span></p>
+      <p><span class="user"><span>处理人:&nbsp;</span></span><span>张三</span></p>
     </div>
-    <div class="timeWrap">
-      <span class="titleLabel">时间:</span><span>2020-06-02</span>
-    </div>
-    <div class="userWrap">
-      <span class="titleLabel">处理人:</span><span>张三</span>
+    <div class="content">
+      <span class="user">结果备注: &nbsp;</span><span>就按了斯柯达将发生了的咖啡机爱搜if我去啊啊是的会计法拉水电费看见啊搜我IE的吉拉斯卡的积分拉速度快放假哦阿萨德飞机啦
+      烧烤就开始地方网咯PSP见到我说谱写了我觉得家里的反搜我能打瞌睡了撒打飞机哦我禁赛了吉林省打飞机阿斯顿发送到发瑟瑟发抖</span>
     </div>
   </div>
 
@@ -48,27 +47,24 @@
     }
   }
 </script>
+
 <style>
-  .warp/deep/.el-dialog__header{
-    padding: 0px;
-  }
+
 </style>
-
 <style lang="scss" scoped>
-
+  .warp/deep/.el-dialog__body{
+    min-height: 200px;
+  }
   .title{
-    text-align: center;
-    font-size: 1vw;
-    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
   }
-  .userWrap,
-  .timeWrap,
-  .contentWrap{
-    padding: 10px;
+  .title>p{
+    margin-right: 1.5vw;
   }
-  .titleLabel{
-    display: inline-block;
-    width: 60px;
-    padding-right: 5px;
+  .content{
+    line-height: 1.5rem;
+    min-height: 180px;
   }
 </style>

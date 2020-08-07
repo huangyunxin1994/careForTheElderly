@@ -10,7 +10,7 @@
         </el-form-item>
       </el-form>
     <div class="btnWrap">
-      <el-button   class="btn" @click="cancelBtn">取消</el-button>
+      <el-button type="primary"  class="btn" @click="cancelBtn">取消</el-button>
       <el-button type="primary"  class="btn" @click="sureBtn">确定</el-button>
     </div>
   </el-dialog>
@@ -47,6 +47,6 @@
 <style lang="scss" scoped>
   .btnWrap{
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
   }
 </style>

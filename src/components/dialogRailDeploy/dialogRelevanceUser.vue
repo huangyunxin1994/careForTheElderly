@@ -2,13 +2,12 @@
   <el-dialog :title="title"  :visible.sync="dialogVisible" center :append-to-body='true' :before-close="handleClose" :lock-scroll="false" :close-on-click-modal="false" style="min-width: 1000px;">
     <div class="enroll-manage-container-title">关联用户</div>
     <div class="main">
-      <div class="treeWrap">
+      <div class="mainleft">
         <tree></tree>
       </div>
       <div class="shuttle">
         <el-transfer
             v-model="value"
-
             :titles="['未关联人员', '已关联人员']"
             :button-texts="['删除', '添加']"
             :data="data" filterable class="Transfer" @change="handleChange">
@@ -16,13 +15,13 @@
       </div>
     </div>
     <div slot="footer" class="dialog-footer">
-        <el-button @click.native="handleClose">关闭</el-button>
+        <el-button type="primary" @click.native="handleClose">关闭</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-  import Tree from '@/components/tree/tree_.vue'
+  import Tree from '@/components/tree/relevanseUserTree.vue'
   export default{
     components:{
       Tree
@@ -90,9 +89,13 @@
        justify-content: space-between;
        align-items: center
    }
+  .el-dialog{
+    width: 52%;
+  }
 </style>
 
 <style lang="scss" scoped>
+
   .enroll-manage-container-title{
     margin-bottom: 20px;
     padding: 2px 0;
@@ -105,9 +108,9 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    .treeWrap{
+    .mainleft{
       width: 10vw;
-      border: 1px solid #ccc;
+      border: 1px solid #ebeef5;
       padding: 10px;
       border-radius: 5px;
       min-height: 280px;
@@ -117,5 +120,9 @@
     .shuttle{
       width: 35vw;
     }
+  }
+  .dialog-footer{
+    display: flex;
+    justify-content: flex-end;
   }
 </style>

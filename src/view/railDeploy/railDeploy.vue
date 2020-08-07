@@ -5,32 +5,33 @@
       <el-row>
          <el-col :span="4" class="electricfence-tree">
             <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="inputVal" @input="filterData"></el-input>
-            <el-divider></el-divider>
-            <el-collapse v-model="activeNames" :accordion="true" @change="collapseChange">
-            <el-collapse-item name="1" >
-                <template slot="title">
-                    <div class="electricfence-collapse">
-                        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电子围栏</span>
-                    </div>
-                </template>
-                 <el-scrollbar id="elec-main" class="electricfence-scrollbar">
-                  <div :id="'elec-'+index" v-for="(item,index) in filterArr" :key="index" class="electricfence-collapse-item" :class="{'collapse-item-select':enterShowIndex == index}" @click="enterShow(index)">
-                      <el-link :underline="false">{{item.name}}</el-link>
-                      <div class="electricfence-collapse-item-button">
-                          <el-button type="info" icon="el-icon-s-custom" circle size="mini" @click.stop="setUserIn(index)"></el-button>
-                          <el-button type="primary" icon="el-icon-edit" circle size="mini" @click.stop="editElec(index)"></el-button>
-                      </div>
-                  </div>
-                 </el-scrollbar>
-            </el-collapse-item>
 
-            </el-collapse>
-        </el-col>
-        <el-col :span="18" class="electricfence-map">
-            <mymap ref="map"></mymap>
-            <div class="electricfence-map-button">
-                <el-button type="danger" @click="openElecAddMap()">添加电子围栏</el-button>
+            <div class="electricfence-content">
+              <div class="electricfence-collapse">
+                <div>
+                  <span>&nbsp;&nbsp;&nbsp;电子围栏</span>
+                </div>
+                <div class="addRail" @click="openElecAddMap()">
+                  <!-- <i class="el-icon-circle-plus"></i> -->
+                  <el-tooltip content="新建围栏" placement="top">
+                    <i class="el-icon-plus"></i>
+                     <!-- <el-button type="danger" class="addRailBtn" icon="el-icon-plus" circle size="small" ></el-button> -->
+                  </el-tooltip>
+                </div>
+              </div>
+              <el-scrollbar id="elec-main" class="electricfence-scrollbar" style="height: calc(100% - 50px);">
+                <div :id="'elec-'+index" v-for="(item,index) in filterArr" :key="index" class="electricfence-collapse-item" :class="{'collapse-item-select':enterShowIndex == index}" @click="enterShow(index)">
+                    <el-link :underline="false" @click="getOrganization">{{item.name}}</el-link>
+                    <div class="electricfence-collapse-item-button">
+                        <el-button type="info" icon="el-icon-s-custom" circle size="mini" @click.stop="setUserIn(index)"></el-button>
+                        <el-button type="primary" icon="el-icon-edit" circle size="mini" @click.stop="editElec(index)"></el-button>
+                    </div>
+                </div>
+              </el-scrollbar>
             </div>
+        </el-col>
+        <el-col :span="20" class="electricfence-map">
+            <mymap ref="mymap" :circles="circles"></mymap>
         </el-col>
       </el-row>
       <relevance-user ref='relevanceUser'></relevance-user>
@@ -44,6 +45,7 @@
 import  mymap  from '@/components/map/map'
 import  dialogMap  from '@/components/dialogRailDeploy/dialog-map.vue'
 import  dialogMapE  from '@/components/dialogRailDeploy/dialog-map-edit.vue'
+import railTree from '@/components/tree/tree_.vue'
 // import  myTransfer from '@/components/dialog-elec/dialog-user'
 // import { deleteElectronicFence,selectElectronicFenceQuery} from  "@/api/table"
 import NavBar from '@/components/navBar/navBar.vue'
@@ -55,9 +57,9 @@ export default {
     mymap,
     dialogMap,
     dialogMapE,
-    // myTransfer
     NavBar,
     relevanceUser,
+    railTree,
   },
   data(){
     return{
@@ -65,12 +67,55 @@ export default {
       activeNames:"1",
       enterShowIndex:-1,
       leaveShowIndex:-1,
+      enterElecArr:[],
+      circles:[
+        {
+          longitude:"116.404",
+          latitude:"39.915",
+          radius:'1000'
+        },
+        {
+          longitude:"116.464",
+          latitude:"39.91",
+          radius:'900'
+        }
+      ],
       filterArr:[
         {
           name:'南宁总局'
         },
         {
-          name:'西乡塘分局'
+          name:'西乡塘加了思考的房间哦我加大了福建省分局'
+        },
+        {
+          name:'西乡塘加了思考的房间哦我加大了福建省分局'
+        },
+        {
+          name:'西乡塘加了思考的房间哦我加大了福建省分局'
+        },
+        {
+          name:'西乡塘加了思考的房间哦我加大了福建省分局'
+        },
+        {
+          name:'西乡塘加了思考的房间哦我加大了福建省分局'
+        },
+        {
+          name:'西乡塘加了思考的房间哦我加大了福建省分局'
+        },
+        {
+          name:'西乡塘加了思考的房间哦我加大了福建省分局'
+        },
+        {
+          name:'西乡塘加了思考的房间哦我加大了福建省分局'
+        },
+        {
+          name:'西乡塘加了思考的房间哦我加大了福建省分局'
+        },
+        {
+          name:'西乡塘加了思考的房间哦我加大了福建省分局'
+        },
+        {
+          name:'西乡塘加了思考的房间哦我加大了福建省分局'
         }
       ],
     }
@@ -92,7 +137,6 @@ export default {
       },
       //新建围栏
       openElecAddMap(){
-        console.log("hahahah")
         this.$refs.dialogmap.handleShow()
         // this.$refs.dialogmap.formVisible = true
       },
@@ -114,11 +158,23 @@ export default {
         this.$refs.dialogmape.handleShow()
       },
       filterData(val){
-        let arr = this.enterElecArr.filter(item=>{
-          if (!val) return true;
-          return item.name.indexOf(val) !== -1;
-        })
-        this.filterArr=arr
+        if(val == ''){
+          this.filterArr = this.enterElecArr
+        }else{
+          let arr = this.enterElecArr.filter(item=>{
+            if (!val) return true;
+            return item.name.indexOf(val) !== -1;
+          })
+          this.filterArr=arr
+        }
+      },
+      //点击组织，获取到相应的围栏
+      getOrganization(){
+        let coordinate = {
+          longitude:"116.404",
+          latitude:"39.915"
+        }
+        this.$refs.mymap.moveDeploy(coordinate.longitude,coordinate.latitude)
       },
       selectElec(){
       //   selectElectronicFenceQuery().then(res=>{
@@ -145,23 +201,32 @@ export default {
     },
     mounted(){
       // this.selectElec()
+      this.enterElecArr = this.filterArr
     }
 }
 </script>
 <style lang="scss" >
-.el-collapse-item__wrap{
-       height: calc(100% - 48px);
-       .el-collapse-item__content{
-         height: 100%;
-         padding-bottom: 0;
-       }
-}
+// .el-collapse-item__wrap{
+//        height: calc(100% - 48px);
+//        .el-collapse-item__content{
+//          height: 100%;
+//          padding-bottom: 0;
+//        }
+// }
 </style>
 <style lang="scss" scoped>
+  /deep/.el-button--mini.is-circle{
+    padding: 0.3vw;
+  }
+  /deep/.electricfence-container .el-row .electricfence-tree .electricfence-collapse-item .el-link[data-v-31116bfe]{
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: pre-wrap !important;
+  }
 .electricfence {
   &-container {
     width: 100%;
-    height: 100%;
+    height: calc(100vh - 65px);
     position: relative;
     .el-row {
     width: 100%;
@@ -173,13 +238,14 @@ export default {
 
       }
       .electricfence-tree{
-        background-color: rgb(233, 233, 235);
-        padding: 1%;
+        background-color: rgb(244, 244, 245);
+        padding: 20px;
         position: absolute;
         min-width: 200px;
         left: 0px;
         top: 0px;
         z-index: 1000;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 
         .el-input{
             box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
@@ -204,20 +270,52 @@ export default {
 
             }
         }
+        .electricfence-content{
+          background-color: #fff;
+          margin-top: 30px;
+          box-sizing: border-box;
+          padding: 10px;
+          height: calc(100vh - 175px);
+        }
+        .electricfence-collapse{
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 10px 0px;
+
+
+          .addRail{
+            color: #409eff;
+            font-size: 1.3vw;
+            cursor: pointer;
+            margin-right: 0.5vw;
+          }
+          .addRailBtn{
+            padding: 0px !important;
+            border: 0px;
+            font-size: 1.2vw;
+            // color: #ec808d;
+            color: #fff;
+          }
+          .addRail:hover{
+            opacity: 0.8;
+          }
+        }
         .electricfence-collapse-item{
           .el-link{
                 font-size: 0.7vw;
                 white-space : nowrap
             }
           &-button{
-            min-width: 73px;
+            // min-width: 73px;
+            display: flex;
           }
         }
       }
       .electricfence-map{
           position: relative;
           width: 100vw;
-          height: calc(100vh - 85px);
+          height: calc(100vh - 65px);
           &-button{
               position: absolute;
               right: 5%;
@@ -236,7 +334,7 @@ export default {
       }
       &-item{
          // width: 100%;
-         padding: 10px 10px 10px 50px ;
+         padding: 10px 0.5vw 10px 1vw;
          display: flex;
          justify-content: space-between;
          align-items: center;
