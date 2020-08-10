@@ -130,7 +130,18 @@
             // 创建标注对象并添加到地图
             var marker = new BMap.Marker(point, {icon: myIcon});
             this.map.addOverlay(marker);
-            var content= "<p class='mymap-item'><span style='line-height:10px;'>家庭地址：广西南宁市青秀区</span><p/><p>联系方式: XXXXXXXXXXX</p><div style='display: flex;justify-content: space-between;align-items: center;'><p>状态:预警</p><p><input class='mymap-button' style='background:rgba(29,164,255,1); color:#fff; border:1px solid rgba(29,164,255,1); border-radius:2px; font-size:14px; padding:5px;' type='button' value='查看详情' id='gotDetail'></p><div>";
+            var content= `<p class='mymap-item'>
+                            <span>家庭地址：广西南宁市青秀区</span>
+                          <p/>
+                          <p>联系方式: XXXXXXXXXXX</p>
+                          <div style='display: flex;justify-content: space-between;align-items: center;'>
+                              <div>状态:预警</div>
+                              <input class='mymap-button'
+                                     style='background:rgba(29,164,255,1);
+                                     color:#fff; border:1px solid rgba(29,164,255,1);
+                                     border-radius:2px; font-size:14px; padding:5px;'
+                                     type='button' value='查看详情' id='gotDetail'>
+                          </div>`;
             let opts = {
               width:250,  //信息窗口
               height: 150,    // 信息窗口高度
