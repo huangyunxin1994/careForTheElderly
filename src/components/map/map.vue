@@ -131,7 +131,7 @@
             var marker = new BMap.Marker(point, {icon: myIcon});
             this.map.addOverlay(marker);
             var content= `<p class='mymap-item'>
-                            <span>家庭地址：广西南宁市青秀区</span>
+                            <span style="background:#ccc;">家庭地址：广西南宁市青秀区</span>
                           <p/>
                           <p>联系方式: XXXXXXXXXXX</p>
                           <div style='display: flex;justify-content: space-between;align-items: center;'>
