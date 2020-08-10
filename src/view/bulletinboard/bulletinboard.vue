@@ -26,7 +26,7 @@
 
         <el-col :span="12">
             <div style="width:100%;height:87vh;">
-              <my-map ref="map"></my-map>
+              <my-map ref="mymap" :markers="markers"></my-map>
             </div>
         </el-col>
         <el-col :span="6">
@@ -45,6 +45,14 @@
 <script>
 import echarts from 'echarts'
 import MyMap from '@/components/map/map.vue'
+
+// 图标
+  import startMarker from '@/icons/png/startMarker.png'
+  import endMarker from '@/icons/png/endMarker.png'
+  import normal from '@/icons/png/zaijia.png'
+  import warn from '@/icons/png/yujing.png'
+  // import home from '@/icons/png/jiating.png'
+  import home from '@/icons/png/jia.png'
 export default {
   name: 'Login',
   components:{
@@ -87,8 +95,49 @@ export default {
       ],
       warnDoneData:[],
       warnDoneDataA:[],
-      bulletArr:[]
-
+      bulletArr:[],
+      markers:[
+        {
+          longitude:"115.304",
+          latitude:"39.945",
+          icon:{
+            name:normal,
+            size:[48, 48],
+            anchor:[24, 40]
+          },
+          type:'0'
+        },
+        {
+          longitude:"116.300",
+          latitude:"39.955",
+          icon:{
+            name:normal,
+            size:[48, 48],
+            anchor:[24, 40]
+          },
+          type:'0'
+        },
+        {
+          longitude:"116.310",
+          latitude:"39.90",
+          icon:{
+            name:warn,
+            size:[48, 48],
+            anchor:[24, 40]
+          },
+          type:'1'
+        },
+        {
+          longitude:"116.360",
+          latitude:"39.922",
+          icon:{
+            name:warn,
+            size:[48, 48],
+            anchor:[24, 40]
+          },
+          type:'1'
+        }
+      ]
     }
   },
   mounted(){

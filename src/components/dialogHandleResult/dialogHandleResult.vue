@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="填写处理结果" :visible.sync="dialogHandleResult" center :append-to-body='true' :lock-scroll="false" width="50%">
+  <el-dialog title="填写处理结果" :visible.sync="dialogHandleResult" center :append-to-body='true' :lock-scroll="false" width="40%">
   <div class="warnList">
 
     <div class="warnResultRight">

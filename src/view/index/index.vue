@@ -6,7 +6,7 @@
         <tree :people='true'  @allPeople="allPeople" @warnPeople="warnPeople"></tree>
       </div>
       <div class="mainCenter">
-        <my-map ref="myMap" :dragging="true" :zooming="true" :markers="markers"></my-map>
+        <my-map ref="myMap" :dragging="true" :zooming="true" :markers="markers" :view="true"></my-map>
       </div>
       <div class="mainRight">
         <transition name="el-zoom-in-center">
@@ -113,7 +113,7 @@
             icon:{
               name:normal,
               size:[48, 48],
-              anchor:[24, 48]
+              anchor:[24, 40]
             },
             type:'0',
             home:{
@@ -133,7 +133,7 @@
             icon:{
               name:normal,
               size:[48, 48],
-              anchor:[24, 48]
+              anchor:[24, 40]
             },
             type:'0',
             home:{
@@ -153,7 +153,7 @@
             icon:{
               name:warn,
               size:[48, 48],
-              anchor:[24, 48]
+              anchor:[24, 40]
             },
             type:'1',
             home:{
@@ -173,7 +173,7 @@
             icon:{
               name:warn,
               size:[48, 48],
-              anchor:[24, 48]
+              anchor:[24, 40]
             },
             type:'1',
             home:{
