@@ -95,12 +95,13 @@
       return{
         marker:[],
         map:'',
+        homeMarkerItem1:'', //用来存放房屋覆盖物的中间变量
+        lineMarkerItem1:'', //用来存放折线覆盖物的中间变量
+        item:'',
       }
     },
     methods:{
       getMap(){
-       console.log(this.markers)
-       console.log(this.polylines)
          // 创建地图实例
         this.map = new BMap.Map("container",{enableMapClick:false});//构造底图时，关闭底图可点功能
 
@@ -109,8 +110,8 @@
             this.name = name;
         }
         let pointArray = []
-        let homeMarkerItem = '' //用来存放房屋覆盖物的中间变量
-        let lineMarkerItem = '' //用来存放折线覆盖物的中间变量
+        let homeMarkerItem = this.homeMarkerItem //用来存放房屋覆盖物的中间变量
+        let lineMarkerItem = this.lineMarkerItem //用来存放折线覆盖物的中间变量
         let zoom = this.zoomLevel
         let markerArr = []
        //创建标注
@@ -131,7 +132,7 @@
             var marker = new BMap.Marker(point, {icon: myIcon});
             this.map.addOverlay(marker);
             var content= `<p class='mymap-item'>
-                            <span style="background:#ccc;">家庭地址：广西南宁市青秀区</span>
+                            <span">家庭地址：广西南宁市青秀区</span>
                           <p/>
                           <p>联系方式: XXXXXXXXXXX</p>
                           <div style='display: flex;justify-content: space-between;align-items: center;'>
@@ -177,7 +178,6 @@
                           that.getPersonData()
                         }
                       },500)
-
                 });
 
 
@@ -188,11 +188,13 @@
                 });
                 let homemarker = new BMap.Marker(homePoint, {icon: homeIcon});
                 homeMarkerItem = homemarker
+                this.homeMarkerItem1 = homemarker
                 this.map.addOverlay(homemarker);
 
                 //添加折线
                 let polyline = new BMap.Polyline([point,homePoint], {strokeColor:"blue", strokeWeight:2,strokeStyle:"dashed", strokeOpacity:0.5});
                 lineMarkerItem = polyline
+                this.lineMarkerItem1 = polyline
                 this.map.addOverlay(polyline);
               })
             }
@@ -237,10 +239,12 @@
 
 
         this.map.centerAndZoom(point, zoom); // 初始化地图,设置中心点坐标和地图级别
-        this.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+        this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+        this.$emit('getMap',this.map)
       },
       //显示所有的预警人员
       showWarnPeople(val){
+        console.log(this.homeMarkerItem)
         let allOverlay = this.map.getOverlays()
         for(let i in allOverlay){
           if(allOverlay[i].toString() == "[object Marker]"){
@@ -249,15 +253,28 @@
             }else{
               allOverlay[i].hide()
             }
+            if(this.homeMarkerItem1 != ''){
+              this.map.removeOverlay(homeMarkerItem)
+            }
+            if(this.lineMarkerItem1 != ''){
+              this.map.removeOverlay(lineMarkerItem)
+            }
           }
         }
       },
       //显示所有人员
       showAllPeople(val){
         let allOverlay = this.map.getOverlays()
+
         for(let i in allOverlay){
           if(allOverlay[i].toString() == "[object Marker]"){
             allOverlay[i].show()
+          }
+          if(this.homeMarkerItem1 != ''){
+            this.map.removeOverlay(homeMarkerItem)
+          }
+          if(this.lineMarkerItem1 != ''){
+            this.map.removeOverlay(lineMarkerItem)
           }
         }
       },
@@ -275,45 +292,7 @@
           enableMessage:true//设置允许信息窗发送短息
         }
         for(let i in markerArr){
-          markerArr[i].addEventListener("click",function(e){
-                if(homeMarkerItem != ''){
-                  this.map.removeOverlay(homeMarkerItem)
-                }
-                if(lineMarkerItem != ''){
-                  this.map.removeOverlay(lineMarkerItem)
-                }
-                let _this = this
-                let p = e.target;
-                var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
-                this.map.panTo(point);
-                var geoc = new BMap.Geocoder();
-                geoc.getLocation(point, (rs)=>{
-                  var addComp = rs.addressComponents;
-                  let address =  addComp.province + " " + addComp.city + " " + addComp.district + " " + addComp.street + " " + addComp.streetNumber;
-                  var content= "<p class='mymap-item'><span>当前定位地址：广西南宁市青秀区</span><p/>";
 
-                  var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
-                  _this.openInfoWindow(infoWindow,point); //开启信息窗口
-                  // _this.movePosition(e)
-                });
-                // var infoWindow = new BMap.InfoWindow(content, opts);  // 创建信息窗口对象
-                // this.map.openInfoWindow(infoWindow, point);        // 打开信息窗口
-
-
-                //添加房屋图标
-                let homePoint = new BMap.Point(i.home.longitude, i.home.latitude);
-                let homeIcon = new BMap.Icon(i.home.icon.name, new BMap.Size(i.home.icon.size[0],i.icon.size[1]), {
-                    anchor: new BMap.Size(i.home.icon.anchor[0], i.home.icon.anchor[1]),
-                });
-                let homemarker = new BMap.Marker(homePoint, {icon: homeIcon});
-                homeMarkerItem = homemarker
-                this.map.addOverlay(homemarker);
-
-                //添加折线
-                let polyline = new BMap.Polyline([point,homePoint], {strokeColor:"blue", strokeWeight:2,strokeStyle:"dashed", strokeOpacity:0.5});
-                lineMarkerItem = polyline
-                this.map.addOverlay(polyline);
-          })
         }
       },
       //获取电子围栏中心坐标，并且定位
@@ -324,6 +303,14 @@
       },
       getPersonData(){
         this.$router.push('/peopleDetails')
+      },
+      // 重新定位中心点
+      setCenter(val){
+        var point = new BMap.Point(val.longitude, val.latitude);
+
+
+        this.map.centerAndZoom(point, 16); // 初始化地图,设置中心点坐标和地图级别
+        this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
       }
     },
     mounted() {

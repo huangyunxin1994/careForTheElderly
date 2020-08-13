@@ -64,8 +64,8 @@
     },
     methods:{
       getSound(){
-        console.log("aaa")
         this.sound = !this.sound
+        this.$emit('getSound',this.sound)
       },
       //退出登录
       logout(){

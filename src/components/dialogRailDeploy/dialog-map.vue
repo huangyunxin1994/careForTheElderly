@@ -2,29 +2,13 @@
     <el-dialog title="添加电子围栏" :visible.sync="formVisible" :before-close="handleClose" :close-on-click-modal="false" top="5vh" width="70vw">
         <el-form :inline="true" :model="form" :rules="formRule" ref="form" class="demo-form-inline">
             <el-form-item label="电子围栏名称" prop="name" required>
-                <el-input v-model="form.name" placeholder="请输入"></el-input>
+                <el-input v-model="form.name" placeholder="请输入" style="width:10vw"></el-input>
             </el-form-item>
             <el-form-item label="围栏中心位置" prop="center" required>
-                <el-autocomplete
-                  v-model="form.center"
-                  :fetch-suggestions="querySearchAsync"
-                  style="width:20vw"
-                  placeholder="请输入内容"
-                  @select="handleSelect"
-                >
-                  <template slot-scope="{ item }">
-                      <div  class="itemContent">
-                        <i class="el-icon-search fl mgr10"></i>
-                        <div style="overflow:hidden;">
-                          <div class="title">{{ item.title }}</div>
-                          <span class="address ellipsis">{{ item.address }}</span>
-                        </div>
-                      </div>
-                    </template>
-                </el-autocomplete>
+                <get-adress ref="getAdress" :map="map" @getItem="getItem"></get-adress>
             </el-form-item>
             <el-form-item label="电子围栏范围" prop="radius" required class="deployRange">
-                <el-input v-model="form.radius"  @change="changeRound" placeholder="请输入"></el-input>km
+                <el-input v-model="form.radius"  @change="changeRound" placeholder="请输入" style="width:10vw"></el-input>km
             </el-form-item>
         </el-form>
         <div class="dialog-map">
@@ -46,10 +30,12 @@ import MyMap from '@/components/map/map.vue'
 import axios from 'axios'
 // import { addElectronicFence,deleteElectronicFence,selectElectronicFenceQuery,updateElectronicFence,selectPosition } from  "@/api/table"
 // import "@/assets/icon/iconfont.css"
+import GetAdress from '@/components/getAdress/getAdress.vue'
 export default {
     name: 'Map',
     components:{
-      MyMap
+      MyMap,
+      GetAdress
     },
     data(){
         return{
@@ -74,7 +60,7 @@ export default {
                 longitude: "108.386207",
                 latitude: "22.830839"
             },
-            map:"",
+            map:null,
             marker:"",
             circle:"",
 
@@ -108,7 +94,7 @@ export default {
             });
             this.map.addControl(geolocationControl) //将控件添加到地图
 
-            // // 向地图添加标注
+            //  向地图添加标注
             this.circle = new BMap.Circle(point,this.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
             this.map.addOverlay(this.circle);
             let that = this
@@ -129,23 +115,6 @@ export default {
                     that.map.addOverlay(that.circle);
             });
         },
-        querySearchAsync(str,cb){
-          var options = {
-            onSearchComplete: function(res){ //检索完成后的回调函数
-              var s = [];
-              if (local.getStatus() == BMAP_STATUS_SUCCESS){
-                for (var i = 0; i < res.getCurrentNumPois(); i ++){
-                  s.push(res.getPoi(i));
-                }
-                cb(s) //获取到数据时，通过回调函数cb返回到<el-autocomplete>组件中进行显示
-              } else{
-                cb(s)
-              }
-            }
-          }
-          var local = new BMap.LocalSearch(this.map, options) //创建LocalSearch构造函数
-          local.search(str) //调用search方法，根据检索词str发起检索
-        },
         changeRound(){
             this.longitude = this.map.getCenter().lng
             this.latitude = this.map.getCenter().lat
@@ -154,7 +123,7 @@ export default {
             this.map.clearOverlays()
             this.map.addOverlay(this.circle);
         },
-        handleSelect(item) {
+        getItem(item) {
           this.form.center = item.address + item.title; //记录详细地址，含建筑物名
           this.longitude = item.point.lng
           this.latitude = item.point.lat
@@ -276,19 +245,5 @@ export default {
         font-size: 40px;
     }
 }
-.itemContent{
-  display: flex;
-  align-items: center;
-  padding: 5px 0px;
-}
-.fl{
-  margin-right: 10px;
-}
-.address{
-  font-size: 12px;
-  color: #aba8a8;
-}
-.el-scrollbar__view /deep/ .el-autocomplete-suggestion li{
-  line-height: 20px !important;
-}
+
 </style>

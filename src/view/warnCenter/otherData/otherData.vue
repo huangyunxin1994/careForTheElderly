@@ -2,7 +2,7 @@
   <div>
     <div class="main">
       <div class="mainRight">
-        <el-scrollbar>
+        <el-scrollbar class>
             <div class="enroll-manage-main">
                 <div class="enroll-manage-container" ref="container">
                     <div class="enroll-manage-container-handle" >
@@ -11,13 +11,12 @@
                         </div>
                         <div class="selectItem">
                             <label for="" class="enroll-manage-container-handle-label">处理状态</label>
-                            <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResult">
+                            <el-select v-model="valueW" style="width: 10vw;" filterable placeholder="请选择" @change="changeResult">
                                 <el-option
                                 v-for="item in activeOptions"
                                 :key="item.value"
                                 :label="item.label"
                                 class="seclect"
-                                style="width: 20vw;"
                                 :value="item.value">
                                 </el-option>
                             </el-select>
@@ -36,9 +35,9 @@
                         </div>
                         <div class="selectItem">
                             <label for="" class="enroll-manage-container-handle-label">预警类型</label>
-                            <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResult">
+                            <el-select v-model="valueW" style="width:10vw" filterable placeholder="请选择" @change="changeResultType">
                                 <el-option
-                                v-for="item in activeOptions"
+                                v-for="item in warnType"
                                 :key="item.value"
                                 :label="item.label"
                                 :value="item.value">
@@ -55,7 +54,7 @@
                         border stripe highlight-current-row
                         size="mini" v-loading="listLoading"
                         class="myTable" ref="table"
-                        height="calc(100vh - 220px)"
+                        height="calc(100vh - 260px)"
                         :row-key="getRowKeys">
                          <!-- <el-table-column type="selection" width="55" :reserve-selection="true">
                          </el-table-column> -->
@@ -256,6 +255,28 @@
               label: '已忽略'
             },
         ],
+        warnType:[
+          {
+            value: '',
+            label: '全部'
+          },
+          {
+            value: '1',
+            label: '心率异常'
+          },
+          {
+            value: '2',
+            label: '血压异常'
+          },
+          {
+            value: '3',
+            label: '离家异常'
+          },
+          {
+            value: '4',
+            label: 'SOS'
+          }
+        ],
         valueW:"",
       }
     },
@@ -316,9 +337,9 @@
                   });
           })
       },
-      changeResultW(val){
+      changeResultType(val){
           this.tableData = this.tableAllData.filter(item=>{
-              return String(item.equState).indexOf(val) > -1
+              return String(item.activeState).indexOf(val) > -1
           })
       },
       changeResult(val){
@@ -412,6 +433,8 @@
     }
   .main{
     .mainRight{
+      padding: 20px 20px 20px 0px;
+      background-color: rgb(244, 244, 245);
       box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
 
         .enroll-manage-container{
@@ -435,6 +458,7 @@
                    margin-left: 20px;
                     font-size: 0.8vw;
                     color: #606266;
+                    margin-right: 5px;
                     font-weight: 700;
                 }
                 .selectItem{

@@ -1,139 +1,155 @@
 <template>
-  <div>
+  <div class="wrap">
     <nav-bar></nav-bar>
+    <div class="content">
       <el-container class="contain">
-        <el-header height="90px" class="contain-head"> 
-          <el-avatar :size="70" :src="circleUrl"></el-avatar>
-          <div class="contain-head-mes">
-            <span class="contain-head-mes-name">张三</span>
-            <div class="contain-head-mes-state">
-              <div class="contain-head-mes-state-item" style="margin:0 10px"><i class="iconfont icon-bushu" style="color: #f8b62e;;"></i><span>800步</span></div>
-              <div class="contain-head-mes-state-item"><i class="iconfont icon-electricquantity2dianchidianliang" style="color: #f8b62e;;"></i><span>低电</span></div>
+        <el-header height="90px" style="margin-top: 5px;" class="contain-head">
+
+          <div class="mainleft">
+            <!-- <el-avatar :size="70" :src="circleUrl"></el-avatar> -->
+            <div class="contain-head-mes">
+              <div><span class="contain-head-mes-name">张三</span></div>
+              <div class="contain-head-mes-state">
+                <div class="contain-head-mes-state-item"><i class="iconfont icon-bushu" style="color: #f8b62e;;"></i><span>800步</span></div>
+                <div class="contain-head-mes-state-item"><i class="iconfont icon-electricquantity2dianchidianliang" style="color: #f8b62e;;"></i><span>低电</span></div>
+              </div>
             </div>
-          </div>
-          <div class="contain-head-detais">
-            <div class="top-detais">
+            <div class="contain-head-detais">
+              <div class="top-detais">
+                  <div class="baseMess">
+                  <i class="iconfont icon-shoubiao" style="color: #f8b62e;"></i><span>465467984546456</span>
+                </div>
                 <div class="baseMess">
-                <i class="iconfont icon-shoubiao" style="color: #f8b62e;"></i><span>465467984546456</span>
+                  <i class="iconfont icon-shenfenzhenghao" style="color: #f8b62e;"></i><span>524512563256235698</span>
+                </div>
+                <div class="baseMess">
+                  <i class="iconfont icon-dianhua" style="color: #f8b62e;"></i><span>15685458569</span>
+                </div>
               </div>
               <div class="baseMess">
-                <i class="iconfont icon-shenfenzhenghao" style="color: #f8b62e;"></i><span>524512563256235698</span>
+                <i class="iconfont icon-dizhi" style="color: #f8b62e;"></i><span>南宁市青秀区东葛路长</span>
               </div>
-              <div class="baseMess">
-                <i class="iconfont icon-dianhua" style="color: #f8b62e;"></i><span>15685458569</span>
-              </div>
-            </div>
-            <div class="baseMess">
-              <i class="iconfont icon-dizhi" style="color: #f8b62e;"></i><span>南宁市青秀区东葛路长</span>
             </div>
           </div>
-            <div class="contain-head-phone">
-              <div class="top-phone">
-                <div style="margin-bottom:20px">主监护人：张小二</div> 
-                <div class="phone"><i class="iconfont icon-dianhua" style="color: #f8b62e;"></i><span>15685458569</span></div> 
+
+          <div class="contain-head-phone">
+            <div class="contain-head-mes">
+              <div><span style="font-size: 1vw; color: #150000;">监护人信息</span></div>
+            </div>
+            <div class="contain-head-phone-detais">
+              <div>
+                <div class="contain-head-phone-detais-base">
+                  <div class="familyName">张小二</div>
+                  <div class="phone"><i class="iconfont icon-dianhua" style="color: #f8b62e;"></i><span>15685458569</span></div>
+                </div>
+                <div>
+                  <i class="iconfont icon-dizhi" style="color: #f8b62e;"></i><span>南宁市青秀区东葛路长</span>
+                </div>
               </div>
-             
-             <el-button type="primary" size="small">所有监护人信息</el-button>
-           </div>
+
+              <el-button type="primary" size="small" @click="searchRuardian">所有监护人信息</el-button>
+            </div>
+         </div>
         </el-header>
         <el-main class="main">
           <div class="picWrap">
-        <div class="selectTime">
-          <!-- <el-date-picker
-                v-model="time"
-                type="date"
-                placeholder="选择日期"
-                size="small"
-                >
-              </el-date-picker> -->
+          <div class="selectTime">
               <my-date @getData="setDateTime" :size="'small'"></my-date>
-          <el-button type="primary" size="small">确定</el-button>
+          </div>
+            <div id="heartrate" class="echartItem" :class="{'echartItemAlert':heartrate==1}" style="margin-bottom:20px"/>
+            <div id="bloodpress" class="echartItem" :class="{'echartItemAlert':bloodpress==1}"/>
         </div>
-          <div id="heartrate" class="echartItem" :class="{'echartItemAlert':heartrate==1}" style="margin-bottom:20px"/>
-          <div id="bloodpress" class="echartItem" :class="{'echartItemAlert':bloodpress==1}"/>
-      </div>
-      <div class="mapWrap">
-        
-        <div class="mapContent">
-          <div class="mapContentLeft">
-            <div class="selectTime">
-              <span class="demonstration">选择时间段</span>
-              <el-date-picker
-                v-model="time1"
-                type="datetimerange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                value-format="yyyy-MM-dd hh:mm:ss"
-                end-placeholder="结束日期"  size="small" @change="searchLocus">
-              </el-date-picker>
-            </div>
-            <div class="mapPictrue">
-              <div class="map-location">
-               <el-tag type="primary" >最新地址获取时间:2020年7月18日 18时54分</el-tag>
+          <div class="mapWrap">
+
+          <div class="mapContent">
+            <div class="mapContentLeft">
+              <div class="selectTime">
+                <span class="demonstration">选择时间段</span>
+                <el-date-picker
+                  v-model="time1"
+                  type="datetimerange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  value-format="yyyy-MM-dd hh:mm:ss"
+                  end-placeholder="结束日期"  size="small" @change="searchLocus">
+                </el-date-picker>
               </div>
-               <div class="mapPictrue-icon" style="">
-                  <i class="el-icon-aim" ></i>
+              <div class="mapPictrue">
+                <div class="map-location">
+                 <el-tag type="primary" >最新地址获取时间:2020年7月18日 18时54分</el-tag>
                 </div>
-              <my-map ref="map" :center="center" :markers="markers" :polylines="polylines"></my-map>
+                 <div class="mapPictrue-icon" style="" @click="getNowAdress">
+                    <i class="el-icon-aim" ></i>
+                  </div>
+                <my-map ref="map" :center="center" :markers="markers" :polylines="polylines"></my-map>
+              </div>
+            </div>
+            <div class="mapContentRight">
+              <div class="warnList">
+                <div class="warnListTitle">预警列表</div>
+                <el-scrollbar style="height:calc(100% - 30px)">
+                  <div class="warnContent">
+                    <div class="warnContent-top">
+                      <span class="warnTime">2020-3-23 13:13:00 </span>
+                      <div>
+                        <el-tooltip content="定位" placement="top">
+                           <i class="iconfont icon-dingwei" style="color:"></i>
+                        </el-tooltip>
+                      </div>
+                    </div>
+                    <p class="warnName">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX围栏</p>
+                    <div class="warnBtn">
+                      <el-button type="danger" size="mini">忽略</el-button>
+                      <el-button type="danger" size="mini" @click="writeResult">填写处理结果</el-button>
+                    </div>
+                  </div>
+                   <div class="warnContent">
+                    <div class="warnContent-top">
+                      <span class="warnTime">2020-3-23 13:13:00 </span>
+                      <div>
+                        <el-tooltip content="定位" placement="top">
+                           <i class="iconfont icon-dingwei" style="color:"></i>
+                        </el-tooltip>
+                      </div>
+                    </div>
+                    <p class="warnName">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX围栏</p>
+                    <div class="warnBtn">
+                      <el-button type="danger" size="mini">忽略</el-button>
+                      <el-button type="danger" size="mini" @click="writeResult">填写处理结果</el-button>
+                    </div>
+                  </div>
+                   <div class="warnContent">
+                    <div class="warnContent-top">
+                      <span class="warnTime">2020-3-23 13:13:00 </span>
+                      <div>
+                        <el-tooltip content="定位" placement="top">
+                           <i class="iconfont icon-dingwei" style="color:"></i>
+                        </el-tooltip>
+                      </div>
+                    </div>
+                    <p class="warnName">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX围栏</p>
+                    <div class="warnBtn">
+                      <el-button type="danger" size="mini">忽略</el-button>
+                      <el-button type="danger" size="mini" @click="writeResult">填写处理结果</el-button>
+                    </div>
+                  </div>
+                 </el-scrollbar>
+              </div>
             </div>
           </div>
-          <div class="mapContentRight">
-            <div class="warnList">
-              <div class="warnListTitle">预警列表</div>
-              <el-scrollbar style="height:calc(100% - 30px)">
-                <div class="warnContent">
-                  <div class="warnContent-top">
-                    <span class="warnTime">2020-3-23 13:13:00 </span>
-                    <div>
-                      <i class="el-icon-s-promotion location" ></i>
-                    </div>
-                  </div>
-                  <div class="warnName">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX围栏</div>
-                  <div class="warnBtn">
-                    <el-button type="info" size="mini">忽略</el-button>
-                    <el-button type="primary" size="mini" @click="writeResult">填写处理结果</el-button>
-                  </div>
-                </div>
-                 <div class="warnContent">
-                  <div class="warnContent-top">
-                    <span class="warnTime">2020-3-23 13:13:00 </span>
-                    <div>
-                      <i class="el-icon-s-promotion location" style="color:"></i>
-                    </div>
-                  </div>
-                  <div class="warnName">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX围栏</div>
-                  <div class="warnBtn">
-                    <el-button type="info" size="mini">忽略</el-button>
-                    <el-button type="primary" size="mini" @click="writeResult">填写处理结果</el-button>
-                  </div>
-                </div>
-                 <div class="warnContent">
-                  <div class="warnContent-top">
-                    <span class="warnTime">2020-3-23 13:13:00 </span>
-                    <div>
-                      <i class="el-icon-s-promotion location" style="color:"></i>
-                    </div>
-                  </div>
-                  <div class="warnName">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX围栏</div>
-                  <div class="warnBtn">
-                    <el-button type="info" size="mini">忽略</el-button>
-                    <el-button type="primary" size="mini" @click="writeResult">填写处理结果</el-button>
-                  </div>
-                </div>
-               </el-scrollbar>
-            </div>
           </div>
-        </div>
-      </div>
         </el-main>
       </el-container>
+    </div>
     <write-result ref="WriteResult"></write-result>
+    <guardian-mess ref="guardianMess"></guardian-mess>
   </div>
 </template>
 
 <script>
   import echarts from 'echarts'
   import NavBar from '@/components/navBar/navBar.vue'
+  import GuardianMess from '@/components/dialogGuardianMess/dialogGuardianMess.vue'
   import MyMap from '@/components/map/map.vue'
   import myDate from "@/components/date/index"
   import WriteResult from '@/components/dialogHandleResult/dialogHandleResult'
@@ -141,24 +157,25 @@
   import dian from '@/icons/png/dian.png'
   import startMarker from '@/icons/png/startMarker.png'
   import endMarker from '@/icons/png/endMarker.png'
-  import person from '@/icons/png/person.png'
+  import person from '@/icons/png/personw.png'
   export default {
     components:{
       NavBar,
       MyMap,
       WriteResult,
-      myDate
+      myDate,
+      GuardianMess
     },
     data(){
       return{
         center:{
           longitude:"116.408",
-          latitude:"39.919", 
+          latitude:"39.919",
         },
         markers:[
           {
           longitude:"116.404",
-          latitude:"39.915", 
+          latitude:"39.915",
           icon:{
             name:home,
             size:[48, 48],
@@ -166,15 +183,15 @@
           }
         },{
           longitude:"116.414",
-          latitude:"39.923", 
+          latitude:"39.923",
           icon:{
             name:person,
-            size:[48, 48],
+            size:[62, 48],
             anchor:[24, 48]
           }
         }],
         polylines:[
-          
+
         ],
         circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
         state:1,
@@ -317,7 +334,7 @@
       },
       //轨迹查询
       searchLocus(val){
-       
+
         let points = [
             {longitude:"116.387112",latitude:"39.920977"},
             {longitude:"116.385243",latitude:"39.913063"},
@@ -328,12 +345,12 @@
           this.polylines.splice(0,this.polylines.length)
           this.polylines.push(points)
           this.markers.splice(0,this.markers.length)
-        
+
           points.forEach( (i,key) => {
             console.log(key)
             let para = {
               longitude:i.longitude,
-              latitude:i.latitude, 
+              latitude:i.latitude,
               icon:{
                 name:key==0 ? startMarker :( key== points.length-1 ? endMarker : dian) ,
                 size:[32, 32],
@@ -342,9 +359,19 @@
             }
             this.markers.push(para)
           })
-           console.log( this.markers)
+            console.log( this.markers)
             console.log( this.polylines)
             this.$refs.map.getMap()
+      },
+      //查看所有监护人
+      searchRuardian(){
+        this.$refs.guardianMess.dialogVisible = true
+      },
+      //定位到当前位置
+      getNowAdress(){
+        let x = "116.414"
+        let y = "39.923"
+        this.$refs.map.movePosBypoint(x,y)
       }
     },
     mounted() {
@@ -357,57 +384,79 @@
   ul>li{
     list-style: none;
   }
+  .el-header{
+    // padding: 0px;
+  }
+  .wrap{
+    background-color: rgb(244, 244, 245);
+  }
+  .content{
+    padding: 20px;
+    background-color: rgb(244, 244, 245);
+    width: calc(100% - 40px);
+    height: calc(100vh - 105px);
+  }
   .contain{
-     width: calc(100% - 40px);
-      height: calc(100vh - 105px);
-    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
-    margin: 20px;
+    background-color: #fff;
+
     &-head{
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #DCDFE6;
+      // border-bottom: 1px solid #DCDFE6;
+      .mainleft{
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        border-radius: 10px;
+        height: 74px;
+        border: 1px solid #ccc;
+      }
       &-mes{
-         display: flex;
-         flex-direction: column;
-        justify-content: space-around;
-        align-items: flex-start;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        height: 100%;
+        padding: 0px 20px;
+        border-radius: 10px 0px 0px 10px;
+        background-color: #e1f1f8;
+
         &-name{
           font-size: 1.5vw;
           margin-bottom: 20px;
           margin-left: 10px;
         }
         &-state{
-          display: flex;
-          justify-content: flex-start;
-          align-items: center;
-          
+          margin:0px 10px 0px 15px;
+
           &-item{
-             display: flex;
+            display: flex;
             justify-content: flex-start;
             align-items: center;
-            font-size: 0.8vw;
+            font-size: 1vw;
             color: #606266;
+            font-weight: 600;
           }
           .iconfont{
-            font-size: 1.2vw;
+            font-size: 1.5vw;
+            margin-right: 5px;
           }
         }
       }
       &-detais{
-        margin-left: 40px;
          display: flex;
          flex-direction: column;
           justify-content: space-around;
           align-items: flex-start;
           font-size: 0.8vw;
           color:#909399 ;
+          padding: 0px 20px;
           .top-detais{
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            
+
           }
           .baseMess{
               margin-right: 20px;
@@ -420,18 +469,39 @@
           }
       }
       &-phone{
-        margin-left: 40px;
          display: flex;
-         justify-content: space-around;
+         justify-content: flex-start;
          align-items: center;
+         min-width: 326px;
          font-size: 0.8vw;
-          color: #909399;
-         .top-phone{
-           margin-right: 20px;
+         color: #909399;
+         height: 74px;
+         border-radius: 10px;
+         border: 1px solid #ccc;
+         width: 35vw;
+         &-detais{
            display: flex;
-           flex-direction: column;
+           align-items: center;
+           justify-content: space-around;
+           // padding: 0px 20px;
+           width: calc(35vw - 136px);
+
+           &-base{
+             display: flex;
+             align-items: center;
+             margin-bottom: 10px;
+             justify-content: space-between;
+             // min-width: 200px;
+
+             .familyName{
+               margin-right: 1vw;
+             }
+           }
+         }
+         .top-phone{
+          display: flex;
+          align-items: center;
           justify-content: space-around;
-          align-items: flex-start;
           .iconfont{
             font-size: 1.2vw;
           }
@@ -443,7 +513,7 @@
          }
       }
     }
-     
+
   }
   .aside{
     padding: 20px;
@@ -465,7 +535,7 @@
     // min-width: 1250px;
     height: calc(100vh - 195px);
     display: flex;
-      justify-content: space-between;
+    justify-content: space-between;
     .picWrap{
       width: 30%;
       height: 100%;
@@ -556,8 +626,9 @@
             box-sizing: border-box;
             .warnListTitle{
               font-size: 1vw;
-              font-weight: 700;
+              font-weight: 600;
               height: 30px;
+              color: #ec808d;
             }
             .warnContent{
               background-color: #f2f2f2;
@@ -566,13 +637,18 @@
               font-size: 0.8vw;
               margin-bottom: 10px;
               &-top{
-                 display: flex;
+                display: flex;
                 align-items: center;
                 justify-content: space-between;
                 .location{
                   color: #E6A23C;
                   font-size: 20px;
                   position: relative;
+                }
+                .iconfont{
+                  font-size: 1.1vw;
+                  color: #797a7b;
+                  cursor: pointer;
                 }
               }
               .warnContentItem{
@@ -581,14 +657,15 @@
                 justify-content: space-between;
               }
               .warnName{
-                margin: 10px 0 20px;
+                // margin: 10px 0 20px;
                 overflow: hidden;
-text-overflow:ellipsis;
-white-space: nowrap;
+                text-overflow:ellipsis;
+                white-space: nowrap;
               }
               .warnBtn{
+                padding:0px 10px;
               	display: flex;
-              	justify-content: flex-end;
+              	justify-content: space-between;
               }
               .warnBtn>p{
               	padding: 5px 10px;

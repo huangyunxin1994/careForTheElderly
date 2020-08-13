@@ -3,7 +3,7 @@
     <nav-bar></nav-bar>
     <el-container class="electricfence-container">
       <el-row>
-         <el-col :span="4" class="electricfence-tree">
+         <el-col :span="3" class="electricfence-tree">
             <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="inputVal" @input="filterData"></el-input>
 
             <div class="electricfence-content">
@@ -15,13 +15,21 @@
                   <!-- <i class="el-icon-circle-plus"></i> -->
                   <el-tooltip content="新建围栏" placement="top">
                     <i class="el-icon-plus"></i>
-                     <!-- <el-button type="danger" class="addRailBtn" icon="el-icon-plus" circle size="small" ></el-button> -->
                   </el-tooltip>
                 </div>
               </div>
               <el-scrollbar id="elec-main" class="electricfence-scrollbar" style="height: calc(100% - 50px);">
                 <div :id="'elec-'+index" v-for="(item,index) in filterArr" :key="index" class="electricfence-collapse-item" :class="{'collapse-item-select':enterShowIndex == index}" @click="enterShow(index)">
-                    <el-link :underline="false" @click="getOrganization">{{item.name}}</el-link>
+                    <!-- <el-tooltip :content="item.name" placement="top">
+                      <el-link :underline="false" @click="getOrganization">{{item.name}}</el-link>
+                    </el-tooltip> -->
+                    <div style="width: 70px;">
+                      <my-tooltip
+                          :content="item.name"
+                          class="wid190"
+                          refName="tooltipOver"
+                      ></my-tooltip>
+                    </div>
                     <div class="electricfence-collapse-item-button">
                         <el-button type="info" icon="el-icon-s-custom" circle size="mini" @click.stop="setUserIn(index)"></el-button>
                         <el-button type="primary" icon="el-icon-edit" circle size="mini" @click.stop="editElec(index)"></el-button>
@@ -30,7 +38,7 @@
               </el-scrollbar>
             </div>
         </el-col>
-        <el-col :span="20" class="electricfence-map">
+        <el-col :span="21" class="electricfence-map">
             <mymap ref="mymap" :circles="circles"></mymap>
         </el-col>
       </el-row>
@@ -51,6 +59,7 @@ import railTree from '@/components/tree/tree_.vue'
 import NavBar from '@/components/navBar/navBar.vue'
 import relevanceUser from '@/components/dialogRailDeploy/dialogRelevanceUser.vue'
 // import dialogMap from '@/components/'
+import MyTooltip from '@/components/tooltip/tooltip.vue'
 export default {
   name: 'Electricfence',
   components:{
@@ -60,6 +69,7 @@ export default {
     NavBar,
     relevanceUser,
     railTree,
+    MyTooltip,
   },
   data(){
     return{
@@ -85,34 +95,13 @@ export default {
           name:'南宁总局'
         },
         {
-          name:'西乡塘加了思考的房间哦我加大了福建省分局'
+          name:'西乡塘分局'
         },
         {
-          name:'西乡塘加了思考的房间哦我加大了福建省分局'
+          name:'青秀分局'
         },
         {
-          name:'西乡塘加了思考的房间哦我加大了福建省分局'
-        },
-        {
-          name:'西乡塘加了思考的房间哦我加大了福建省分局'
-        },
-        {
-          name:'西乡塘加了思考的房间哦我加大了福建省分局'
-        },
-        {
-          name:'西乡塘加了思考的房间哦我加大了福建省分局'
-        },
-        {
-          name:'西乡塘加了思考的房间哦我加大了福建省分局'
-        },
-        {
-          name:'西乡塘加了思考的房间哦我加大了福建省分局'
-        },
-        {
-          name:'西乡塘加了思考的房间哦我加大了福建省分局'
-        },
-        {
-          name:'西乡塘加了思考的房间哦我加大了福建省分局'
+          name:'东葛路派出所'
         },
         {
           name:'西乡塘加了思考的房间哦我加大了福建省分局'
@@ -205,23 +194,22 @@ export default {
     }
 }
 </script>
-<style lang="scss" >
-// .el-collapse-item__wrap{
-//        height: calc(100% - 48px);
-//        .el-collapse-item__content{
-//          height: 100%;
-//          padding-bottom: 0;
-//        }
-// }
-</style>
+
 <style lang="scss" scoped>
   /deep/.el-button--mini.is-circle{
-    padding: 0.3vw;
+    // padding: 0.3vw;
   }
   /deep/.electricfence-container .el-row .electricfence-tree .electricfence-collapse-item .el-link[data-v-31116bfe]{
     word-wrap: break-word;
     word-break: break-all;
-    white-space: pre-wrap !important;
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    -o-text-overflow:ellipsis;
+    -webkit-text-overflow:ellipsis;
+    -moz-text-overflow:ellipsis;
+    width: 85px;
+    display: block;
   }
 .electricfence {
   &-container {
@@ -248,7 +236,7 @@ export default {
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 
         .el-input{
-            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+            // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
         }
         .el-collapse{
            height: calc(99% - 88px) ;
@@ -263,7 +251,7 @@ export default {
 
         }
         .collapse-item-select{
-            border-left:5px solid #409EFF;
+            // border-left:5px solid #409EFF;
             padding: 10px 10px 10px 45px ;
             .el-link{
                 color: #409eff;
@@ -288,13 +276,12 @@ export default {
             color: #409eff;
             font-size: 1.3vw;
             cursor: pointer;
-            margin-right: 0.5vw;
+            // margin-right: 0.5vw;
           }
           .addRailBtn{
             padding: 0px !important;
             border: 0px;
             font-size: 1.2vw;
-            // color: #ec808d;
             color: #fff;
           }
           .addRail:hover{
@@ -334,7 +321,7 @@ export default {
       }
       &-item{
          // width: 100%;
-         padding: 10px 0.5vw 10px 1vw;
+         padding: 10px 0vw 10px 1vw;
          display: flex;
          justify-content: space-between;
          align-items: center;
@@ -342,5 +329,8 @@ export default {
       }
   }
 
+}
+.orgName{
+  font-size: 0.8vw;
 }
 </style>

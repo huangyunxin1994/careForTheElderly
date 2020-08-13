@@ -61,7 +61,7 @@ hr {
  * 2. Correct the odd `em` font sizing in all browsers.
  */
  .el-scrollbar__wrap{
-  overflow-x:hidden ;
+  /* overflow-x:hidden ; */
 }
 pre {
   font-family: monospace, monospace; /* 1 */

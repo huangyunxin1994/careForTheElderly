@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="peopleList">
     <nav-bar></nav-bar>
     <div class="main">
       <div class="mainLeft">
@@ -13,12 +13,11 @@
                             <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
                             <div class="selectItem">
                               <label for="" class="enroll-manage-container-handle-label">活动状态</label>
-                              <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResult" class="seclect"  style="width:10vw">
+                              <el-select v-model="valueW"  filterable placeholder="请选择" @change="changeResult" class="seclect"  style="width:10vw">
                                   <el-option
                                   v-for="item in activeOptions"
                                   :key="item.value"
                                   :label="item.label"
-
                                   :value="item.value">
                                   </el-option>
                               </el-select>
@@ -432,17 +431,22 @@
     /deep/.el-table--mini td{
       padding: 0px;
     }
+  .peopleList{
+    background-color: rgb(244, 244, 245);
+  }
   .main{
     display: flex;
     align-items: flex-start;
-    margin: 20px;
+    padding: 20px;
+    background-color: rgb(244, 244, 245);
     .mainLeft{
       width: 200px;
       min-width: 200px;
       height: calc(100vh - 105px);
-      box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+      /* box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1); */
       box-sizing: border-box;
-      padding: 0.5vw;
+      background-color: #fff;
+      padding: 19px 0.5vw 0.5vw;
       margin-right: 20px;
       overflow: hidden;
 
@@ -453,7 +457,7 @@
     .mainRight{
       height: calc(100vh - 105px);
       width: calc(100vw - 260px);
-      box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+      /* box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1); */
       box-sizing: border-box;
 
         .enroll-manage-container{
@@ -472,6 +476,7 @@
                     font-size: 0.8vw;
                     color: #606266;
                     font-weight: 700;
+                    margin-right: 5px;
                 }
                 .selectItem{
                   display: flex;

@@ -15,21 +15,19 @@
 
       <div class="login-handle">
         <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
-        <el-link :underline="false"  class="remember" @click="changePass">忘记密码?</el-link>
+        <!-- <el-link :underline="false"  class="remember" @click="changePass">忘记密码?</el-link> -->
       </div>
       <el-form-item style="width:100%;">
         <el-button  class="login-button" @click.native.prevent="handleSubmit2" :loading="logining">登录</el-button>
       </el-form-item>
-      <change-pass ref="changePass"></change-pass>
       <!-- <verify-idcard ref="verifyId" ></verify-idcard> -->
     </el-form>
   </div>
 </template>
 <script>
-  import changePass from '@/components/changePass/index.vue'
   export default{
     components:{
-      changePass
+      
     },
     data(){
       return{
@@ -53,9 +51,7 @@
       }
     },
     methods:{
-      changePass(){
-        this.$refs.changePass.setShow(this.ruleForm2.account)
-      },
+      
       handleSubmit2(){
         this.$router.push({ path: '/bulletinboard' });
       },

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="填写处理结果" :visible.sync="dialogHandleResult" center :append-to-body='true' :lock-scroll="false" width="40%">
+  <el-dialog title="填写处理结果" :visible.sync="dialogHandleResult" center :append-to-body='true' :lock-scroll="false" width="30%">
   <div class="warnList">
 
     <div class="warnResultRight">
@@ -13,8 +13,8 @@
   </div>
   <el-row class="cancelSwrap">
     <div class="cancel">
-      <button @click="cancel" class="cancelBtn">取消</button>
-      <button @click="sureBtn" class="sureBtn">确定</button>
+      <el-button type="primary" @click="cancel">取消</el-button>
+      <el-button type="primary" @click="sureBtn">确定</el-button>
     </div>
   </el-row>
   </el-dialog>
@@ -58,7 +58,7 @@
   }
 </style>
 <style lang="scss" scoped>
-  
+
   .warnList{
     display: flex;
     justify-content: space-around;
@@ -78,8 +78,7 @@
   }
   .cancel{
     display: flex;
-    justify-content: space-around;
-    width: 340px;
+    justify-content: flex-end;
     margin: 20px auto 0px;
   }
   .sureBtn{

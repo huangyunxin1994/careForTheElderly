@@ -9,23 +9,10 @@
                       <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
                       <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">设备状态</label>
-                        <el-select v-model="valueW" filterable placeholder="请选择" @change="eqstateW">
+                        <el-select v-model="valueW" style="width: 10vw;" filterable placeholder="请选择" @change="eqstateW">
                             <el-option
                             v-for="item in eqState"
                             :key="item.value"
-                            style="width:10vw"
-                            :label="item.label"
-                            :value="item.value">
-                            </el-option>
-                        </el-select>
-                      </div>
-                      <div class="selectItem">
-                        <label for="" class="enroll-manage-container-handle-label">是否关联人员</label>
-                        <el-select v-model="valueW" filterable placeholder="请选择" @change="haveRelevanceW">
-                            <el-option
-                            v-for="item in haveRelevance"
-                            :key="item.value"
-                            style="width:10vw"
                             :label="item.label"
                             :value="item.value">
                             </el-option>
@@ -33,7 +20,7 @@
                       </div>
                       <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">所属组织</label>
-                        <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResultW">
+                        <el-select v-model="valueW" style="width: 10vw;" filterable placeholder="请选择" @change="changeResultW">
                             <el-option
                             v-for="item in options"
                             :key="item.value"
@@ -46,11 +33,10 @@
                       </div>
                       <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">是否可用</label>
-                        <el-select v-model="valueW" filterable placeholder="请选择" @change="isUseW">
+                        <el-select v-model="valueW" style="width: 10vw;" filterable placeholder="请选择" @change="isUseW">
                             <el-option
                             v-for="item in isUse"
                             :key="item.value"
-                            style="width:10vw"
                             :label="item.label"
                             :value="item.value">
                             </el-option>
@@ -58,11 +44,9 @@
                       </div>
                     </div>
                     <div class="handleItem">
-                      <el-button type="primary" @click="relevance">关联组织</el-button>
-                      <el-button type="danger" @click="deletePlatform" :disabled="this.sels.length===0">批量删除</el-button>
+                      <el-button type="primary" @click="relevance" :disabled="this.isUseArr.length === 0">关联组织</el-button>
+                      <el-button type="danger" @click="deletePlatform" :disabled="this.noUseArr.length===0">批量删除</el-button>
                     </div>
-
-
                 </div>
                 <el-table
                     :data="tables.slice((page-1)*pageSize,page*pageSize)"
@@ -144,25 +128,28 @@
                 name:'张三',
                 organization:'南宁总局',
                 time:'2020-06-02',
-                phone:'18045265325'
+                phone:'18045265325',
+                haveRelevance:'0',
               },
               {
                 account:'002',
                 eqstate:2,
                 isUse:2,
                 name:'李二',
-                organization:'南宁总局',
+                organization:'邕宁分局',
                 time:'2020-06-02',
-                phone:'18045265325'
+                phone:'18045265325',
+                haveRelevance:'0'
               },
               {
                 account:'003',
                 eqstate:2,
                 isUse:2,
                 name:'王五',
-                organization:'南宁总局',
+                organization:'青秀分局',
                 time:'2020-06-02',
-                phone:'18045265325'
+                phone:'18045265325',
+                haveRelevance:'1'
               }
             ],
             tableAllData: [],
@@ -212,7 +199,7 @@
                 label: '是'
               },
               {
-                value: '2',
+                value: '0',
                 label: '否'
               }
             ],
@@ -223,20 +210,23 @@
                 label: '全部'
                 },
                 {
-                value: '1',
+                value: '南宁总局',
                 label: '南宁总局'
                 },
                 {
-                value: '0',
+                value: '邕宁分局',
                 label: '邕宁分局'
                 },
                 {
-                value: '2',
+                value: '青秀分局',
                 label: '青秀分局'
                 },
             ],
             valueW:"",
             platformName:'sss',
+            isUseArr:[],
+            noUseArr:[],
+
       }
     },
     methods:{
@@ -310,7 +300,7 @@
       },
       changeResultW(val){
         this.tableData = this.tableAllData.filter(item=>{
-            return String(item.isUse).indexOf(val) > -1
+            return String(item.organization).indexOf(val) > -1
         })
       },
       //修改
@@ -319,21 +309,42 @@
       },
       // 批量选中
       selsChange(sels){
+        let useData = []
+        let noUseData = []
+          for(let i in sels){
+            if(sels[i].isUse == '1'){
+              useData.push(sels[i])
+            }else if(sels[i].isUse == '2'){
+              noUseData.push(sels[i])
+            }
+          }
           this.sels = sels
+          this.isUseArr = useData
+          this.noUseArr = noUseData
       },
+      //判断是否可以点击
       selectTable(row,index){
-        if(row.isUse == 1){
-          //可用，不可点击，需禁用
-          return false
-        }else{
-          return true
-        }
+        // if(row.isUse == 1){
+        //   //可用，不可点击，需禁用
+        //   return false
+        // }else{
+        //   return true
+        // }
+        return true
       },
       getRowKeys(row) {
           return row.account;
       },
       relevance(){
-        this.$refs.equipment.dialogVisible = true
+        // this.$refs.equipment.dialogVisible = true
+        let arr = this.sels
+        for(let i in arr){
+          if(arr[i].isUse == 2){
+            this.$message.error('您所选择的选项中存在不可用设备,不能关联组织,请重新选择!');
+            return
+          }
+        }
+        this.$refs.equipment.relevance(this.isUseArr)
       },
       //删除
       handleCheck(index,row){
@@ -364,6 +375,13 @@
       	});
       },
       deletePlatform(){
+        let arr = this.sels
+        for(let i in arr){
+          if(arr[i].isUse == 1){
+            this.$message.error('您所选择的选项中存在可用设备,不能删除,请重新选择!');
+            return
+          }
+        }
         const h = this.$createElement;
           this.$msgbox({
             title: '警告',
@@ -431,6 +449,9 @@
     /deep/.el-table--mini td{
       padding: 0px;
     }
+  .wrap{
+    background-color: rgb(244, 244, 245);
+  }
   .newTime{
     width: calc(100vw - 40px);
     height: 20px;
@@ -438,9 +459,9 @@
   }
   .enroll-manage-main {
       width: calc(100vw - 40px);
-      height: calc(100vh - 145px);
+      height: calc(100vh - 125px);
       box-sizing: border-box;
-      box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+      // box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
       margin: 0 auto;
 
       .enroll-manage-container{
@@ -465,9 +486,10 @@
               }
               &-label{
                   margin-left: 20px;
-                  font-size: 0.8px;
+                  font-size: 0.8vw;
                   color: #606266;
                   font-weight: 700;
+                  margin-right: 5px;
               }
               .selectItem{
                 display: flex;
