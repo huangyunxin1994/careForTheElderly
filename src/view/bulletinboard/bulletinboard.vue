@@ -47,8 +47,6 @@ import echarts from 'echarts'
 import MyMap from '@/components/map/map.vue'
 
 // 图标
-  import startMarker from '@/icons/png/startMarker.png'
-  import endMarker from '@/icons/png/endMarker.png'
   import normal from '@/icons/png/personn.png'
   import warn from '@/icons/png/personw.png'
   // import home from '@/icons/png/jiating.png'

@@ -11,11 +11,3 @@ export default {
 }
 </script>
 
-<style>
-  /* @import "@/assets/css/normalize.css"; */
-@import "@/assets/css/normalize.css" 
-  *{
-    margin: 0px;
-    padding: 0px;
-  }
-</style>

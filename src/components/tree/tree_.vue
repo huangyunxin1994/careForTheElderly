@@ -232,8 +232,4 @@ export default {
     }
 
 }
-/deep/ .el-scrollbar__wrap {
-        margin-right: -16px !important;
-        margin-bottom: -16px !important;
-    }
 </style>

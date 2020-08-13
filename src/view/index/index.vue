@@ -52,13 +52,11 @@
   import Tree from '@/components/tree/tree_.vue'
 
   // 图标
-  import startMarker from '@/icons/png/startMarker.png'
-  import endMarker from '@/icons/png/endMarker.png'
   import normal from '@/icons/png/personn.png'
   import warn from '@/icons/png/personw.png'
   // import home from '@/icons/png/jiating.png'
   import home from '@/icons/png/jia.png'
-  export default{
+  export default {
     components:{
       NavBar,
       MyMap,
@@ -116,8 +114,8 @@
             latitude:"39.945",
             icon:{
               name:normal,
-              size:[62, 48],
-              anchor:[40, 40]
+              size:[48, 48],
+              anchor:[24, 48]
             },
             type:'0',
             home:{
@@ -136,8 +134,8 @@
             latitude:"39.955",
             icon:{
               name:normal,
-              size:[62, 48],
-              anchor:[40, 40]
+              size:[48, 48],
+              anchor:[24, 48]
             },
             type:'0',
             home:{
@@ -156,8 +154,8 @@
             latitude:"39.90",
             icon:{
               name:warn,
-              size:[62, 48],
-              anchor:[40, 40]
+              size:[48, 48],
+              anchor:[24, 48]
             },
             type:'1',
             home:{
@@ -176,8 +174,8 @@
             latitude:"39.922",
             icon:{
               name:warn,
-              size:[62, 48],
-              anchor:[40, 40]
+               size:[48, 48],
+              anchor:[24, 48]
             },
             type:'1',
             home:{

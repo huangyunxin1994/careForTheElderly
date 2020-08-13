@@ -5,7 +5,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import router from './router'
 import echarts from 'echarts'
 import  '@/assets/iconfonts/iconfont.css'
-import '@/assets/css/normalize.css'
+import '@/assets/css/normalize.scss'
 
 
 Vue.use(ElementUI);

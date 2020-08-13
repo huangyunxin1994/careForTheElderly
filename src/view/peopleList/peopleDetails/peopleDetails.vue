@@ -71,7 +71,7 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   value-format="yyyy-MM-dd hh:mm:ss"
-                  end-placeholder="结束日期"  size="small" @change="searchLocus">
+                  end-placeholder="结束日期"  size="small">
                 </el-date-picker>
               </div>
               <div class="mapPictrue">
@@ -155,8 +155,6 @@
   import WriteResult from '@/components/dialogHandleResult/dialogHandleResult'
   import home from '@/icons/png/jia.png'
   import dian from '@/icons/png/dian.png'
-  import startMarker from '@/icons/png/startMarker.png'
-  import endMarker from '@/icons/png/endMarker.png'
   import person from '@/icons/png/personw.png'
   export default {
     components:{
@@ -332,37 +330,7 @@
       writeResult(){
         this.$refs.WriteResult.dialogHandleResult = true
       },
-      //轨迹查询
-      searchLocus(val){
-
-        let points = [
-            {longitude:"116.387112",latitude:"39.920977"},
-            {longitude:"116.385243",latitude:"39.913063"},
-            {longitude:"116.394226",latitude:"39.917988"},
-            {longitude:"116.401772",latitude:"39.921364"},
-            {longitude:"116.41248",latitude:"39.927893"}
-          ]
-          this.polylines.splice(0,this.polylines.length)
-          this.polylines.push(points)
-          this.markers.splice(0,this.markers.length)
-
-          points.forEach( (i,key) => {
-            console.log(key)
-            let para = {
-              longitude:i.longitude,
-              latitude:i.latitude,
-              icon:{
-                name:key==0 ? startMarker :( key== points.length-1 ? endMarker : dian) ,
-                size:[32, 32],
-                anchor:[16, 16]
-              }
-            }
-            this.markers.push(para)
-          })
-            console.log( this.markers)
-            console.log( this.polylines)
-            this.$refs.map.getMap()
-      },
+     
       //查看所有监护人
       searchRuardian(){
         this.$refs.guardianMess.dialogVisible = true
