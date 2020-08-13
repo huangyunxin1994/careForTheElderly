@@ -4,20 +4,26 @@
     <el-container class="warningcenter-container">
                 <el-row>
                   <el-col :span="3">
-                    <el-scrollbar style="height:calc(100vh - 65px);background-color: rgb(244, 244, 245);">
+                    <!-- <div class="menu">
+                      <div class="menu-item">
+                        <router-link to="/warnCenter/fenceWarn">围栏预警信息</router-link>
+                      </div>
+                      <div class="menu-item">
+                        <router-link to="/warnCenter/otherData">其他重点数据</router-link>
+                      </div>
+                    </div> -->
+                    <div class="menuWrap">
                       <el-menu
                         default-active="1"
                         class="el-menu-vertical-demo"
                         @open="handleOpen"
                         @close="handleClose"
-                        background-color="#e6e6e6">
+                        >
 
                           <router-link to="/warnCenter/fenceWarn">
 
                             <el-menu-item index="1"  class="warningcenter-level1">
-                              <!-- <el-badge :value="warnNum.pCount" class="item" v-if="warnNum.pCount>0">
-                                围栏预警信息
-                              </el-badge> -->
+                            <!-- <span class="borderLeft"></span> -->
                             <span  class="item">
                               围栏预警信息
                             </span>
@@ -29,9 +35,7 @@
                           <router-link to="/warnCenter/otherData">
 
                             <el-menu-item index="2"  class="warningcenter-level1">
-                              <!-- <el-badge :value="warnNum.eCount" class="item" v-if="warnNum.eCount>0">
-                                其他重点数据
-                                </el-badge> -->
+                              <!-- <span class="borderLeft"></span> -->
                                 <span  class="item">
                                   其他重点数据
                                 </span>
@@ -40,7 +44,7 @@
                            </router-link>
 
                       </el-menu>
-                    </el-scrollbar>
+                    </div>
                   </el-col>
                   <el-col :span="21">
                     <transition name="fade-transform" mode="out-in">
@@ -92,14 +96,38 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
-
+  .warningcenter-level1{
+    border-left: 5px solid transparent;
+    margin: 10px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 0.9vw !important;
+    text-align: left !important;
+  }
   .is-active {
-      color: #303133;
-      background-color: #a5a2a2 !important;
+      // color: #303133;
+      // background-color: #a5a2a2 !important;
+      border-left: 5px solid #409EFF !important;
   }
   a{
     text-decoration:none;
-    color: #fff;
+    color: #606266;
+  }
+  .el-menu {
+    border-right: none;
+  }
+  .borderLeft{
+    display: inline-block;
+    width: 10px;
+    height: 60%;
+    margin-right: 10px;
+    background-color: #409EFF;
+  }
+  .el-menu-vertical-demo{
+    width: 100%;
+    height: 100%;
+    // background-color: #fff;
+    // box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
   }
 .warningcenter {
   &-container{
@@ -122,4 +150,26 @@ export default {
   }
 
 }
+.menuWrap{
+  height:calc(100vh - 65px);
+  padding:20px;
+  box-sizing: border-box;
+  background-color: rgb(244, 244, 245);
+}
+// .menu{
+//   height:calc(100vh - 65px);
+//   background-color: rgb(244, 244, 245);
+//   box-sizing: border-box;
+//   padding: 20px;
+//   &-item{
+//     width: 100%;
+//     height: 50px;
+//     line-height: 50px;
+//     text-align: center;
+
+//   }
+//   &-item:hover{
+//     background-color: #a5a2a2;
+//   }
+// }
 </style>

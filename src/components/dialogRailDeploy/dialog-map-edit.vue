@@ -4,20 +4,12 @@
             <el-form-item label="电子围栏名称" prop="name" required>
                 <el-input v-model="form.name" placeholder="请输入"></el-input>
             </el-form-item>
+            <el-form-item label="围栏中心位置" prop="center" required>
+                <get-adress ref="getAdress" :map="map" @getItem="getItem"></get-adress>
+            </el-form-item>
             <el-form-item label="电子围栏范围" prop="radius" required class="deployRange">
                 <el-input v-model="form.radius"  @change="changeRound" placeholder="请输入"></el-input>km
             </el-form-item>
-            <!-- <el-form-item label="电子围栏范围" prop="radius" required>
-                <el-select v-model="form.radius" placeholder="请选择"  @change="changeRound">
-                    <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                    >
-                    </el-option>
-                </el-select>
-            </el-form-item> -->
         </el-form>
         <div class="dialog-map">
             <i class="dialog-map-icon iconicon-test-copy"></i>
@@ -34,10 +26,14 @@
 </template>
 <script>
 import { parseTime } from '@/utils/index.js'
+import GetAdress from '@/components/getAdress/getAdress.vue'
 // import { addElectronicFence,deleteElectronicFence,selectElectronicFenceQuery,updateElectronicFenceMsg } from  "@/api/table"
 // import "@/assets/icon/iconfont.css"
 export default {
     name: 'Map',
+    components:{
+      GetAdress
+    },
     data(){
         return{
             formRule:{
@@ -52,29 +48,13 @@ export default {
             point:"",
             longitude:"",
             latitude:"",
-            options: [{
-            value: '100',
-            label: '100米'
-            }, {
-            value: '200',
-            label: '200米'
-            }, {
-            value: '300',
-            label: '300米'
-            }, {
-            value: '400',
-            label: '400米'
-            }, {
-            value: '500',
-            label: '500米'
-            }],
             form:{
                 name:"",
                 radius: '100',
                 longitude: "108.386207",
                 latitude: "22.830839"
             },
-            map:"",
+            map:null,
             marker:"",
             circle:""
             }
@@ -120,6 +100,16 @@ export default {
             this.circle = new BMap.Circle(point,this.form.radius,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
             this.map.clearOverlays()
             this.map.addOverlay(this.circle);
+        },
+        getItem(item) {
+          this.form.center = item.address + item.title; //记录详细地址，含建筑物名
+          this.longitude = item.point.lng
+          this.latitude = item.point.lat
+          let point  = new BMap.Point(this.longitude,this.latitude)
+          this.circle = new BMap.Circle(point,this.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
+          this.map.centerAndZoom(new BMap.Point(this.longitude,this.latitude), 16) // 初始化地图,设置中心点坐标和地图级别
+          this.map.clearOverlays()
+          this.map.addOverlay(this.circle);
         },
         handleShow(){
             this.formVisible=true

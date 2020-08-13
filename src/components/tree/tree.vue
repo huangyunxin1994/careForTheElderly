@@ -68,6 +68,7 @@ export default {
     methods: {
       handleNodeClick(data) {
         this.$emit('getThisOrgan',data)
+        console.log(data)
       },
        filterNode(value, data) {
         if (!value) return true;

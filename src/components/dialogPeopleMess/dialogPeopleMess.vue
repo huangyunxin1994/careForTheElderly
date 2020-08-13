@@ -29,7 +29,7 @@
       <div class="map" >
         <p class="title">家庭住址坐标</p>
         <div class="mapContent">
-          <my-map :icon="icon" :dragging="true" :zooming="true" :markers="markers" :center="center"></my-map>
+          <my-map  :dragging="true" :zooming="true" :markers="markers" :center="center"></my-map>
         </div>
       </div>
     </div>

@@ -12,11 +12,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="首页地图初始经纬度" prop="address" required>
-        <el-input v-model="form.address" placeholder="请输入经纬度"></el-input>
+        <!-- <el-input v-model="form.address" placeholder="请输入经纬度"></el-input> -->
+        <get-adress ref="getAdress" :map="map" @getItem="getItem"></get-adress>
       </el-form-item>
     </el-form>
     <div class="map">
-      <my-map></my-map>
+      <my-map ref="myMap" @getMap="getMap" ></my-map>
     </div>
     <div class="foot">
       <el-button type="primary"  class="btn" @click="cancelBtn">取消</el-button>
@@ -28,11 +29,28 @@
 
 <script>
   import MyMap from '@/components/map/map.vue'
+  import GetAdress from '@/components/getAdress/getAdress.vue'
   export default{
     components:{
-      MyMap
+      MyMap,
+      GetAdress
     },
     data(){
+      // var validateName = (rule, value, callback) => {
+      //   if(value == ''){
+      //     callback(new Error('请输入组织名称'));
+      //   }
+      // };
+      // var validateOrg = (rule, value, callback) => {
+      //   if(value == ''){
+      //     callback(new Error('请选择上级组织'));
+      //   }
+      // };
+      // var validateAddress = (rule, value, callback) => {
+      //   if(value == ''){
+      //     callback(new Error('请输入初始经纬度'));
+      //   }
+      // };
       return{
         formRule:{
             name: [{ required: true, message: '请输入组织名称', trigger: 'blur' }],
@@ -46,12 +64,14 @@
           address: '',
         },
         addBtn:false,
-        removeBtn:false
+        removeBtn:false,
+        map:'',
+        item:'',//用来记录坐标点
       }
     },
     methods:{
       sureBtn() {
-        
+
         this.$refs.form.validate((valid) => {
           if(valid){
             this.dialogVisible = false
@@ -66,6 +86,36 @@
       },
       handleClose(){
         this.dialogVisible = false
+        this.form = {
+          organization: '',
+          superiorOrganization:'',
+          address: '',
+        }
+        this.$refs.getAdress.address = ''
+        this.$nextTick(()=>{
+                    this.$refs.form.clearValidate();
+                })
+      },
+      //新建组织
+
+      //编辑组织
+      editOrganization(val){
+        this.dialogVisible = true
+        this.addBtn = true
+        this.removeBtn = true
+        this.form.organization = val.label
+      },
+      //获取到map对象
+      getMap(val){
+        this.map = val
+      },
+      //点击选中建议项时触发的方法
+      getItem(val){
+        this.item = {
+          longitude:val.point.lng,
+          latitude:val.point.lat
+        }
+        this.$refs.myMap.setCenter(this.item)
       }
     },
     mounted() {

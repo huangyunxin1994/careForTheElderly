@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav-bar></nav-bar>
+    <nav-bar @getSound="getSound"></nav-bar>
     <div class="main">
       <div class="mainLeft">
         <tree :people='true'  @allPeople="allPeople" @warnPeople="warnPeople"></tree>
@@ -11,13 +11,15 @@
       <div class="mainRight">
         <transition name="el-zoom-in-center">
             <div class="warnSwarp" v-show="warnList">
-              <p class="newWarnTitle">
+              <div class="newWarnTitle" >
                 <i class="iconfont icon-deng"></i>最新预警信息
-              </p>
+              </div>
               <div class="clock">
-                <!-- <i class="iconfont icon-tingzhi"></i> -->
+                <audio id="audio" loop ref="music" >
+                  <source src="../../assets/mp3/dididi.mp3" type="audio/mpeg" />
+                </audio>
                 <el-tooltip content="停止本次报警音效" placement="top">
-                   <el-button  class="iconfont icon-zanting warnClock" size="mini" circle ></el-button>
+                   <el-button  class="iconfont icon-zanting warnClock" size="mini" circle @click="stop"></el-button>
                 </el-tooltip>
               </div>
               <div class="warnContentSwarp">
@@ -25,8 +27,8 @@
                   <div class="warnContent" v-for="(item,index) in dashboardContext" :key="index">
                     <div class="warnContentList">
                       <div class="contentList name">
-                        <p>{{item.name}}</p>
-                        <p>{{item.time}}</p>
+                        <div>{{item.name}}</div>
+                        <div>{{item.time}}</div>
                       </div>
                       <div class="contentList type"><p>{{item.type}}</p></div>
                     </div>
@@ -52,8 +54,8 @@
   // 图标
   import startMarker from '@/icons/png/startMarker.png'
   import endMarker from '@/icons/png/endMarker.png'
-  import normal from '@/icons/png/zaijia.png'
-  import warn from '@/icons/png/yujing.png'
+  import normal from '@/icons/png/personn.png'
+  import warn from '@/icons/png/personw.png'
   // import home from '@/icons/png/jiating.png'
   import home from '@/icons/png/jia.png'
   export default{
@@ -67,17 +69,17 @@
         dashboardContext:[
           {
             name:"张三",
-            time:'2020-06-02',
+            time:'2020-06-02 13:00:56',
             type:'外出xxx围栏'
           },
           {
             name:"张三",
-            time:'2020-06-02',
+            time:'2020-06-02 13:00:56',
             type:'外出ssss围栏'
           },
           {
             name:"张三",
-            time:'2020-06-02',
+            time:'2020-06-02 13:00:56',
             type:'外出sdsfs围栏'
           },
           {
@@ -102,6 +104,8 @@
           }
         ],
         warnList:false,
+        isPlaying:true,//默认播放
+
         allpeople:{
           name:'wang',
           age:22
@@ -112,8 +116,8 @@
             latitude:"39.945",
             icon:{
               name:normal,
-              size:[48, 48],
-              anchor:[24, 40]
+              size:[62, 48],
+              anchor:[40, 40]
             },
             type:'0',
             home:{
@@ -132,8 +136,8 @@
             latitude:"39.955",
             icon:{
               name:normal,
-              size:[48, 48],
-              anchor:[24, 40]
+              size:[62, 48],
+              anchor:[40, 40]
             },
             type:'0',
             home:{
@@ -152,8 +156,8 @@
             latitude:"39.90",
             icon:{
               name:warn,
-              size:[48, 48],
-              anchor:[24, 40]
+              size:[62, 48],
+              anchor:[40, 40]
             },
             type:'1',
             home:{
@@ -172,8 +176,8 @@
             latitude:"39.922",
             icon:{
               name:warn,
-              size:[48, 48],
-              anchor:[24, 40]
+              size:[62, 48],
+              anchor:[40, 40]
             },
             type:'1',
             home:{
@@ -192,7 +196,10 @@
     },
     methods:{
       getWarnList(){
-        this.warnList = true
+        if(this.dashboardContext.length > 0){
+          this.warnList = true
+          // this.play()
+        }
       },
       goPeopleDetails(){
         this.$router.push('/peopleDetails')
@@ -213,6 +220,29 @@
       //定位
       getLocation(x,y){
         this.$refs.myMap.movePosBypoint(x,y)
+      },
+      //播放音频
+      play(){
+        let audio1 = document.getElementById('audio')
+        if(this.isPlaying == true){
+          audio1.play()
+        }else{
+          audio1.pause()
+        }
+      },
+      //停止音频
+      stop(){
+       let audio1 = document.getElementById('audio')
+        audio1.pause()
+      },
+      getSound(val){
+        if(val == false){
+          this.isPlaying = true
+          this.play()
+        }else{
+          this.isPlaying = false
+          this.play()
+        }
       }
     },
     created() {
@@ -245,7 +275,8 @@
       top: 2vh;
       left: 2vw;
       width: 10vw;
-      min-height: 80vh;
+      // min-height: 80vh;
+      height: calc(100vh - 150px);
       box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
       padding: 0.5vw;
       z-index: 100;
@@ -275,11 +306,10 @@
       	box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
       }
       .newWarnTitle{
-      	font-size: 1.2vw;
+      	font-size: 1vw;
       	color: rgba(236, 128, 141, 1);
       	padding: 10px;
       	font-weight: 600;
-      	margin-bottom: 20px;
 
         .iconfont{
         	font-size: 1.3vw;
@@ -319,7 +349,7 @@
         //   justify-content: space-between;
         // }
         .contentList>p{
-        	padding: 10px 0px;
+        	padding: 14px 0px;
           margin: 0px;
         }
         .warnContentList .name{
@@ -331,7 +361,7 @@
         .warnBtn{
         	display: flex;
         	justify-content: space-between;
-        	padding: 10px;
+        	padding:0px 10px;
         }
         .warnBtn>p{
         	padding: 5px 10px;

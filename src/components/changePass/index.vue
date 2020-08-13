@@ -3,9 +3,9 @@
 		<el-dialog title="修改密码" :visible.sync="dialogPassVisible" center :append-to-body='true' :before-close="handleClose" :lock-scroll="false" :close-on-click-modal="false" width="500px">
 			<div class="passList">
 				<el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="120px">
-					<el-form-item  label="原密码" prop="account">
+					<!-- <el-form-item  label="原密码" prop="account">
 					<el-input type="text" v-model="ruleForm2.account" auto-complete="off" placeholder="请输入原密码" :disabled="flag"></el-input>
-					</el-form-item>
+					</el-form-item> -->
 					<el-form-item  label="输入新密码" prop="newPassword">
 					<el-input type="password" v-model="ruleForm2.newPassword" auto-complete="off" placeholder="请输入密码" show-password></el-input>
 					</el-form-item>
@@ -51,13 +51,6 @@ export default {
 			callback();
 			}
 		};
-		var validateAccount = (rule, value, callback) => {
-			if(value ===''){
-				callback(new Error('请输入原密码'));
-			}else{
-				callback();
-			}
-		};
 		return{
 			loading:false,
 			flag:false,
@@ -76,9 +69,6 @@ export default {
 				again: [
 					{ required: true,validator: validatePass2, trigger: 'change' },
 					{ required: true,validator: validatePass2, trigger: 'blur' }
-				],
-				account:[
-					{ required: true,validator: validateAccount, trigger: 'blur' }
 				]
 			},
 			// account:'',

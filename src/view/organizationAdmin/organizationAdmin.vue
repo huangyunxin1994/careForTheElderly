@@ -3,7 +3,7 @@
     <nav-bar></nav-bar>
     <div class="main">
       <div class="mainLeft">
-        <tree @newOrganization="newOrganization" @adminOrganization="adminOrganization" :organization="true"></tree>
+        <tree @newOrganization="newOrganization" @adminOrganization="adminOrganization" :organization="true" @handleOrg="handleOrg"></tree>
       </div>
       <div class="mainRight">
         <el-scrollbar>
@@ -110,132 +110,175 @@
             name:'admin',
             belongPlatform:'广西总局',
             identity:1,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'123457',
             name:'王',
             belongPlatform:'南宁总局',
             identity:1,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'123458',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'123459',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'1234510',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'1234511',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'1234512',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'1234513',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            phone:'15869586239',
           },
           {
             account:'1234514',
             name:'王',
             belongPlatform:'南宁总局',
             identity:1,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
              account:'1234515',
              name:'王',
              belongPlatform:'南宁总局',
              identity:2,
+             pass:'123568',
+             phone:'15869586239',
           },
           {
             account:'1234516',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'11',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'10',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'9',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'8',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'7',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'6',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'5',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'4',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'3',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'2',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           },
           {
             account:'1',
             name:'王',
             belongPlatform:'南宁总局',
             identity:2,
+            pass:'123568',
+            phone:'15869586239',
           }
         ],
         tableAllData: [],
@@ -273,6 +316,7 @@
           },
         ],
         valueW:"",
+        organizationName:'',
       }
     },
     methods:{
@@ -353,21 +397,26 @@
       },
       //编辑组织
       adminOrganization(val){
-        this.$refs.organization.dialogVisible = true
-        this.$refs.organization.addBtn = true
-        this.$refs.organization.removeBtn = true
+        // this.$refs.organization.dialogVisible = true
+        // this.$refs.organization.addBtn = true
+        // this.$refs.organization.removeBtn = true
+        if(this.organizationName == ''){
+          this.$message.error('请选择组织!');
+        }else{
+          this.$refs.organization.editOrganization(this.organizationName)
+        }
       },
       // 新建用户
       newUser(){
-        this.$refs.editeditMess.dialogVisible = true
-        this.$refs.editeditMess.superiorOrg = true
-        this.$refs.editeditMess.removeBtn = false
+        if(this.organizationName == ''){
+          this.$message.error('请选择组织!');
+        }else{
+          this.$refs.editeditMess.newOrganization(this.organizationName)
+        }
       },
       //编辑用户
-      adminMess(){
-        this.$refs.editeditMess.dialogVisible = true
-        this.$refs.editeditMess.superiorOrg = false
-        this.$refs.editeditMess.removeBtn = true
+      adminMess(index,item){
+        this.$refs.editeditMess.getOrganization(item)
       },
       //修改密码
       changePass(){
@@ -376,7 +425,11 @@
       //将tabledata的值传给tableAllData(到真正对接时就不用)
       getTableAllData(){
         this.tableAllData = this.tableData
-      }
+      },
+      //点击组织
+      handleOrg(val){
+        this.organizationName = val
+      },
     },
     mounted() {
       this.getTableAllData()
@@ -409,21 +462,24 @@
   .main{
     display: flex;
     align-items: flex-start;
-    margin: 20px;
+    /* margin: 20px; */
+    padding: 20px;
+    background-color: rgb(244, 244, 245);
     .mainLeft{
       width: 200px;
       min-width: 200px;
       height: calc(100vh - 105px);
-      box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+      /* box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1); */
       box-sizing: border-box;
-      padding: 0.5vw;
+      background-color: #fff;
+      padding: 19px 0.5vw 0.5vw;
       margin-right: 20px;
       overflow: hidden;
     }
     .mainRight{
       width: calc(100vw - 260px);
       min-height: calc(100vh - 125px);
-      box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+      /* box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1); */
       box-sizing: border-box;
 
         .enroll-manage-container{
@@ -445,9 +501,11 @@
                 justify-content: space-between;
                 align-items: center;
                 &-label{
-                    font-size: 14px;
+                    font-size: 0.8vw;
+                    margin-left: 20px;
                     color: #606266;
                     font-weight: 700;
+                    margin-right: 5px;
                 }
                 .seclect{
                   width: 20vw;

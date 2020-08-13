@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "3529836",
+      "name": "定位",
+      "font_class": "dingwei",
+      "unicode": "e761",
+      "unicode_decimal": 59233
+    },
+    {
+      "icon_id": "15668864",
+      "name": "人员定位1",
+      "font_class": "renyuandingwei1",
+      "unicode": "e77e",
+      "unicode_decimal": 59262
+    },
+    {
       "icon_id": "705711",
       "name": "暂停",
       "font_class": "zanting",

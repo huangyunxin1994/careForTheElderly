@@ -6,13 +6,9 @@
       	    <el-input v-model="ruleForm2.account" auto-complete="off" placeholder="请输入账号"></el-input>
       	</el-form-item>
       	<el-form-item label="密码" prop="password">
-      	    <el-input v-model="ruleForm2.password" auto-complete="off" placeholder="请输入密码" ></el-input>
+      	    <el-input v-model="ruleForm2.password" auto-complete="off" show-password placeholder="请输入密码" ></el-input>
       	</el-form-item>
       	<el-form-item label="所属组织" prop="superiorOrganization" >
-      	    <!-- <el-select v-model="" disabled   placeholder="请选择上级组织">
-      	      <el-option label="南宁总局" value="shanghai"></el-option>
-      	      <el-option label="青秀分局" value="beijing"></el-option>
-      	    </el-select> -->
             <el-select v-model="ruleForm2.superiorOrganization" :disabled="superiorOrg" placeholder="请选择上级组织">
                 <el-option
                   v-for="item in options"
@@ -87,13 +83,14 @@
       }
       return{
         dialogVisible:false,
+        superiorOrg:false,//所属组织是否可选
+
         ruleForm2: {
           account:'',
           password:'',
           superiorOrganization:'',
           phone:'',
           username:'',
-          superiorOrg:false,//所属组织是否可选
           removeBtn:false,//删除按钮是否存在
         },
         options:[
@@ -125,7 +122,7 @@
         		{ required: true,validator: validateUsername, trigger: 'blur' }
         	],
         	phone:[
-        		// { required: true,validator: validatePhone, trigger: 'blur' },
+        		{ required: false,validator: validatePhone, trigger: 'blur' },
         		{ message: "请输入正确的号码", trigger: "blur" },
         		{
         			pattern:/^([1]\d{10}|([\(（]?0[0-9]{2,3}[）\)]?[-]?)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?)$/,
@@ -133,7 +130,8 @@
         		}
         	],
           superiorOrganization:[
-            { required: true,validator: validateOrganization, trigger: 'blur' }
+            { required: true,validator: validateOrganization, trigger: 'change' },
+            { message: "请选择组织", trigger: "change" },
           ]
         },
 
@@ -151,6 +149,32 @@
       },
       handleClose(){
         this.dialogVisible = false
+        this.ruleForm2 = {
+          superiorOrganization:'',
+          account:'',
+          password:'',
+          username:'',
+          phone:'',
+        }
+        this.$nextTick(()=>{
+                    this.$refs.ruleForm2.clearValidate();
+                })
+      },
+      newOrganization(val){
+        this.dialogVisible = true
+        this.superiorOrg = true
+        this.removeBtn = false
+        this.ruleForm2.superiorOrganization = val.label
+      },
+      getOrganization(val){
+        this.dialogVisible = true
+        this.superiorOrg = false
+        this.removeBtn = true
+        this.ruleForm2.superiorOrganization = val.belongPlatform
+        this.ruleForm2.account = val.account
+        this.ruleForm2.password = val.pass
+        this.ruleForm2.username = val.name
+        this.ruleForm2.phone = val.phone
       }
     },
     mounted() {

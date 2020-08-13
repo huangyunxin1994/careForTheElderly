@@ -49,8 +49,8 @@ import MyMap from '@/components/map/map.vue'
 // 图标
   import startMarker from '@/icons/png/startMarker.png'
   import endMarker from '@/icons/png/endMarker.png'
-  import normal from '@/icons/png/zaijia.png'
-  import warn from '@/icons/png/yujing.png'
+  import normal from '@/icons/png/personn.png'
+  import warn from '@/icons/png/personw.png'
   // import home from '@/icons/png/jiating.png'
   import home from '@/icons/png/jia.png'
 export default {
@@ -102,7 +102,7 @@ export default {
           latitude:"39.945",
           icon:{
             name:normal,
-            size:[48, 48],
+            size:[62, 48],
             anchor:[24, 40]
           },
           type:'0'
@@ -112,7 +112,7 @@ export default {
           latitude:"39.955",
           icon:{
             name:normal,
-            size:[48, 48],
+            size:[62, 48],
             anchor:[24, 40]
           },
           type:'0'
@@ -122,7 +122,7 @@ export default {
           latitude:"39.90",
           icon:{
             name:warn,
-            size:[48, 48],
+            size:[62, 48],
             anchor:[24, 40]
           },
           type:'1'
@@ -132,7 +132,7 @@ export default {
           latitude:"39.922",
           icon:{
             name:warn,
-            size:[48, 48],
+            size:[62, 48],
             anchor:[24, 40]
           },
           type:'1'

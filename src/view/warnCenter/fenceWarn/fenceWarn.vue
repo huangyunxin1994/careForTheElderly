@@ -2,7 +2,7 @@
    <div>
      <div class="main">
        <div class="mainRight">
-         <el-scrollbar>
+         <el-scrollbar class="sroll">
              <div class="enroll-manage-main">
                  <div class="enroll-manage-container" ref="container">
                      <div class="enroll-manage-container-handle" >
@@ -10,13 +10,12 @@
                               <el-input v-model="inputValue" placeholder="请输入要搜索内容" class="select" style="width: 20vw;" ></el-input>
                               <div class="selectItem">
                                 <label for="" class="enroll-manage-container-handle-label">处理状态</label>
-                                <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResult">
+                                <el-select v-model="valueW" style="width:10vw" filterable placeholder="请选择" @change="changeResult">
                                     <el-option
                                     v-for="item in activeOptions"
                                     :key="item.value"
                                     :label="item.label"
                                     class="seclect"
-                                    style="width: 10vw;"
                                     :value="item.value">
                                     </el-option>
                                 </el-select>
@@ -28,6 +27,7 @@
                                   type="daterange"
                                   class="seclectTime"
                                   style="width:10vw"
+                                  @change="changeResultW"
                                   range-separator="至"
                                   start-placeholder="开始日期"
                                   end-placeholder="结束日期">
@@ -45,7 +45,7 @@
                          size="mini" v-loading="listLoading"
                          @selection-change="selsChange"
                          class="myTable" ref="table"
-                         height="calc(100vh - 220px)"
+                         height="calc(100vh - 260px)"
                          :row-key="getRowKeys">
                           <el-table-column type="selection" width="55" :reserve-selection="true">
                           </el-table-column>
@@ -98,6 +98,7 @@
  <script>
    import DialogHandleResult from '@/components/dialogHandleResult/dialogHandleResult.vue'
    import FindHandleResult from '@/components/dialogHandleResult/findHandleResult.vue'
+   import {parseTime} from '@/utils/index.js'
    export default{
      components:{
        DialogHandleResult,
@@ -245,15 +246,17 @@
                label: '已处理'
              },
              {
-               value: '0',
+               value: '2',
                label: '未处理'
              },
              {
-               value: '2',
+               value: '3',
                label: '已忽略'
              },
          ],
          valueW:"",
+         beginTime:'',
+         endTime:'',
        }
      },
      methods:{
@@ -313,13 +316,22 @@
            //this.tableData = JSON.parse(JSON.stringify(this.tableAllData))
        },
        changeResultW(val){
-           this.tableData = this.tableAllData.filter(item=>{
-               return String(item.equState).indexOf(val) > -1
-           })
+           // this.tableData = this.tableAllData.filter(item=>{
+           //     return String(item.handleTime).indexOf(parseTime(val)) > -1
+           // })
+           if(val.length == 0){
+            this.beginTime = ""
+            this.endTime = ""
+           }else{
+             this.beginTime = parseTime(val[0],`{y}-{m}-{d}`)+" 00:00:00"
+             this.endTime = parseTime(val[1],`{y}-{m}-{d}`)+" 23:59:59"
+           }
+           console.log(this.beginTime)
+           console.log(this.endTime)
        },
        changeResult(val){
          this.tableData = this.tableAllData.filter(item=>{
-             return String(item.activeState).indexOf(val) > -1
+             return String(item.handleState).indexOf(val) > -1
          })
        },
        // 更新页面
@@ -416,6 +428,8 @@
     }
    .main{
      .mainRight{
+       padding: 20px 20px 20px 0px;
+       background-color: rgb(244, 244, 245);
        box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
 
          .enroll-manage-container{
@@ -446,6 +460,7 @@
                      font-size: 0.8vw;
                      color: #606266;
                      font-weight: 700;
+                     margin-right: 5px;
                  }
                  .seclectTime{
                    width: 20vw;
@@ -468,6 +483,9 @@
                  }
              }
          }
+      }
+      .sroll{
+        /* box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1); */
       }
       .foot{
         margin-top: 20px;
