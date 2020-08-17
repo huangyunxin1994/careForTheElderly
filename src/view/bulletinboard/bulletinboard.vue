@@ -10,11 +10,11 @@
       <el-row :gutter="20">
 
         <el-col :span="6">
-          <div id="chartKeyPerson" style="height:23.5vh;background:#fff;padding:20px;"></div>
+          <div id="chartKeyPerson" style="height:23.5vh;background:#ffffff;padding:20px;"></div>
           <br/>
-          <div id="chartManPerson" style="height:23.5vh;background:#fff;padding:20px;"></div>
+          <div id="chartManPerson" style="height:23.5vh;background:#ffffff;padding:20px;"></div>
           <br/>
-          <div id="warnMess" style="height:23.5vh;background:#fff;padding:20px;">
+          <div id="warnMess" style="height:23.5vh;background:#ffffff;padding:20px;">
             <div class="warnMess-title">预警信息</div>
             <el-scrollbar style="width:100%;height:95%;">
               <div class="warnMess-content" v-for="(i,index) in warnData" :key="index" style="white-space:nowrap">
@@ -30,11 +30,11 @@
             </div>
         </el-col>
         <el-col :span="6">
-          <div id="chartPersonActive" style="height:23.5vh;background:#fff;padding:20px;"></div>
+          <div id="chartPersonActive" style="height:23.5vh;background:#ffffff;padding:20px;"></div>
           <br/>
-          <div id="chartMonthWarn" style="height:23.5vh;background:#fff;padding:20px;"></div>
+          <div id="chartMonthWarn" style="height:23.5vh;background:#ffffff;padding:20px;"></div>
           <br/>
-          <div id="chartWarnNum" style="height:23.5vh;background:#fff;padding:20px;"></div>
+          <div id="chartWarnNum" style="height:23.5vh;background:#ffffff;padding:20px;"></div>
         </el-col>
 
       </el-row>
