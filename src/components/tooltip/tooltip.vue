@@ -1,7 +1,7 @@
 <template>
   <div class="text-tooltip">
     <el-tooltip class="item" effect="dark" :disabled="isShowTooltip" :content="content" placement="top">
-      <div class="over-flow" :class="className" @mouseover="onMouseOver(refName)">
+      <div class="over-flow" :class="className" @mouseover="onMouseOver(refName)" @click="setAdress">
         <span :ref="refName">{{content||'-'}}</span>
       </div>
     </el-tooltip>
@@ -49,6 +49,9 @@
         } else {
           this.isShowTooltip = true;
         }
+      },
+      setAdress(){
+        this.$emit('getOrganization',1)
       }
     }
   }

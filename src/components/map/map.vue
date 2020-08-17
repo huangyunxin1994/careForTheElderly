@@ -311,6 +311,10 @@
 
         this.map.centerAndZoom(point, 16); // 初始化地图,设置中心点坐标和地图级别
         this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+      },
+      //点击marker图标
+      setMarker(){
+        console.log("哈哈哈哈哈")
       }
     },
     mounted() {

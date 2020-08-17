@@ -44,20 +44,14 @@
                                 </el-option>
                             </el-select>
                         </div>
-                        <!-- <div>
-                          <el-button  type="primary" @click="handleSearch" :disabled="this.sels.length===0">忽略</el-button>
-                          <el-button  type="primary" @click="peopleAndEquiment" :disabled="this.sels.length===0">填写处理结果</el-button>
-                        </div> -->
                     </div>
                     <el-table
                         :data="tables.slice((page-1)*pageSize,page*pageSize)"
                         border stripe highlight-current-row
                         size="mini" v-loading="listLoading"
                         class="myTable" ref="table"
-                        height="calc(100vh - 260px)"
+                        height="calc(100vh - 257px)"
                         :row-key="getRowKeys">
-                         <!-- <el-table-column type="selection" width="55" :reserve-selection="true">
-                         </el-table-column> -->
                          <el-table-column type="index" width="60" label="序号">
                          </el-table-column>
                          <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" :sortable="item.type!='button'&&item.type!='handle'?true:false" show-overflow-tooltip>

@@ -58,6 +58,7 @@ export default {
     methods: {
       handleNodeClick(data) {
         console.log(data);
+        this.$emit("getOrganization",data)
       },
        filterNode(value, data) {
         if (!value) return true;

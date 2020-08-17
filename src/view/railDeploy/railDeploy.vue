@@ -28,6 +28,7 @@
                           :content="item.name"
                           class="wid190"
                           refName="tooltipOver"
+                          @getOrganization = 'getOrganization'
                       ></my-tooltip>
                     </div>
                     <div class="electricfence-collapse-item-button">
@@ -92,7 +93,10 @@ export default {
       ],
       filterArr:[
         {
-          name:'南宁总局'
+          name:'南宁总局',
+          radius:'0.1',
+          longitude: "108.386207",
+          latitude: "22.830839",
         },
         {
           name:'西乡塘分局'
@@ -143,6 +147,7 @@ export default {
       editElec(i){
         let id = this.filterArr[i].id
         let para = JSON.parse(JSON.stringify(this.filterArr[i]))
+        console.log(para)
         this.$refs.dialogmape.form = para
         this.$refs.dialogmape.handleShow()
       },

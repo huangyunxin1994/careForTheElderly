@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api':{
-        target: 'http://api.map.baidu.com',//设置你调用的接口域名和端口号 别忘了加http
+        target: 'http://192.168.1.9:8085',//设置你调用的接口域名和端口号 别忘了加http
         changeOrigin: true,
         pathRewrite: {
           '^/api': '',

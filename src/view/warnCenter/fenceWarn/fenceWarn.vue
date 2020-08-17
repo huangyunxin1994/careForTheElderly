@@ -45,7 +45,7 @@
                          size="mini" v-loading="listLoading"
                          @selection-change="selsChange"
                          class="myTable" ref="table"
-                         height="calc(100vh - 260px)"
+                         height="calc(100vh - 257px)"
                          :row-key="getRowKeys">
                           <el-table-column type="selection" width="55" :reserve-selection="true">
                           </el-table-column>

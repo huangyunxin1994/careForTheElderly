@@ -63,6 +63,9 @@ export default {
         getMapData(){
         },
         getmap () {
+          console.log(this.form)
+          console.log(this.form.longitude)
+          console.log(this.form.latitude)
             this.map = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例
             this.map.centerAndZoom(new BMap.Point(this.form.longitude,this.form.latitude), 16) // 初始化地图,设置中心点坐标和地图级别
             this.map.setCurrentCity('北京') // 设置地图显示的城市 此项是必须设置的
@@ -71,15 +74,15 @@ export default {
             this.latitude = this.map.getCenter().lat
             let point  = new BMap.Point(this.longitude,this.latitude)
             // // 向地图添加标注
-            console.log(this.map.getCenter().lng)
-            this.circle = new BMap.Circle(point,this.form.radius,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
+            // console.log(this.map.getCenter().lng)
+            this.circle = new BMap.Circle(point,this.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
             this.map.addOverlay(this.circle);
             let that = this
             this.map.addEventListener("moveend",function(){
                     that.longitude = that.map.getCenter().lng
                     that.latitude = that.map.getCenter().lat
                     let point  = new BMap.Point(that.longitude,that.latitude)
-                    that.circle = new BMap.Circle(point,that.form.radius,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
+                    that.circle = new BMap.Circle(point,that.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
                     that.map.clearOverlays()
                     that.map.addOverlay(that.circle);
             });
@@ -87,7 +90,7 @@ export default {
                     that.longitude = that.map.getCenter().lng
                     that.latitude = that.map.getCenter().lat
                     let point  = new BMap.Point(that.longitude,that.latitude)
-                    that.circle = new BMap.Circle(point,that.form.radius,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
+                    that.circle = new BMap.Circle(point,that.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
                     that.map.clearOverlays()
                     that.map.addOverlay(that.circle);
             });
@@ -97,7 +100,7 @@ export default {
             this.longitude = this.map.getCenter().lng
             this.latitude = this.map.getCenter().lat
             let point  = new BMap.Point(this.longitude,this.latitude)
-            this.circle = new BMap.Circle(point,this.form.radius,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
+            this.circle = new BMap.Circle(point,this.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
             this.map.clearOverlays()
             this.map.addOverlay(this.circle);
         },
@@ -120,7 +123,7 @@ export default {
         handleClose(){
             this.form={
                 name:"",
-                radius: '100',
+                radius: '0.1',
                 longitude: "108.386207",
                 latitude: "22.830839"
             };
@@ -128,83 +131,85 @@ export default {
             this.loading=false
         },
         addSubmit(){
-            this.$refs.form.validate((valid) => {
-                if (valid) {
-                    this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                        this.loading = true;
-                        //NProgress.start();
-                        let para = Object.assign({}, this.form);
-                        console.log(para)
-                        let params = {}
-                        params.name = para.name
-                        params.longitude = this.longitude
-                        params.latitude = this.latitude
-                        params.radius = para.radius
-                        params.id =  para.id
-                        params.cid  =  para.cid
-                        console.log(params)
-                        updateElectronicFenceMsg(params).then((res)=>{
-                            if(res.code==0){
-                               this.$message({
-                                    message: '修改成功',
-                                    type: 'success'
-                                });
-                                this.form={
-                                    name:"",
-                                    radius: '100',
-                                    longitude: "108.386207",
-                                    latitude: "22.830839"
-                                };
-                                this.formVisible=false
-                                this.loading=false
-                                this.$emit("selectElec")
-                            }else{
-                                this.$message({
-                                    message: '修改失败',
-                                    type: 'error'
-                                });
-                            }
-                        }).catch(err=>{
-                            this.$message({
-                                message: '修改失败',
-                                type: 'error'
-                            });
-                        })
-                    });
-                }
-            });
+          this.formVisible=false
+            // this.$refs.form.validate((valid) => {
+            //     if (valid) {
+            //         this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            //             this.loading = true;
+            //             //NProgress.start();
+            //             let para = Object.assign({}, this.form);
+            //             console.log(para)
+            //             let params = {}
+            //             params.name = para.name
+            //             params.longitude = this.longitude
+            //             params.latitude = this.latitude
+            //             params.radius = para.radius
+            //             params.id =  para.id
+            //             params.cid  =  para.cid
+            //             console.log(params)
+            //             updateElectronicFenceMsg(params).then((res)=>{
+            //                 if(res.code==0){
+            //                    this.$message({
+            //                         message: '修改成功',
+            //                         type: 'success'
+            //                     });
+            //                     this.form={
+            //                         name:"",
+            //                         radius: '100',
+            //                         longitude: "108.386207",
+            //                         latitude: "22.830839"
+            //                     };
+            //                     this.formVisible=false
+            //                     this.loading=false
+            //                     this.$emit("selectElec")
+            //                 }else{
+            //                     this.$message({
+            //                         message: '修改失败',
+            //                         type: 'error'
+            //                     });
+            //                 }
+            //             }).catch(err=>{
+            //                 this.$message({
+            //                     message: '修改失败',
+            //                     type: 'error'
+            //                 });
+            //             })
+            //         });
+            //     }
+            // });
         },
         removeSubmit(){
-            let id = this.form.id
-            this.$confirm('确认删除吗？', '提示', {}).then(() => {
-                deleteElectronicFence({id:id}).then((res)=>{
-                    if(res.code==0){
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
-                        this.form={
-                            name:"",
-                            radius: '100',
-                            longitude: "108.386207",
-                            latitude: "22.830839"
-                        };
-                        this.formVisible=false
-                        this.loadingD=false
-                        this.$emit("selectElec")
-                    }else{
-                        this.$message({
-                            message: '删除成功',
-                            type: 'error'
-                        });
-                    }
-                }).catch(err=>{
-                    this.$message({
-                        message: '删除成功',
-                        type: 'error'
-                    });
-                })
-            });
+          this.formVisible=false
+            // let id = this.form.id
+            // this.$confirm('确认删除吗？', '提示', {}).then(() => {
+            //     deleteElectronicFence({id:id}).then((res)=>{
+            //         if(res.code==0){
+            //             this.$message({
+            //                 message: '删除成功',
+            //                 type: 'success'
+            //             });
+            //             this.form={
+            //                 name:"",
+            //                 radius: '100',
+            //                 longitude: "108.386207",
+            //                 latitude: "22.830839"
+            //             };
+            //             this.formVisible=false
+            //             this.loadingD=false
+            //             this.$emit("selectElec")
+            //         }else{
+            //             this.$message({
+            //                 message: '删除成功',
+            //                 type: 'error'
+            //             });
+            //         }
+            //     }).catch(err=>{
+            //         this.$message({
+            //             message: '删除成功',
+            //             type: 'error'
+            //         });
+            //     })
+            // });
         }
     },
     mounted(){

@@ -3,7 +3,7 @@
     <div class="enroll-manage-container-title">关联用户</div>
     <div class="main">
       <div class="mainleft">
-        <tree></tree>
+        <tree ref="tree" @getOrganization="getOrganization"></tree>
       </div>
       <div class="shuttle">
         <el-transfer
@@ -52,6 +52,9 @@
       },
       handleClose(){
         this.dialogVisible = false
+      },
+      getOrganization(val){
+        console.log(val)
       }
     },
     mounted() {

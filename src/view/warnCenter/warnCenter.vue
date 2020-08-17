@@ -105,8 +105,6 @@ export default {
     text-align: left !important;
   }
   .is-active {
-      // color: #303133;
-      // background-color: #a5a2a2 !important;
       border-left: 5px solid #409EFF !important;
   }
   a{
@@ -126,8 +124,6 @@ export default {
   .el-menu-vertical-demo{
     width: 100%;
     height: 100%;
-    // background-color: #fff;
-    // box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
   }
 .warningcenter {
   &-container{

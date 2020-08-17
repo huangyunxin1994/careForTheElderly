@@ -1,7 +1,6 @@
 <template>
   <div class="wrap">
     <nav-bar></nav-bar>
-        <div class="newTime">数据最新同步时间： XX年XX月XX日 XX时XX分XX秒</div>
         <div class="enroll-manage-main">
             <div class="enroll-manage-container" ref="container">
                 <div class="enroll-manage-container-handle" >
@@ -9,7 +8,7 @@
                       <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
                       <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">设备状态</label>
-                        <el-select v-model="valueW" style="width: 10vw;" filterable placeholder="请选择" @change="eqstateW">
+                        <el-select v-model="valueEqState" style="width: 10vw;" filterable placeholder="请选择" @change="eqstateW">
                             <el-option
                             v-for="item in eqState"
                             :key="item.value"
@@ -20,7 +19,7 @@
                       </div>
                       <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">所属组织</label>
-                        <el-select v-model="valueW" style="width: 10vw;" filterable placeholder="请选择" @change="changeResultW">
+                        <el-select v-model="valueOrg" style="width: 10vw;" filterable placeholder="请选择" @change="changeResultW">
                             <el-option
                             v-for="item in options"
                             :key="item.value"
@@ -33,7 +32,7 @@
                       </div>
                       <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">是否可用</label>
-                        <el-select v-model="valueW" style="width: 10vw;" filterable placeholder="请选择" @change="isUseW">
+                        <el-select v-model="valueUse" style="width: 10vw;" filterable placeholder="请选择" @change="isUseW">
                             <el-option
                             v-for="item in isUse"
                             :key="item.value"
@@ -48,13 +47,14 @@
                       <el-button type="danger" @click="deletePlatform" :disabled="this.noUseArr.length===0">批量删除</el-button>
                     </div>
                 </div>
+                <div class="newTime">数据最新同步时间： XX年XX月XX日 XX时XX分XX秒</div>
                 <el-table
                     :data="tables.slice((page-1)*pageSize,page*pageSize)"
                     border stripe highlight-current-row
                     size="mini" v-loading="listLoading"
                     @selection-change="selsChange"
                     class="myTable" ref="table"
-                    height="calc(100vh - 300px)"
+                    height="calc(100vh - 275px)"
                     :row-key="getRowKeys">
                      <el-table-column type="selection" width="55" :reserve-selection="true" :selectable="selectTable">
                      </el-table-column>
@@ -72,7 +72,6 @@
 
                  </el-table>
                  <div class="foot">
-                   <div></div>
                    <div class="enroll-check-container-tools">
                        <span class="enroll-check-container-tools-span"></span>
                        <el-pagination
@@ -154,6 +153,9 @@
             ],
             tableAllData: [],
             clientHeight:'',
+            valueEqState:'',
+            valueOrg:'',
+            valueUse:'',
             //设备状态
             eqState:[
               {
@@ -451,18 +453,19 @@
     }
   .wrap{
     background-color: rgb(244, 244, 245);
+    height: 100vh;
   }
   .newTime{
-    width: calc(100vw - 40px);
+
     height: 20px;
-    margin: 20px auto 20px;
+    font-size: 12px;
   }
   .enroll-manage-main {
       width: calc(100vw - 40px);
-      height: calc(100vh - 125px);
+      height: calc(100vh - 105px);
       box-sizing: border-box;
       // box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
-      margin: 0 auto;
+      margin: 20px;
 
       .enroll-manage-container{
           padding: 20px;
@@ -535,7 +538,7 @@
   .foot{
     margin-top: 20px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
   }
 </style>

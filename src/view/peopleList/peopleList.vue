@@ -3,9 +3,7 @@
     <nav-bar></nav-bar>
     <div class="main">
       <div class="mainLeft">
-        <!-- <el-scrollbar class="dashboard-scrollbar"> -->
-          <tree></tree>
-        <!-- </el-scrollbar> -->
+        <tree></tree>
       </div>
       <div class="mainRight">
                 <div class="enroll-manage-container" ref="container">
@@ -13,7 +11,7 @@
                             <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
                             <div class="selectItem">
                               <label for="" class="enroll-manage-container-handle-label">活动状态</label>
-                              <el-select v-model="valueW"  filterable placeholder="请选择" @change="changeResult" class="seclect"  style="width:10vw">
+                              <el-select v-model="activeState"  filterable placeholder="请选择" @change="changeResult" class="seclect"  style="width:10vw">
                                   <el-option
                                   v-for="item in activeOptions"
                                   :key="item.value"
@@ -24,7 +22,7 @@
                             </div>
                             <div class="selectItem">
                               <label for="" class="enroll-manage-container-handle-label">设备状态</label>
-                              <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResultW" class="seclect"  style="width:10vw">
+                              <el-select v-model="equState" filterable placeholder="请选择" @change="changeResultW" class="seclect"  style="width:10vw">
                                   <el-option
                                   v-for="item in equipmentOptions"
                                   :key="item.value"
@@ -106,6 +104,8 @@
         page:1,
         disableda:true,
         pageSize:20,
+        activeState:'',
+        equState:'',
         tableTitle:[
             { title : "姓名", name : "name", type:"link",width:"120"},
             { title : "活动状态", name : "activeState", type:"input",width:'120'},
@@ -118,154 +118,154 @@
         tableData:[
           {
             name:'王',
-            activeState:'正常',
+            activeState:0,
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'001',
           },
           {
             name:'李',
-            activeState:'异常',
+            activeState:'1',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'002',
           },
           {
             name:'李',
-            activeState:'异常',
+            activeState:'1',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'003',
           },
           {
             name:'李',
-            activeState:'异常',
+            activeState:'1',
             equState:0,
             belongPlatform:'南宁总局',
             equAccount:'004',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'0',
             equState:2,
             belongPlatform:'南宁总局',
             equAccount:'005',
           },
           {
             name:'李',
-            activeState:'异常',
+            activeState:'1',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'006',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'0',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'007',
           },
           {
             name:'李',
-            activeState:'异常',
+            activeState:'1',
             equState:0,
             belongPlatform:'南宁总局',
             equAccount:'008',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'0',
             equState:2,
             belongPlatform:'南宁总局',
             equAccount:'009',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'1',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'010',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'0',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'011',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'1',
             equState:0,
             belongPlatform:'南宁总局',
             equAccount:'012',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'0',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'013',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'0',
             equState:2,
             belongPlatform:'南宁总局',
             equAccount:'014',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'0',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'015',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'0',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'016',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'0',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'017',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'0',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'018',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'0',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'019',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'0',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'020',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'0',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'021',
           },
           {
             name:'李',
-            activeState:'正常',
+            activeState:'0',
             equState:1,
             belongPlatform:'南宁总局',
             equAccount:'022',
@@ -279,11 +279,11 @@
               label: '全部'
             },
             {
-              value: '1',
+              value: '0',
               label: '正常'
             },
             {
-              value: '0',
+              value: '1',
               label: '异常'
             },
         ],
@@ -324,7 +324,7 @@
           else if(name=='multiplexMark')
            return value == 1 ? '是' : value == 0 ? '否' : '';
           else if(name=='activeState')
-           return value == '正常' ? '<span style="color:rgb(112, 182, 3)">正常</span>' :'<span style="color:#e6a23c">异常</span>';
+           return value == '0' ? '<span style="color:rgb(112, 182, 3)">正常</span>' :'<span style="color:#e6a23c">异常</span>';
           else if(name=='equState')
            return value == 0 ? '<span style="color:#909399">离线</span>' :( value == 1 ? '<span style="color:rgb(112, 182, 3)">在线</span>' : ( value == 2 ? '<span style="color:#e6a23c">低电量</span>' : '' ));
           else

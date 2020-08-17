@@ -20,14 +20,15 @@
       <el-form-item style="width:100%;">
         <el-button  class="login-button" @click.native.prevent="handleSubmit2" :loading="logining">登录</el-button>
       </el-form-item>
-      <!-- <verify-idcard ref="verifyId" ></verify-idcard> -->
     </el-form>
   </div>
 </template>
 <script>
+  import {Debounce} from '@/utils/index.js'
+  import { requestLogin } from '@/api/api.js';
   export default{
     components:{
-      
+
     },
     data(){
       return{
@@ -51,9 +52,74 @@
       }
     },
     methods:{
-      
-      handleSubmit2(){
-        this.$router.push({ path: '/bulletinboard' });
+
+      // handleSubmit2(){
+      //   this.$router.push({ path: '/bulletinboard' });
+      // },
+      handleSubmit2: Debounce(function() {
+        var _this = this;
+        this.$refs.ruleForm2.validate((valid) => {
+            if (valid) {
+                this.logining = true;
+                var loginParams = { account: this.ruleForm2.account, password: this.ruleForm2.checkPass};//普通用户传2
+                requestLogin(loginParams).then(data => {
+                    this.logining = false;
+                    if(data.code == 0){
+      						let {user} = data.data
+                        sessionStorage.setItem('user', JSON.stringify(user));
+
+                        this.$router.push({ path: '/bulletinboard' });
+                        this.$message({
+                          message: "登录成功",
+                          type: 'success'
+                        });
+                    }else{
+                        this.$message({
+                          message: data.msg,
+                          type: 'error'
+                        });
+                    }
+              });
+          } else {
+              return false;
+          }
+        });
+        if(_this.checked == true){
+          // console.log("checked == true");
+          _this.setCookie(_this.ruleForm2.account,_this.ruleForm2.checkPass,7)
+        }else{
+          // console.log("清空Cookie");
+          _this.clearCookie();
+        }
+      },300),
+      //设置cookie
+      setCookie(c_name, c_pwd, exdays){
+      		var exdate = new Date(); //获取时间
+        exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays); //保存的天数
+        //字符串拼接cookie
+        window.document.cookie =
+      			"userName" + "=" + c_name + ";path=/;expires=" + exdate.toGMTString();
+      		window.document.cookie =
+      			"userPwd" + "=" + c_pwd + ";path=/;expires=" + exdate.toGMTString();
+      },
+      //读取cookie
+      getCookie(){
+      		if(document.cookie.length > 0){
+      			var arr = document.cookie.split("; "); //这里显示的格式需要切割一下自己可输出看下
+      			// console.log(arr)
+      			for (var i = 0; i < arr.length; i++) {
+      			  var arr2 = arr[i].split("="); //再次切割
+      			  //判断查找相对应的值
+      			  if (arr2[0] == "userName") {
+      				this.ruleForm2.account = arr2[1]; //保存到保存数据的地方
+      			  } else if (arr2[0] == "userPwd") {
+      				this.ruleForm2.checkPass = arr2[1];
+      			  }
+      			}
+      		}
+      },
+      clearCookie: function() {
+      this.setCookie("", "", -1); //修改2值都为空，天数为负1天就好了
       },
     },
     mounted() {

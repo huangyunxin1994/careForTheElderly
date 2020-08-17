@@ -11,7 +11,15 @@
               <div><span class="contain-head-mes-name">张三</span></div>
               <div class="contain-head-mes-state">
                 <div class="contain-head-mes-state-item"><i class="iconfont icon-bushu" style="color: #f8b62e;;"></i><span>800步</span></div>
-                <div class="contain-head-mes-state-item"><i class="iconfont icon-electricquantity2dianchidianliang" style="color: #f8b62e;;"></i><span>低电</span></div>
+                <div class="contain-head-mes-state-item">
+                  <i class="iconfont icon-electricquantity2dianchidianliang" style="color: #f8b62e;;"></i><span>低电</span>
+                  <!-- <div style="display: flex;justify-content: flex-start;align-items: center;">
+                    <div style="width: 20px; height: 10px;">
+                      <battery ref="battery"></battery>
+                    </div>
+                    <span>低电</span>
+                  </div> -->
+                </div>
               </div>
             </div>
             <div class="contain-head-detais">
@@ -156,13 +164,15 @@
   import home from '@/icons/png/jia.png'
   import dian from '@/icons/png/dian.png'
   import person from '@/icons/png/personw.png'
+  import Battery from '@/components/battery/battery.vue'
   export default {
     components:{
       NavBar,
       MyMap,
       WriteResult,
       myDate,
-      GuardianMess
+      GuardianMess,
+      Battery
     },
     data(){
       return{
@@ -330,7 +340,7 @@
       writeResult(){
         this.$refs.WriteResult.dialogHandleResult = true
       },
-     
+
       //查看所有监护人
       searchRuardian(){
         this.$refs.guardianMess.dialogVisible = true
