@@ -3,7 +3,7 @@
     <el-dialog :title="title"  :visible.sync="dialogVisible" center :append-to-body='true' :before-close="handleClose" :lock-scroll="false" :close-on-click-modal="false" width="1000px">
       <!-- <el-scrollbar style="width:100%;height:55vh;"> -->
       <el-table
-          :data="tableData.slice((page-1)*pageSize,page*pageSize)"
+          :data="fData.slice((page-1)*pageSize,page*pageSize)"
           border stripe highlight-current-row
           size="mini" v-loading="listLoading"
           class="myTable" ref="table"
@@ -39,7 +39,7 @@
          						:current-page="page"
          						:page-sizes="[10, 15, 20, 25]"
          						:page-size="pageSize"
-         						:total="tableData.length" >
+         						:total="fData.length" >
               </el-pagination>
          </div>
        </div>
@@ -49,9 +49,12 @@
 </template>
 
 <script>
-  export default{
-    components:{
-
+  export default {
+    props:{
+      fData:Array,
+      default: () => {
+					return []
+			}
     },
     data(){
       return{
@@ -63,96 +66,10 @@
         pageSize:20,
         tableTitle:[
           {title:'姓名',name:'name',type:'input',width:'100'},
-          {title:'对老人称呼',name:'relation',type:'input',width:'120'},
-          {title:'联系号码',name:'ophoneNum',type:'input',width:'150'},
-          {title:'身份证号码',name:'IDCardNum',type:'input',width:'200'},
-          {title:'家庭住址',name:'homeAddress',type:'input',minwidth:'300'}
-        ],
-        tableData:[
-          {
-            name:'王',
-            relation:'父子',
-            ophoneNum:'15625478569',
-            IDCardNum:'110101199003076253',
-            homeAddress:'广西南宁市青秀区德利国际'
-          },
-          {
-            name:'王',
-            relation:'父子',
-            ophoneNum:'15625478569',
-            IDCardNum:'110101199003076253',
-            homeAddress:'广西南宁市青秀区德利国际'
-          },
-          {
-            name:'王',
-            relation:'父子',
-            ophoneNum:'15625478569',
-            IDCardNum:'110101199003076253',
-            homeAddress:'广西南宁市青秀区德利国际'
-          },
-          {
-            name:'王',
-            relation:'父子',
-            ophoneNum:'15625478569',
-            IDCardNum:'110101199003076253',
-            homeAddress:'广西南宁市青秀区德利国际'
-          },
-          {
-            name:'王',
-            relation:'父子',
-            ophoneNum:'15625478569',
-            IDCardNum:'110101199003076253',
-            homeAddress:'广西南宁市青秀区德利国际'
-          },
-          {
-            name:'王',
-            relation:'父子',
-            ophoneNum:'15625478569',
-            IDCardNum:'110101199003076253',
-            homeAddress:'广西南宁市青秀区德利国际'
-          },
-          {
-            name:'王',
-            relation:'父子',
-            ophoneNum:'15625478569',
-            IDCardNum:'110101199003076253',
-            homeAddress:'广西南宁市青秀区德利国际'
-          },
-          {
-            name:'王',
-            relation:'父子',
-            ophoneNum:'15625478569',
-            IDCardNum:'110101199003076253',
-            homeAddress:'广西南宁市青秀区德利国际'
-          },
-          {
-            name:'王',
-            relation:'父子',
-            ophoneNum:'15625478569',
-            IDCardNum:'110101199003076253',
-            homeAddress:'广西南宁市青秀区德利国际'
-          },
-          {
-            name:'王',
-            relation:'父子',
-            ophoneNum:'15625478569',
-            IDCardNum:'110101199003076253',
-            homeAddress:'广西南宁市青秀区德利国际'
-          },
-          {
-            name:'王',
-            relation:'父子',
-            ophoneNum:'15625478569',
-            IDCardNum:'110101199003076253',
-            homeAddress:'广西南宁市青秀区德利国际'
-          },
-          {
-            name:'王',
-            relation:'父子',
-            ophoneNum:'15625478569',
-            IDCardNum:'110101199003076253',
-            homeAddress:'广西南宁市青秀区德利国际'
-          }
+          {title:'对老人称呼',name:'relationship',type:'input',width:'120'},
+          {title:'联系号码',name:'phone',type:'input',width:'150'},
+          {title:'身份证号码',name:'idCard',type:'input',width:'200'},
+          {title:'家庭住址',name:'address',type:'input',minwidth:'300'}
         ],
         tables:[]
       }

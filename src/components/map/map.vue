@@ -300,6 +300,7 @@
       },
       //定位
       movePosBypoint(x,y){
+        console.log(x,y)
         let that = this
         let point = new BMap.Point(x,y);
         this.map.panTo(point);

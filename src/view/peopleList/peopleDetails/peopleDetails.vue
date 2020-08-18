@@ -8,11 +8,11 @@
           <div class="mainleft">
             <!-- <el-avatar :size="70" :src="circleUrl"></el-avatar> -->
             <div class="contain-head-mes">
-              <div><span class="contain-head-mes-name">张三</span></div>
+              <div><span class="contain-head-mes-name">{{eData.name}}</span></div>
               <div class="contain-head-mes-state">
-                <div class="contain-head-mes-state-item"><i class="iconfont icon-bushu" style="color: #f8b62e;;"></i><span>800步</span></div>
+                <div class="contain-head-mes-state-item"><i class="iconfont icon-bushu" style="color: #f8b62e;;"></i><span>{{eData.stepNumber}}步</span></div>
                 <div class="contain-head-mes-state-item">
-                  <i class="iconfont icon-electricquantity2dianchidianliang" style="color: #f8b62e;;"></i><span>低电</span>
+                  <i class="iconfont icon-electricquantity2dianchidianliang" style="color: #f8b62e;;"></i><span>{{eData.electricQuantity}}%</span>
                   <!-- <div style="display: flex;justify-content: flex-start;align-items: center;">
                     <div style="width: 20px; height: 10px;">
                       <battery ref="battery"></battery>
@@ -25,17 +25,17 @@
             <div class="contain-head-detais">
               <div class="top-detais">
                   <div class="baseMess">
-                  <i class="iconfont icon-shoubiao" style="color: #f8b62e;"></i><span>465467984546456</span>
+                  <i class="iconfont icon-shoubiao" style="color: #f8b62e;"></i><span>{{eData.equipmentCode}}</span>
                 </div>
                 <div class="baseMess">
-                  <i class="iconfont icon-shenfenzhenghao" style="color: #f8b62e;"></i><span>524512563256235698</span>
+                  <i class="iconfont icon-shenfenzhenghao" style="color: #f8b62e;"></i><span>{{eData.idCard}}</span>
                 </div>
                 <div class="baseMess">
-                  <i class="iconfont icon-dianhua" style="color: #f8b62e;"></i><span>15685458569</span>
+                  <i class="iconfont icon-dianhua" style="color: #f8b62e;"></i><span>{{eData.sim}}</span>
                 </div>
               </div>
               <div class="baseMess">
-                <i class="iconfont icon-dizhi" style="color: #f8b62e;"></i><span>南宁市青秀区东葛路长</span>
+                <i class="iconfont icon-dizhi" style="color: #f8b62e;"></i><span>{{eData.address}}</span>
               </div>
             </div>
           </div>
@@ -47,11 +47,11 @@
             <div class="contain-head-phone-detais">
               <div>
                 <div class="contain-head-phone-detais-base">
-                  <div class="familyName">张小二</div>
-                  <div class="phone"><i class="iconfont icon-dianhua" style="color: #f8b62e;"></i><span>15685458569</span></div>
+                  <div class="familyName">{{mData.name}}</div>
+                  <div class="phone"><i class="iconfont icon-dianhua" style="color: #f8b62e;"></i><span>{{mData.phone}}</span></div>
                 </div>
                 <div>
-                  <i class="iconfont icon-dizhi" style="color: #f8b62e;"></i><span>南宁市青秀区东葛路长</span>
+                  <i class="iconfont icon-dizhi" style="color: #f8b62e;"></i><span>{{mData.address}}</span>
                 </div>
               </div>
 
@@ -62,10 +62,18 @@
         <el-main class="main">
           <div class="picWrap">
           <div class="selectTime">
-              <my-date @getData="setDateTime" :size="'small'"></my-date>
+              <my-date @getChartData="getChartData" :size="'small'"></my-date>
           </div>
-            <div id="heartrate" class="echartItem" :class="{'echartItemAlert':heartrate==1}" style="margin-bottom:20px"/>
-            <div id="bloodpress" class="echartItem" :class="{'echartItemAlert':bloodpress==1}"/>
+            <div id="" class="echartNoData"  style="margin-bottom:20px" v-show="heart.length==0">
+              <div class="echartNoData-title">心率</div>
+              <div class="echartNoData-result">暂无数据</div>
+            </div>
+            <div id="heartrate" class="echartItem" :class="{'echartItemAlert':heartrate==1}" style="margin-bottom:20px" v-show="heart.length>0"/>
+            <div id="" class="echartNoData"  style="margin-bottom:20px" v-show="booldH.length==0" >
+              <div class="echartNoData-title">血压</div>
+              <div class="echartNoData-result">暂无数据</div>
+            </div>
+            <div id="bloodpress" class="echartItem" :class="{'echartItemAlert':bloodpress==1}" v-show="booldH.length>0"/>
         </div>
           <div class="mapWrap">
 
@@ -84,10 +92,10 @@
               </div>
               <div class="mapPictrue">
                 <div class="map-location">
-                 <el-tag type="primary" >最新地址获取时间:2020年7月18日 18时54分</el-tag>
+                 <el-tag type="primary" >最新地址获取时间:{{pointDate}}</el-tag>
                 </div>
                  <div class="mapPictrue-icon" style="" @click="getNowAdress">
-                    <i class="el-icon-aim" ></i>
+                    <i class="el-icon-aim"></i>
                   </div>
                 <my-map ref="map" :center="center" :markers="markers" :polylines="polylines"></my-map>
               </div>
@@ -95,52 +103,26 @@
             <div class="mapContentRight">
               <div class="warnList">
                 <div class="warnListTitle">预警列表</div>
-                <el-scrollbar style="height:calc(100% - 30px)">
-                  <div class="warnContent">
+                <div class="warnNoList" style="height:calc(100% - 30px)" v-show="warnList.length == 0">
+                  暂无预警
+                </div>
+                <el-scrollbar style="height:calc(100% - 30px)" v-show="warnList.length > 0">
+                  <div class="warnContent" v-for="item in warnList" :key="item.id">
                     <div class="warnContent-top">
-                      <span class="warnTime">2020-3-23 13:13:00 </span>
+                      <span class="warnTime">{{item.alertTime}} </span>
                       <div>
                         <el-tooltip content="定位" placement="top">
                            <i class="iconfont icon-dingwei" style="color:"></i>
                         </el-tooltip>
                       </div>
                     </div>
-                    <p class="warnName">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX围栏</p>
+                    <p class="warnName">{{item.fenceName}}</p>
                     <div class="warnBtn">
-                      <el-button type="danger" size="mini">忽略</el-button>
-                      <el-button type="danger" size="mini" @click="writeResult">填写处理结果</el-button>
+                      <el-button type="danger" size="mini" @click="ignoreResult(item.id)">忽略</el-button>
+                      <el-button type="danger" size="mini" @click="writeResult(item.id)">填写处理结果</el-button>
                     </div>
                   </div>
-                   <div class="warnContent">
-                    <div class="warnContent-top">
-                      <span class="warnTime">2020-3-23 13:13:00 </span>
-                      <div>
-                        <el-tooltip content="定位" placement="top">
-                           <i class="iconfont icon-dingwei" style="color:"></i>
-                        </el-tooltip>
-                      </div>
-                    </div>
-                    <p class="warnName">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX围栏</p>
-                    <div class="warnBtn">
-                      <el-button type="danger" size="mini">忽略</el-button>
-                      <el-button type="danger" size="mini" @click="writeResult">填写处理结果</el-button>
-                    </div>
-                  </div>
-                   <div class="warnContent">
-                    <div class="warnContent-top">
-                      <span class="warnTime">2020-3-23 13:13:00 </span>
-                      <div>
-                        <el-tooltip content="定位" placement="top">
-                           <i class="iconfont icon-dingwei" style="color:"></i>
-                        </el-tooltip>
-                      </div>
-                    </div>
-                    <p class="warnName">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX围栏</p>
-                    <div class="warnBtn">
-                      <el-button type="danger" size="mini">忽略</el-button>
-                      <el-button type="danger" size="mini" @click="writeResult">填写处理结果</el-button>
-                    </div>
-                  </div>
+                  
                  </el-scrollbar>
               </div>
             </div>
@@ -149,8 +131,8 @@
         </el-main>
       </el-container>
     </div>
-    <write-result ref="WriteResult"></write-result>
-    <guardian-mess ref="guardianMess"></guardian-mess>
+    <write-result ref="WriteResult" @removeWarn="removeWarn"></write-result>
+    <guardian-mess ref="guardianMess" :fData="fData"></guardian-mess>
   </div>
 </template>
 
@@ -165,6 +147,8 @@
   import dian from '@/icons/png/dian.png'
   import person from '@/icons/png/personw.png'
   import Battery from '@/components/battery/battery.vue'
+  import { elderlyStatus,equipmentAlert,familymembers,locationTracking,BloodPressure,dealEquipmentAlert } from '@/api/api'
+  import { parseTime } from "@/utils/index.js"
   export default {
     components:{
       NavBar,
@@ -176,28 +160,16 @@
     },
     data(){
       return{
+        eid:"",//老人id
+        fData:[],//老人家属信息
+        eData:{},//老人与设备信息
+        mData:{},//主监护人信息
+        warnList:"",//老人预警列表
         center:{
           longitude:"116.408",
           latitude:"39.919",
         },
-        markers:[
-          {
-          longitude:"116.404",
-          latitude:"39.915",
-          icon:{
-            name:home,
-            size:[48, 48],
-            anchor:[24, 48]
-          }
-        },{
-          longitude:"116.414",
-          latitude:"39.923",
-          icon:{
-            name:person,
-            size:[62, 48],
-            anchor:[24, 48]
-          }
-        }],
+        markers:[],
         polylines:[
 
         ],
@@ -205,9 +177,13 @@
         state:1,
         time:'',
         time1:'',//选择时间段
-        heartrate:'1',
-        bloodpress:'1',
-        time:["00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
+        heartrate:'0',
+        bloodpress:'0',
+        heart:[],
+        booldH:[],
+        booldL:[],
+        time:[],
+        pointDate:""
       }
     },
     methods:{
@@ -218,9 +194,9 @@
           this.dateTime=""
 
       },
+      //绘制图
       drawChart(){
         let heartrate = echarts.init(document.getElementById('heartrate'));
-        let bloodpress = echarts.init(document.getElementById('bloodpress'));
         let option3={
             title: {text: '心率'},
             tooltip:{trigger: 'axis',},
@@ -245,7 +221,7 @@
             series: [{
                 name:"今日",
                 // data: this.heartRateT,
-                data:[80,90,62,77,55,40,66,55,89,142,163,123,144,123,144,22,14,88,46,23],
+                data:this.heart,
                 type: 'line',
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
@@ -270,7 +246,8 @@
                 }
             }]
         }
-        let option4={
+        let bloodpress = echarts.init(document.getElementById('bloodpress'));
+         let option4={
             title: {text: '血压'},
             tooltip:{trigger: 'axis',},
             legend: {
@@ -294,7 +271,7 @@
             series: [{
                 name:"高压",
                 // data: this.systolicPressureT,
-                data:[80,90,62,77,55,40,66,55,89,142,163,123,144,123,144,22,14,88,46,23],
+                data:this.booldH,
                 type: 'line',
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
@@ -320,7 +297,7 @@
             },
             {
                 name:"低压",
-                data: this.diastolicPressureT,
+                data: this.booldL,
                 type: 'line',
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#409EFF',
@@ -329,41 +306,200 @@
             }
             ]
         }
-        heartrate.setOption(option3);
         bloodpress.setOption(option4);
+        heartrate.setOption(option3);
         window.onresize =function(){
             heartrate.resize()
-            bloodpress.resize()
+             bloodpress.resize()
         }
       },
-      //填写处理结果
-      writeResult(){
-        this.$refs.WriteResult.dialogHandleResult = true
+      //忽略
+      ignoreResult(id){
+          this.$confirm('确认忽略该预警信息吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let user = JSON.parse(sessionStorage.getItem("user"))
+          dealEquipmentAlert({eid:id,uid:user.userId,handleRecord :'忽略'}).then(res=>{
+            if(res.code == 0){
+              this.$message({
+                message: '忽略成功',
+                type: 'success'
+              });
+             this.removeWarn(id)
+            }else{
+              this.$message({
+              message: res.msg,
+              type: 'error'
+            });
+            }
+          }).catch(err=>{
+             this.$message({
+              message: res.msg,
+              type: 'error'
+            });
+          })
+        }).catch(() => {
+                  
+        });
+         
       },
-
+      //填写处理结果
+      writeResult(id){
+        if(id&&id!=""){
+          this.$refs.WriteResult.id = id
+          this.$refs.WriteResult.dialogHandleResult = true
+        }else{
+          this.$message({
+            message: '请先选择一条预警记录',
+            type: 'warning'
+          });
+        }
+        
+      },
+      removeWarn(id){
+         this.warnList.splice(this.warnList.findIndex(i=>i.id==id),1)
+      },
       //查看所有监护人
       searchRuardian(){
         this.$refs.guardianMess.dialogVisible = true
       },
       //定位到当前位置
       getNowAdress(){
-        let x = "116.414"
-        let y = "39.923"
-        this.$refs.map.movePosBypoint(x,y)
+        locationTracking({eid:this.eid}).then(res=>{
+        if(res.code == 0){
+            
+            let para = {
+              longitude:res.data.coordinate.longitude,
+              latitude:res.data.coordinate.latitude,
+              icon:{
+                name:person,
+                size:[62, 48],
+                anchor:[24, 48]
+              }
+            }
+            this.markers=[]
+             this.markers.push(para)
+            this.$refs.map.movePosBypoint(res.data.coordinate.longitude,res.data.coordinate.latitude)
+            this.pointDate = res.data.coordinate.createTime
+          }
+      }).catch(err=>{
+          console.log(err)
+        })
+      },
+      getChartData(time){
+        time = parseTime(time,'{y}-{m}-{d}')
+        console.log(time)
+          BloodPressure({eid:this.eid,time:time }).then(res=>{
+          if(res.code == 0){
+              if(res.data.data&&res.data.data.length>0){
+                let heart=[],booldH=[],booldL=[],time=[]
+                res.data.data.forEach(i => {
+                 heart.push(i.heartRate)
+                  booldH.push(i.systolicPressure)
+                  booldL.push(i.diastolicPressure)
+                  console.log(i.hours.substring(0,i.hours.lastIndexOf(':')))
+                  time.push(i.hours.substring(0,i.hours.lastIndexOf(':')))
+                });
+                this.heart= heart
+                this.booldL= booldL
+                this.booldH= booldH
+                this.time= time
+                this.drawChart()
+              }else{
+                this.heart= []
+                this.booldL= []
+                this.booldH= []
+                this.time= []
+              }
+            }
+          }).catch(err=>{
+            console.log(err)
+        })
       }
     },
-    mounted() {
-      this.drawChart()
-    }
+   async mounted() {
+      this.eid = this.$route.query.id
+      await elderlyStatus({eid:this.eid}).then(res=>{
+          console.log(res)
+          if(res.code == 0){
+            this.eData = res.data.elderly
+            this.mData = res.data.isMain
+           let para = {
+              longitude:res.data.elderly.longitude,
+              latitude:res.data.elderly.latitude,
+              icon:{
+                name:home,
+                size:[48, 48],
+                anchor:[24, 48]
+              }
+            }
+            this.markers.push(para)
+          }
+        }).catch(err=>{
+          console.log(err)
+        })
+      let date = new Date()
+      let time = parseTime(date,'{y}-{m}-{d}')
+      console.log(time)
+      await BloodPressure({eid:this.eid,time:time }).then(res=>{
+        if(res.code == 0){
+            if(res.data.data&&res.data.data.length>0){
+              res.data.data.forEach(i => {
+                this.heart.push(i.heartRate)
+                this.booldH.push(i.systolicPressure)
+                this.booldL.push(i.diastolicPressure)
+                console.log(i.hours.substring(0,i.hours.lastIndexOf(':')))
+                this.time.push(i.hours.substring(0,i.hours.lastIndexOf(':')))
+              });
+            }
+          }
+        }).catch(err=>{
+          console.log(err)
+      })
+      await equipmentAlert({code:this.eData.equipmentCode}).then(res=>{
+        if(res.code == 0){
+            this.warnList = res.data.list
+          }
+      }).catch(err=>{
+          console.log(err)
+        })
+      await familymembers({eid:this.eid}).then(res=>{
+        if(res.code == 0){
+             this.fData = res.data.list
+          }
+      }).catch(err=>{
+          console.log(err)
+        })
+      await locationTracking({eid:this.eid}).then(res=>{
+        if(res.code == 0){
+            this.center.longitude = res.data.coordinate.longitude
+            this.center.latitude = res.data.coordinate.latitude
+            this.pointDate = res.data.coordinate.createTime
+            let para = {
+              longitude:res.data.coordinate.longitude,
+              latitude:res.data.coordinate.latitude,
+              icon:{
+                name:person,
+                size:[62, 48],
+                anchor:[24, 48]
+              }
+            }
+             this.markers.push(para)
+          }
+      }).catch(err=>{
+          console.log(err)
+        })
+      if(this.heart.length>0||(this.booldH.length>0&&this.booldL.length>0))
+        await this.drawChart()
+    },
   }
 </script>
 
 <style lang="scss" scoped>
   ul>li{
     list-style: none;
-  }
-  .el-header{
-    // padding: 0px;
   }
   .wrap{
     background-color: rgb(244, 244, 245);
@@ -534,6 +670,30 @@
         border-radius: 0.8vw;
         padding: 20px;
         box-sizing: border-box;
+        border:1px solid #E4E7ED;
+      }
+      .echartNoData{
+         width: 100%;
+        height: calc(50% - 30px);
+        border-radius: 0.8vw;
+        padding: 20px;
+        box-sizing: border-box;
+        border:1px solid #E4E7ED;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        &-title{
+          font-size: 1vw;
+          font-weight: 700;
+          margin-bottom: 10%;
+
+        }
+        &-result{
+          font-size: 0.8vw;
+          color: #909399;
+          
+        }
       }
       .echartItemAlert{
         // background: rgb(254, 240, 240);
@@ -607,6 +767,12 @@
               font-weight: 600;
               height: 30px;
               color: #ec808d;
+            }
+            .warnNoList{
+              font-size: 1vw;
+              display: flex;
+                align-items: center;
+                justify-content: center;
             }
             .warnContent{
               background-color: #f2f2f2;

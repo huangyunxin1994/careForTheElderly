@@ -26,7 +26,7 @@
 <script>
   import {Debounce} from '@/utils/index.js'
   import { requestLogin } from '@/api/api.js';
-  export default{
+  export default {
     components:{
 
     },
@@ -100,13 +100,14 @@
         window.document.cookie =
       			"userName" + "=" + c_name + ";path=/;expires=" + exdate.toGMTString();
       		window.document.cookie =
-      			"userPwd" + "=" + c_pwd + ";path=/;expires=" + exdate.toGMTString();
+            "userPwd" + "=" + c_pwd + ";path=/;expires=" + exdate.toGMTString();
+            this.getCookie()
       },
       //读取cookie
       getCookie(){
       		if(document.cookie.length > 0){
-      			var arr = document.cookie.split("; "); //这里显示的格式需要切割一下自己可输出看下
-      			// console.log(arr)
+      			var arr =  window.document.cookie.split("; "); //这里显示的格式需要切割一下自己可输出看下
+      			console.log(arr)
       			for (var i = 0; i < arr.length; i++) {
       			  var arr2 = arr[i].split("="); //再次切割
       			  //判断查找相对应的值

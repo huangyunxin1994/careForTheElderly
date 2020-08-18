@@ -78,8 +78,8 @@
             </div>
       </div>
     </div>
-    <guardian-mess ref='guardianMess'></guardian-mess>
-    <dialog-people-mess ref='peopleMess'></dialog-people-mess>
+    <guardian-mess ref='guardianMess' :fData="fData"></guardian-mess>
+    <dialog-people-mess ref='peopleMess' :eData="eData" :phoneNumbers="phoneNumbers"></dialog-people-mess>
   </div>
 </template>
 
@@ -88,7 +88,8 @@
   import Tree from '@/components/tree/tree_.vue'
   import GuardianMess from '@/components/dialogGuardianMess/dialogGuardianMess.vue'
   import DialogPeopleMess from '@/components/dialogPeopleMess/dialogPeopleMess.vue'
-  export default{
+  import { PersonnelStatus,familymembers,elderlyStatus } from '@/api/api'
+  export default {
     components:{
       NavBar,
       Tree,
@@ -104,14 +105,17 @@
         page:1,
         disableda:true,
         pageSize:20,
+        eData:{},
+        phoneNumbers:[],
+        fData:[],
         activeState:'',
         equState:'',
         tableTitle:[
             { title : "姓名", name : "name", type:"link",width:"120"},
-            { title : "活动状态", name : "activeState", type:"input",width:'120'},
-            { title : "设备状态", name : "equState", type:"input",width:'120'},
-            { title : "所属组织", name : "belongPlatform", type:"input",minwidth:'300'},
-            { title : "设备编号", name : "equAccount", type:"input",minwidth:'200'},
+            { title : "活动状态", name : "warning", type:"input",width:'120'},
+            { title : "设备状态", name : "equipmentState", type:"input",width:'120'},
+            { title : "所属组织", name : "organizationName", type:"input",minwidth:'300'},
+            { title : "设备编号", name : "code", type:"input",minwidth:'200'},
             // { title : "监护人信息",type : "input", name:"guardianMess",button:[],width:'120'},
             { title : "操作", type : "handle",button:[],width:'255'}
         ],
@@ -323,9 +327,9 @@
            return value == 1 ? '男' : value == 0 ? '女' : '';
           else if(name=='multiplexMark')
            return value == 1 ? '是' : value == 0 ? '否' : '';
-          else if(name=='activeState')
+          else if(name=='warning')
            return value == '0' ? '<span style="color:rgb(112, 182, 3)">正常</span>' :'<span style="color:#e6a23c">异常</span>';
-          else if(name=='equState')
+          else if(name=='equipmentState')
            return value == 0 ? '<span style="color:#909399">离线</span>' :( value == 1 ? '<span style="color:rgb(112, 182, 3)">在线</span>' : ( value == 2 ? '<span style="color:#e6a23c">低电量</span>' : '' ));
           else
            return value;
@@ -381,25 +385,52 @@
       },
       //查看监护人信息
       handleSearch(index,val){
-        this.$refs.guardianMess.dialogVisible = true
+         familymembers({eid:val.id}).then(res=>{
+        if(res.code == 0){
+             this.fData = res.data.list
+             this.$refs.guardianMess.dialogVisible = true
+          }
+      }).catch(err=>{
+          console.log(err)
+        })
+        
       },
       //人员与设备信息
       peopleAndEquiment(index,val){
+        elderlyStatus({eid:val.id}).then(res=>{
+          console.log(res)
+          if(res.code == 0){
+            this.$refs.peopleMess.initData(res.data)
+            //   this.$refs.peopleMess.form = res.data.elderly
+            // this.$refs.peopleMess.phoneNumbers = res.data.phoneNumbers
+          }
+        }).catch(err=>{
+          console.log(err)
+        })
         this.$refs.peopleMess.dialogVisible = true
       },
-      userDetails(){
+      userDetails(index,row){
         this.$router.push(
         {
-            path: '/peopleDetails'
-            // query: {
-            //   id: val.keyUserid,
-            //   type:'2'
-            // }
+            path: '/peopleDetails',
+            query: {
+              id: row.id
+            }
         })
       },
       //将tabledata的值传给tableAllData(到真正对接时就不用)
       getTableAllData(){
-        this.tableAllData = this.tableData
+       let para = JSON.parse(sessionStorage.getItem('user'))
+       console.log(para)
+        PersonnelStatus({userId:para.userId}).then(res=>{
+          if(res.code==0){
+            this.tableData = res.data.list
+             this.tableAllData = this.tableData
+          }
+        }).catch(err=>{
+
+        })
+       
       }
     },
     mounted() {
