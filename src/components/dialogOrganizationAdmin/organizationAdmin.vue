@@ -6,10 +6,11 @@
         <el-input v-model="form.organization" placeholder="请输入组织名称"></el-input>
       </el-form-item>
       <el-form-item label="上级组织" prop="superiorOrganization" required>
-        <el-select v-model="form.superiorOrganization" placeholder="请选择上级组织">
+        <!-- <el-select v-model="form.superiorOrganization" placeholder="请选择上级组织">
           <el-option label="南宁总局" value="shanghai"></el-option>
           <el-option label="青秀分局" value="beijing"></el-option>
-        </el-select>
+        </el-select> -->
+		<el-input v-model="form.superiorOrganization" placeholder="请输入组织名称" disabled></el-input>
       </el-form-item>
       <el-form-item label="首页地图初始经纬度" prop="address" required>
         <!-- <el-input v-model="form.address" placeholder="请输入经纬度"></el-input> -->
@@ -30,27 +31,13 @@
 <script>
   import MyMap from '@/components/map/map.vue'
   import GetAdress from '@/components/getAdress/getAdress.vue'
+  import {newOrg,changeOrg,deleteOrg} from '@/api/api.js'
   export default{
     components:{
       MyMap,
       GetAdress
     },
     data(){
-      // var validateName = (rule, value, callback) => {
-      //   if(value == ''){
-      //     callback(new Error('请输入组织名称'));
-      //   }
-      // };
-      // var validateOrg = (rule, value, callback) => {
-      //   if(value == ''){
-      //     callback(new Error('请选择上级组织'));
-      //   }
-      // };
-      // var validateAddress = (rule, value, callback) => {
-      //   if(value == ''){
-      //     callback(new Error('请输入初始经纬度'));
-      //   }
-      // };
       return{
         formRule:{
             name: [{ required: true, message: '请输入组织名称', trigger: 'blur' }],
@@ -97,7 +84,12 @@
                 })
       },
       //新建组织
-
+	  newOrganization(val){
+		this.dialogVisible = true
+		this.addBtn = true
+		this.removeBtn = false
+		this.form.superiorOrganization = val.name
+	  },
       //编辑组织
       editOrganization(val){
         this.dialogVisible = true

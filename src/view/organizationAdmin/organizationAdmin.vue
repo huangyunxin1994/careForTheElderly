@@ -80,6 +80,7 @@
   import DialogOrganization from '@/components/dialogOrganizationAdmin/organizationAdmin.vue'
   import DialogChangePass from '@/components/dialogOrganizationAdmin/changePass.vue'
   import EditeditMess from '@/components/dialogOrganizationAdmin/editeditMess.vue'
+  import {newOrg,changeOrg} from '@/api/api.js'
   export default{
     components:{
       NavBar,
@@ -394,6 +395,12 @@
         this.$refs.organization.dialogVisible = true
         this.$refs.organization.addBtn = true
         this.$refs.organization.removeBtn = false
+		if(this.organizationName == ''){
+		  this.$refs.organization.newOrganization(val)
+		}else{
+			console.log(this.organizationName)
+		  this.$refs.organization.newOrganization(this.organizationName)
+		}
       },
       //编辑组织
       adminOrganization(val){
