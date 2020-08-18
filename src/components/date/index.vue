@@ -66,7 +66,7 @@ export default {
   methods: {
      // 父组件获取数据
     handleChange (val) {
-      this.$emit("getData",val);
+      this.$emit("getChartData",val);
     },
     // 请求接口
     getBaseControlDays: async function() {

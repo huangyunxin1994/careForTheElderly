@@ -139,17 +139,9 @@ export function puts (url, data) {
  * @returns {Promise}
  */
 export function put (url, data = {}) {
+  let para = Qs.stringify(data)
   return new Promise((resolve, reject) => {
-      //console.log(data)
-      for(let key in data){
-		  if(url.indexOf('?')>-1){
-			  url=url+'&'+ key +'='+ data[key]
-		  }else{
-			  url=url+'?'+ key +'='+ data[key]
-		  }
-          
-      }
-    service.put(url)
+    service.put(url, para)
       .then(response => {
         resolve(response.data)
       }, err => {
@@ -157,7 +149,26 @@ export function put (url, data = {}) {
       })
   })
   }
-  
+  /**
+   * put 方法封装
+   * @param url
+   * @param data
+   * @returns {Promise}
+   */
+  export function putResultful (url, data = {}) {
+    return new Promise((resolve, reject) => {
+        //console.log(data)
+        for(let key in data){
+            url=url+'/'+ data[key]
+        }
+      service.put(url)
+        .then(response => {
+          resolve(response.data)
+        }, err => {
+          reject(err)
+        })
+    })
+  }
   /**
    * delete 方法封装
    * @param url

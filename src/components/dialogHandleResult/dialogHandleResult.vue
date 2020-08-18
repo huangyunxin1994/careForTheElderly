@@ -21,12 +21,14 @@
 </template>
 
 <script>
-  export default{
+import {dealEquipmentAlert} from "@/api/api"
+  export default {
     data() {
       return {
         dialogHandleResult:false,
         changeDataResult:'',
-        textarea: ''
+        textarea: '',
+        id:""
       }
     },
     methods:{
@@ -36,11 +38,27 @@
       },
       sureBtn(){
         if(this.textarea!=""){
-          this.$message({
-            message: '提交成功',
-            type: 'success'
-          });
-          this.dialogHandleResult = false
+          let user = JSON.parse(sessionStorage.getItem("user"))
+          dealEquipmentAlert({eid:this.id,uid:user.userId,handleRecord :this.textarea}).then(res=>{
+            if(res.code == 0){
+              this.$message({
+              message: '提交成功',
+              type: 'success'
+            });
+            this.dialogHandleResult = false
+            this.$emit("removeWarn",this.id)
+            }else{
+              this.$message({
+              message: res.msg,
+              type: 'error'
+            });
+            }
+          }).catch(err=>{
+            this.$message({
+              message: err.msg,
+              type: 'error'
+            });
+          })
         }else{
           this.$message({
             message: '请填写处理结果',

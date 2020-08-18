@@ -8,7 +8,7 @@
         </el-form-item>
         
         <el-form-item label="身份证号" style="text-align: left !important;">
-          <el-input v-model="form.IDCard" readonly></el-input>
+          <el-input v-model="form.idCard" readonly></el-input>
         </el-form-item>
          </div>
          <el-form-item label="所属组织">
@@ -16,10 +16,10 @@
         </el-form-item>
         <div class="swrap">
           <el-form-item label="设备编号">
-            <el-input v-model="form.equipmentNum" readonly></el-input>
+            <el-input v-model="form.equipmentCode" readonly></el-input>
           </el-form-item>
           <el-form-item label="SIM卡号">
-            <el-input v-model="form.SIMNum" readonly></el-input>
+            <el-input v-model="form.sim" readonly></el-input>
           </el-form-item>
         </div>
         <el-form-item label="详细地址">
@@ -35,21 +35,17 @@
     </div>
     <div class="addressList" v-show="!isBaseMess">
       <el-form ref="form" :model="form" label-position="right" class="form" label-width="130px" >
-        <el-form-item label="紧急联系人号码1">
-          <el-input v-model="form.name" readonly></el-input>
-        </el-form-item>
-        <el-form-item label="紧急联系人号码2" >
-          <el-input v-model="form.organization" readonly></el-input>
-        </el-form-item>
-        <el-form-item label="紧急联系人号码3" style="text-align: left !important;">
-          <el-input v-model="form.IDCard" readonly></el-input>
-        </el-form-item>
-        <div class="swrap">
+        <div v-for="(item,index) in sosNumbers" :key="item.id">
+          <el-form-item :label="'紧急联系人号码'+parseInt(index+1)">
+            <el-input v-model="item.number" readonly></el-input>
+          </el-form-item>
+        </div>
+        <div class="swrap" v-for="item in usualNumbers" :key="item.id">
           <el-form-item label="姓名">
-            <el-input v-model="form.equipmentNum" readonly></el-input>
+            <el-input v-model="item.name" readonly></el-input>
           </el-form-item>
           <el-form-item label="号码">
-            <el-input v-model="form.SIMNum" readonly></el-input>
+            <el-input v-model="item.number" readonly></el-input>
           </el-form-item>
         </div>
       </el-form>
@@ -71,34 +67,14 @@
     data(){
       return{
         center:{
-          longitude:"116.404",
-          latitude:"39.915", 
+         
         },
-        markers:[{
-          longitude:"116.404",
-          latitude:"39.915", 
-          icon:{
-            name:home,
-            size:[48, 48],
-            anchor:[24, 48]
-          }
-        }],
-        // polylines:[
-        //   [
-        //     {longitude:"116.399",latitude:"39.910"},
-        //     {longitude:"116.405",latitude:"39.920"},
-        //     {longitude:"116.425",latitude:"39.900"}
-        //   ],
-        //   [
-        //     {longitude:"116.387112",latitude:"39.920977"},
-        //     {longitude:"116.385243",latitude:"39.913063"},
-        //     {longitude:"116.394226",latitude:"39.917988"},
-        //     {longitude:"116.401772",latitude:"39.921364"},
-        //     {longitude:"116.41248",latitude:"39.927893"}
-        //   ],
-        // ],
+        markers:[
+         ],
         dialogVisible:false,
         isBaseMess:true,//判断是否是基本信息，是，则显示基本信息，否则显示紧急联系人
+        sosNumbers:[],
+        usualNumbers:[],
         form: {
           name: '',
           organization: '',
@@ -106,7 +82,8 @@
           equipmentNum: '',
           SIMNum: '',
           address: '',
-        }
+        },
+        phoneNumbers:[]
       }
     },
     methods:{
@@ -118,10 +95,28 @@
       },
       handleClose(){
         this.dialogVisible = false
+      },
+      initData(data){
+        this.form = data.elderly
+        this.sosNumbers = data.phoneNumbers.filter(i=>i.type==2)
+        this.usualNumbers = data.phoneNumbers.filter(i=>i.type==4)
+        this.center.longitude = this.form.longitude
+        this.center.latitude = this.form.latitude
+        let para = {
+            longitude:this.form.longitude,
+            latitude:this.form.latitude, 
+            icon:{
+              name:home,
+              size:[48, 48],
+              anchor:[24, 48]
+            }
+          }
+        this.markers.push(para)
       }
     },
     mounted() {
-
+      
+      console.log(this.center)
     }
   }
 </script>
