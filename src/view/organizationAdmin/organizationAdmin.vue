@@ -429,6 +429,7 @@
       //点击组织
       handleOrg(val){
         this.organizationName = val
+		console.log(val)
       },
     },
     mounted() {

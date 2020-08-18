@@ -26,6 +26,7 @@
 </template>
 <script>
 import { parseTime } from '@/utils/index.js'
+import { addRailDeploy } from '@/api/api.js'
 import MyMap from '@/components/map/map.vue'
 import axios from 'axios'
 // import { addElectronicFence,deleteElectronicFence,selectElectronicFenceQuery,updateElectronicFence,selectPosition } from  "@/api/table"
@@ -163,6 +164,10 @@ export default {
             };
             this.formVisible=false
             this.loading=false
+			this.$nextTick(()=>{
+                    this.$refs.form.clearValidate();
+                })
+			this.$refs.getAdress.closeHandle()
         },
         addSubmit(){
             this.$refs.form.validate((valid) => {
@@ -170,15 +175,15 @@ export default {
                     this.$confirm('确认提交吗？', '提示', {}).then(() => {
                         this.loading = true;
                         let para = Object.assign({}, this.form);
-                        console.log(para)
-                        let params = {}
-                        params.name = para.name
-                        params.createTime = parseTime(new Date())
-                        params.longitude = this.longitude
-                        params.latitude = this.latitude
-                        params.radius = para.radius
-                        console.log(params)
-                        addElectronicFence(params).then((res)=>{
+						let user = JSON.parse(sessionStorage.getItem('user'))
+						let electronicFence = {}
+                        electronicFence.name = para.name
+                        electronicFence.longitude = this.longitude
+                        electronicFence.latitude = this.latitude
+                        electronicFence.radius = para.radius
+						electronicFence.createUserid = user.userId
+						console.log(electronicFence)
+                        addRailDeploy(electronicFence).then((res)=>{
                             if(res.code==0){
                                this.$message({
                                     message: '添加成功',

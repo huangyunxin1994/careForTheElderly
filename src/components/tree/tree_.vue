@@ -17,13 +17,14 @@
               :filter-node-method="filterNode"
                node-key="id"
               highlight-current
-              :default-expanded-keys="[0]"
+              :default-expanded-keys="[treeId]"
               ref="tree"></el-tree>
         </el-scrollbar>
       </div>
 </template>
 
 <script>
+import {getOrgList} from '@/api/api.js'
 export default {
   name: 'tree',
   props:{
@@ -46,123 +47,19 @@ export default {
   },
   data(){
     return{
-      filterText:"",
-      isWarnPeople:'',
-      isAllPeople:'primary',
-      data: [
-        {
-          id:0,
-          label:'广西总局',
-          children:[
-            {
-              id:1,
-              label: '南宁公安局',
-              children: [
-                  {
-                    id:11,
-                    label: '仙湖派出所',
-                  },
-                  {
-                    id:12,
-                    label: '南湖派出所',
-                  },
-                  {
-                    id:13,
-                    label: '凤岭派出所',
-                  }
-               ]
-            },
-            {
-              id:2,
-              label: '河池公安局',
-              children: [
-                  {
-                    id:14,
-                    label: '金城江派出所',
-                  },
-                  {
-                    id:15,
-                    label: '天鹅派出所',
-                  },
-                  {
-                    id:16,
-                    label: '都安派出所',
-                  },
-                  {
-                    id:17,
-                    label: '南丹派出所',
-                  },
-                  {
-                    id:18,
-                    label: '巴马派出所',
-                  },
-                  {
-                    id:19,
-                    label: '鹿寨派出所',
-                  },
-                  {
-                    id:20,
-                    label: '南丹派出所',
-                  },
-                  {
-                    id:21,
-                    label: '巴马派出所',
-                  },
-                  {
-                    id:22,
-                    label: '鹿寨派出所',
-                  },
-                  {
-                    id:23,
-                    label: '鹿寨派出所',
-                  },
-                  {
-                    id:24,
-                    label: '鹿寨派出所',
-                  },
-                  {
-                    id:25,
-                    label: '鹿寨派出所',
-                  },
-                  {
-                    id:26,
-                    label: '鹿寨派出所',
-                  },
-                  {
-                    id:27,
-                    label: '鹿寨派出所',
-                  },
-                  {
-                    id:28,
-                    label: '鹿寨派出所',
-                  },
-                  {
-                    id:29,
-                    label: '鹿寨派出所',
-                  },
-                  {
-                    id:30,
-                    label: '鹿寨派出所',
-                  },
-                  {
-                    id:31,
-                    label: '鹿寨派出所',
-                  }
-               ]
-            }
-          ]
-        }
-        ],
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        }
+		filterText:"",
+		isWarnPeople:'',
+		isAllPeople:'primary',
+		data: [],
+		treeId:[],
+		defaultProps: {
+			children: 'children',
+			label: 'name'
+		}
     }
   },
     methods: {
       handleNodeClick(data,node) {
-        // console.log(data);
-        // console.log(node)
         let tree = {
           data:data,
           node:node.parent
@@ -193,12 +90,54 @@ export default {
       adminOrganization(){
         this.$emit("adminOrganization",2)
       },
+	  //获取组织列表
+	  getOrgList(){
+		getOrgList().then((res)=>{
+			let arr=[]
+			if(res.code == 0){
+				let treeData = res.data.data
+				const data = this.toTree(treeData)
+				this.data = data
+			}
+		})
+	  },
+	  //递归
+	  toTree(data) {
+		  let _this = this
+		  // 删除 所有 children,以防止多次调用
+		  data.forEach(function (item) {
+			  delete item.children;
+		  });
+		  // 将数据存储为 以 id 为 KEY 的 map 索引数据列
+		  var map = {};
+		  data.forEach(function (item) {
+			  map[item.id] = item;
+		  });
+		  var val = [];
+		  data.forEach(function (item) {
+			  // 以当前遍历项，的pid,去map对象中找到索引的id
+			  
+			  var parent = map[item.parentId];
+			  // 好绕啊，如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
+			  if (parent) {
+				  (parent.children || ( parent.children = [] )).push(item);
+			  } else {
+				  //如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 val结果集中，作为顶级
+				  val.push(item);
+				  _this.treeId = item.id
+			  }
+		  });
+		  return val;
+	  }
     },
     watch: {
       filterText(val) {
         this.$refs.tree.filter(val);
       }
     },
+	mounted() {
+		this.getOrgList()
+	}
 }
 </script>
 

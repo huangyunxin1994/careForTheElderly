@@ -3,7 +3,7 @@
     <div class="enroll-manage-container-title">关联用户</div>
     <div class="main">
       <div class="mainleft">
-        <tree ref="tree" @getOrganization="getOrganization"></tree>
+        <tree ref="mytree" @getOrganization="getOrganization"></tree>
       </div>
       <div class="shuttle">
         <el-transfer
@@ -21,44 +21,131 @@
 </template>
 
 <script>
+import {getRailDeploy,getOrgList,updateElectronicFence} from '@/api/api.js'
   import Tree from '@/components/tree/relevanseUserTree.vue'
   export default{
     components:{
       Tree
     },
     data(){
-      const generateData = _ => {
-        const data = [];
-        for (let i = 1; i <= 15; i++) {
-          data.push({
-            key: i,
-            label: `备选项 ${ i }`
-          });
-        }
-        return data;
-      };
+      
       return{
         dialogVisible:false,
-        title:'xxx围栏',
-        data: generateData(),
-        value: []
+        title:'',
+        data: [],
+        value: [0],
+		fenceId:'',
+		nowOrg:'',//当前点击了那个组织
       }
     },
     methods:{
       //添加删除成员
       handleChange(value, direction, movedKeys) {
-
-
+		let idArr=movedKeys.join();
+		if(direction=="right"){
+		    let params={}
+		    params.fenceId=this.fenceId
+		    params.elderlyId=idArr
+		    params.type=1
+		    updateElectronicFence(params).then((res)=>{
+		    if(res.code=="0"){
+		        this.$message({
+		        message: '新增成功',
+		        type: 'success'
+		        });
+		    }else{
+		        this.$message({
+					message: '新增失败',
+					type: 'error'
+		        });
+		    }
+		    }).catch(function (error) {
+		        console.log(error);
+		    });
+		}else{
+		    let params={}
+		    params.fenceId=this.fenceId
+		    params.elderlyId=idArr
+		    params.type=2
+		    updateElectronicFence(params).then((res)=>{
+		    if(res.code=="0"){
+		        this.$message({
+		        message: '删除成功',
+		        type: 'success'
+		        });
+		    }else{
+		        this.$message({
+		        message: '删除失败',
+		        type: 'error'
+		        });
+		    }
+		    }).catch(function (error) {
+		        console.log(error);
+		    });
+		}
       },
       handleClose(){
         this.dialogVisible = false
       },
       getOrganization(val){
-        console.log(val)
-      }
+		this.nowOrg = val
+		this.getRailDeploy()
+		// console.log("organizationId:"+this.nowOrg.id)
+      },
+	  handleShow(val){
+		this.title = val.name
+		this.fenceId = val.id
+		// console.log("fenceid:"+this.fenceId)
+		this.dialogVisible = true
+		// this.$refs.mytree.getOrganizationList()
+		this.getOrganizationList()
+	  },
+	  //获取组织列表
+	  getOrganizationList(){
+		  getOrgList().then((res)=>{
+			  if(res.code == 0){
+				  this.$refs.mytree.getData(res.data.data)
+			  }
+		  })
+	  },
+	  //获取电子围栏关联列表信息
+	  getRailDeploy(){
+		  let param = {}
+		  param.fenceId = this.fenceId
+		  param.organizationId = this.nowOrg.id
+		  this.data = []
+		  this.value = []
+		  getRailDeploy(param).then((res)=>{
+			  if(res.code == 0){
+				  let userList = res.data.electronicFenceNotRelationList
+				  let userArr = []
+				  for(let i=0;i<userList.length;i++){
+					  userArr.push({
+						  key:userList[i].id,
+						  label:userList[i].name
+					  })
+				  }
+				  
+				  let myValue = []
+				  let haveUserList = res.data.electronicFenceRelationList
+				  for(let i=0;i<haveUserList.length;i++){
+					  userArr.push({
+						  key:haveUserList[i].id,
+						  label:haveUserList[i].name
+					  })
+					  myValue.push(haveUserList[i].id)
+				  }
+				  
+				  this.data = userArr
+				  this.value = myValue
+				   console.log(this.data)
+				  console.log(this.value)
+			  }
+		  })
+	  }
     },
     mounted() {
-
+		
     }
   }
 </script>

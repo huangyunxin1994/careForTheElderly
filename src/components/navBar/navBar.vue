@@ -69,7 +69,14 @@
       },
       //退出登录
       logout(){
-        this.$router.push('/login')
+		var _this = this;
+		this.$confirm('确认退出吗?', '提示', {
+		}).then(() => {
+		  _this.$router.push('/login');
+		  sessionStorage.removeItem('user');
+		}).catch(() => {
+		
+		});
       },
       // async logout() {
       //   // await this.$store.dispatch('user/logout')

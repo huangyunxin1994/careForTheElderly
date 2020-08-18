@@ -10,11 +10,11 @@
       <el-row :gutter="20">
 
         <el-col :span="6">
-          <div id="chartKeyPerson" style="height:23.5vh;background:#ffffff;padding:20px;"></div>
+          <div id="chartKeyPerson"  class="picItem"></div>
           <br/>
-          <div id="chartManPerson" style="height:23.5vh;background:#ffffff;padding:20px;"></div>
+          <div id="chartManPerson"  class="picItem"></div>
           <br/>
-          <div id="warnMess" style="height:23.5vh;background:#ffffff;padding:20px;">
+          <div id="warnMess"  class="picItem">
             <div class="warnMess-title">预警信息</div>
             <el-scrollbar style="width:100%;height:95%;">
               <div class="warnMess-content" v-for="(i,index) in warnData" :key="index" style="white-space:nowrap">
@@ -30,11 +30,11 @@
             </div>
         </el-col>
         <el-col :span="6">
-          <div id="chartPersonActive" style="height:23.5vh;background:#ffffff;padding:20px;"></div>
+          <div id="chartPersonActive"  class="picItem"></div>
           <br/>
-          <div id="chartMonthWarn" style="height:23.5vh;background:#ffffff;padding:20px;"></div>
+          <div id="chartMonthWarn"  class="picItem"></div>
           <br/>
-          <div id="chartWarnNum" style="height:23.5vh;background:#ffffff;padding:20px;"></div>
+          <div id="chartWarnNum"  class="picItem"></div>
         </el-col>
 
       </el-row>
@@ -151,9 +151,9 @@ export default {
     drawChart() {
       let chartKeyPerson = echarts.init(document.getElementById('chartKeyPerson'));//用户统计
       let chartManPerson = echarts.init(document.getElementById('chartManPerson'));//老年人数量统计
-      let chartPersonActive = echarts.init(document.getElementById('chartPersonActive'));
-      let chartMonthWarn = echarts.init(document.getElementById('chartMonthWarn'));
-      let chartWarnNum = echarts.init(document.getElementById('chartWarnNum'));
+      let chartPersonActive = echarts.init(document.getElementById('chartPersonActive'));//老人状态统计
+      let chartMonthWarn = echarts.init(document.getElementById('chartMonthWarn'));//当月预警分布
+      let chartWarnNum = echarts.init(document.getElementById('chartWarnNum'));//近6个月预警处理统计
       chartKeyPerson.setOption({
               title: {
                  text: '用户统计',
@@ -225,35 +225,46 @@ export default {
                       }
                   }
               ]
-          });
+      });
       chartPersonActive.setOption({
-        legend: {},
-            tooltip: {},
-            dataset: {
-                source: [
-                    ['product', '异常', '正常'],
-                    ['Jan', 43.3, 85.8],
-                    ['Feb', 83.1, 73.4],
-                    ['Mar', 86.4, 65.2],
-                    ['Apr', 72.4, 53.9],
-                    ['May', 72.4, 56],
-                    ['Jun', 24, 88],
-                    ['Jul', 89, 36],
-                    ['Aug', 52.4, 23.9],
-                    ['Sep', 55, 99],
-                    ['Oct', 42, 46],
-                    ['Nov', 99, 23],
-                    ['Dec', 65, 69],
-                ]
-            },
-            xAxis: {type: 'category'},
-            yAxis: {},
-            // Declare several bar series, each will be mapped
-            // to a column of dataset.source by default.
-            series: [
-                {type: 'bar'},
-                {type: 'bar'}
-            ]
+			title: {
+			        text: '老人状态统计'
+			    },
+			    tooltip: {
+			        trigger: 'axis',
+			        axisPointer: {
+			            type: 'shadow'
+			        }
+			    },
+			    legend: {
+			        data: ['正常', '异常']
+			    },
+			    grid: {
+			        left: '3%',
+			        right: '4%',
+			        bottom: '3%',
+			        containLabel: true
+			    },
+			    xAxis: {
+					type: 'category',
+					data: ['Jan', 'Feb', 'Mar', 'Apr', 'May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+			    },
+			    yAxis: {
+			        type: 'value',
+			        boundaryGap: [0, 0.01]
+			    },
+			    series: [
+			        {
+			            name: '正常',
+			            type: 'bar',
+			            data: [30, 50, 85, 26, 33, 44,99,56,105,13,88,56]
+			        },
+			        {
+			            name: '异常',
+			            type: 'bar',
+			            data: [54, 68, 45, 86, 54, 77,63,78,99,12,99,20]
+			        }
+			    ]
       });
       chartMonthWarn.setOption({
           title: {
@@ -293,26 +304,45 @@ export default {
           ]
       })
       chartWarnNum.setOption({
-        legend: {},
-            tooltip: {},
-            dataset: {
-                source: [
-                    ['product', '预警数', '已处理'],
-                    ['一月', 43.3, 85.8],
-                    ['二月', 83.1, 73.4],
-                    ['三月', 86.4, 65.2],
-                    ['四月', 72.4, 53.9],
-                    ['五月', 72.4, 56],
-                    ['六月', 24, 88],
-                ]
+        title: {
+                text: '近6个月预警处理统计'
             },
-            xAxis: {type: 'category'},
-            yAxis: {},
-            // Declare several bar series, each will be mapped
-            // to a column of dataset.source by default.
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+				orient: 'vertical',
+				right: 'right',
+                data: ['正常', '异常']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+        		type: 'category',
+        		data: ['Jan', 'Feb', 'Mar', 'Apr', 'May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+            },
+            yAxis: {
+                type: 'value',
+                boundaryGap: [0, 0.01]
+            },
             series: [
-                {type: 'bar'},
-                {type: 'bar'}
+                {
+                    name: '正常',
+                    type: 'bar',
+                    data: [30, 50, 85, 26, 33, 44,99,56,105,13,88,56]
+                },
+                {
+                    name: '异常',
+                    type: 'bar',
+                    data: [54, 68, 45, 86, 54, 77,63,78,99,12,99,20]
+                }
             ]
       })
       window.onresize =function(){
@@ -334,6 +364,11 @@ export default {
 $bg:rgba(85, 85, 85, 0.933333333333333);
 $dark_gray:#889aa4;
 $light_gray:rgba(51, 51, 51, 1);
+.picItem{
+	height:23.5vh;
+	background:#fff !important;
+	padding:20px;
+}
 .el-header {
     background-color: $bg;
     color: #B3C0D1;

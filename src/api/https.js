@@ -12,6 +12,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // }
+	
     return config
   },
   error => {
@@ -68,7 +69,7 @@ export function post (url, data) {
     }
     return new Promise((resolve, reject) => {
 
-      service.post(url, para)
+      service.post(url,  para)
         .then(response => {
           resolve(response.data)
         }, err => {
@@ -121,8 +122,9 @@ export function getResultful (url, data = {}) {
  * @returns {Promise}
  */
 export function puts (url, data) {
+	let para = Qs.stringify(data)
     return new Promise((resolve, reject) => {
-      service.put(url, data)
+      service.put(url, para)
         .then(response => {
           resolve(response.data)
         }, err => {

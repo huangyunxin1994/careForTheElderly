@@ -12,7 +12,6 @@
                   <span>&nbsp;&nbsp;&nbsp;电子围栏</span>
                 </div>
                 <div class="addRail" @click="openElecAddMap()">
-                  <!-- <i class="el-icon-circle-plus"></i> -->
                   <el-tooltip content="新建围栏" placement="top">
                     <i class="el-icon-plus"></i>
                   </el-tooltip>
@@ -20,10 +19,8 @@
               </div>
               <el-scrollbar id="elec-main" class="electricfence-scrollbar" style="height: calc(100% - 50px);">
                 <div :id="'elec-'+index" v-for="(item,index) in filterArr" :key="index" class="electricfence-collapse-item" :class="{'collapse-item-select':enterShowIndex == index}" @click="enterShow(index)">
-                    <!-- <el-tooltip :content="item.name" placement="top">
-                      <el-link :underline="false" @click="getOrganization">{{item.name}}</el-link>
-                    </el-tooltip> -->
-                    <div style="width: 70px;">
+                    
+                    <div style="width: 60px;" @click="setOrganization(item)">
                       <my-tooltip
                           :content="item.name"
                           class="wid190"
@@ -32,7 +29,7 @@
                       ></my-tooltip>
                     </div>
                     <div class="electricfence-collapse-item-button">
-                        <el-button type="info" icon="el-icon-s-custom" circle size="mini" @click.stop="setUserIn(index)"></el-button>
+                        <el-button type="info" icon="el-icon-s-custom" circle size="mini" @click.stop="setUserIn(index,item)"></el-button>
                         <el-button type="primary" icon="el-icon-edit" circle size="mini" @click.stop="editElec(index)"></el-button>
                     </div>
                 </div>
@@ -55,12 +52,11 @@ import  mymap  from '@/components/map/map'
 import  dialogMap  from '@/components/dialogRailDeploy/dialog-map.vue'
 import  dialogMapE  from '@/components/dialogRailDeploy/dialog-map-edit.vue'
 import railTree from '@/components/tree/tree_.vue'
-// import  myTransfer from '@/components/dialog-elec/dialog-user'
-// import { deleteElectronicFence,selectElectronicFenceQuery} from  "@/api/table"
 import NavBar from '@/components/navBar/navBar.vue'
 import relevanceUser from '@/components/dialogRailDeploy/dialogRelevanceUser.vue'
-// import dialogMap from '@/components/'
 import MyTooltip from '@/components/tooltip/tooltip.vue'
+
+import {getRailList} from '@/api/api.js'
 export default {
   name: 'Electricfence',
   components:{
@@ -80,37 +76,9 @@ export default {
       leaveShowIndex:-1,
       enterElecArr:[],
       circles:[
-        {
-          longitude:"116.404",
-          latitude:"39.915",
-          radius:'1000'
-        },
-        {
-          longitude:"116.464",
-          latitude:"39.91",
-          radius:'900'
-        }
+        
       ],
-      filterArr:[
-        {
-          name:'南宁总局',
-          radius:'0.1',
-          longitude: "108.386207",
-          latitude: "22.830839",
-        },
-        {
-          name:'西乡塘分局'
-        },
-        {
-          name:'青秀分局'
-        },
-        {
-          name:'东葛路派出所'
-        },
-        {
-          name:'西乡塘加了思考的房间哦我加大了福建省分局'
-        }
-      ],
+      filterArr:[],
     }
   },
     methods: {
@@ -137,9 +105,12 @@ export default {
         // this.enterShowIndex=i
         // this.$refs.map.movePosBypoint(this.filterArr[i].longitude,this.filterArr[i].latitude)
       },
-      setUserIn(i){
-        console.log(i)
-        this.$refs.relevanceUser.dialogVisible = true
+      setUserIn(i,item){
+		//   console.log("&&&&&&&&&&&")
+  //       console.log(i)
+		// console.log(item)
+        // this.$refs.relevanceUser.dialogVisible = true
+		this.$refs.relevanceUser.handleShow(item)
         // let row = this.filterArr[i]
         // this.$refs.transfer.handleShow(row)
       },
@@ -147,9 +118,8 @@ export default {
       editElec(i){
         let id = this.filterArr[i].id
         let para = JSON.parse(JSON.stringify(this.filterArr[i]))
-        console.log(para)
-        this.$refs.dialogmape.form = para
-        this.$refs.dialogmape.handleShow()
+        // this.$refs.dialogmape.form = para
+        this.$refs.dialogmape.handleShow(para)
       },
       filterData(val){
         if(val == ''){
@@ -163,39 +133,29 @@ export default {
         }
       },
       //点击组织，获取到相应的围栏
-      getOrganization(){
-        let coordinate = {
-          longitude:"116.404",
-          latitude:"39.915"
-        }
-        this.$refs.mymap.moveDeploy(coordinate.longitude,coordinate.latitude)
+      getOrganization(val){
       },
+	  setOrganization(val){
+		this.$refs.mymap.moveDeploy(val.longitude,val.latitude)
+	  },
       selectElec(){
-      //   selectElectronicFenceQuery().then(res=>{
-      //     if(res.code==0){
-      //       console.log(res)
-      //       let data = res.data.data
-      //       console.log(data)
-      //       let arr1=[]
-      //       for(let i in data){
-      //         let o = data[i].electronicFence;
-      //         o.userList = data[i].userList
-      //         arr1.push(o)
-      //       }
-      //       console.log(arr1)
-      //       this.enterElecArr=arr1;
-      //       this.filterArr=arr1
-      //       this.$refs.map.getmap(arr1);
-
-      //     }
-      //   }).catch(res=>{
-
-      //   })
+		  this.getRailList()
       },
+	  //获取电子围栏信息
+	  getRailList(){
+		  getRailList().then((res)=>{
+			  console.log(res)
+			  if(res.code == 0){
+				  this.filterArr = res.data.list
+				  this.circles=[]
+				  this.filterArr.forEach( i => this.circles.push(i))
+				  
+			  }
+		  })
+	  }
     },
     mounted(){
-      // this.selectElec()
-      this.enterElecArr = this.filterArr
+	  this.getRailList()
     }
 }
 </script>

@@ -59,6 +59,13 @@
 
         this.$emit('getItem',item)
       },
+	  //关闭时清空adress
+	  closeHandle(){
+		  this.$nextTick(()=>{
+		                      this.$refs.form.clearValidate();
+		                  })
+		  this.address = ''
+	  }
     },
     mounted() {
 

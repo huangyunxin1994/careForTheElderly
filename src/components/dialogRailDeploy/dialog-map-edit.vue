@@ -29,6 +29,7 @@ import { parseTime } from '@/utils/index.js'
 import GetAdress from '@/components/getAdress/getAdress.vue'
 // import { addElectronicFence,deleteElectronicFence,selectElectronicFenceQuery,updateElectronicFenceMsg } from  "@/api/table"
 // import "@/assets/icon/iconfont.css"
+import {updateRailDeploy,deleteRailDeploy} from '@/api/api.js'
 export default {
     name: 'Map',
     components:{
@@ -39,6 +40,7 @@ export default {
             formRule:{
                 name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
                 radius: [{ required: true, message: '请输入范围', trigger: 'blur' }],
+				center:[{ required: true, message: '请输入中心位置', trigger: 'blur' }]
             },
             formVisible:false,
             loading:false,
@@ -50,22 +52,21 @@ export default {
             latitude:"",
             form:{
                 name:"",
-                radius: '100',
+                radius: '0.1',
                 longitude: "108.386207",
                 latitude: "22.830839"
             },
             map:null,
             marker:"",
-            circle:""
+            circle:"",
+			id:'',
             }
+			
     },
     methods:{
         getMapData(){
         },
         getmap () {
-          console.log(this.form)
-          console.log(this.form.longitude)
-          console.log(this.form.latitude)
             this.map = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例
             this.map.centerAndZoom(new BMap.Point(this.form.longitude,this.form.latitude), 16) // 初始化地图,设置中心点坐标和地图级别
             this.map.setCurrentCity('北京') // 设置地图显示的城市 此项是必须设置的
@@ -114,8 +115,12 @@ export default {
           this.map.clearOverlays()
           this.map.addOverlay(this.circle);
         },
-        handleShow(){
+        handleShow(val){
             this.formVisible=true
+			this.form = val
+			console.log('******************')
+			console.log(val)
+			this.id = val.id
             this.$nextTick(() => {
                 this.getmap();
             })
@@ -131,85 +136,85 @@ export default {
             this.loading=false
         },
         addSubmit(){
-          this.formVisible=false
-            // this.$refs.form.validate((valid) => {
-            //     if (valid) {
-            //         this.$confirm('确认提交吗？', '提示', {}).then(() => {
-            //             this.loading = true;
-            //             //NProgress.start();
-            //             let para = Object.assign({}, this.form);
-            //             console.log(para)
-            //             let params = {}
-            //             params.name = para.name
-            //             params.longitude = this.longitude
-            //             params.latitude = this.latitude
-            //             params.radius = para.radius
-            //             params.id =  para.id
-            //             params.cid  =  para.cid
-            //             console.log(params)
-            //             updateElectronicFenceMsg(params).then((res)=>{
-            //                 if(res.code==0){
-            //                    this.$message({
-            //                         message: '修改成功',
-            //                         type: 'success'
-            //                     });
-            //                     this.form={
-            //                         name:"",
-            //                         radius: '100',
-            //                         longitude: "108.386207",
-            //                         latitude: "22.830839"
-            //                     };
-            //                     this.formVisible=false
-            //                     this.loading=false
-            //                     this.$emit("selectElec")
-            //                 }else{
-            //                     this.$message({
-            //                         message: '修改失败',
-            //                         type: 'error'
-            //                     });
-            //                 }
-            //             }).catch(err=>{
-            //                 this.$message({
-            //                     message: '修改失败',
-            //                     type: 'error'
-            //                 });
-            //             })
-            //         });
-            //     }
-            // });
+          // this.formVisible=false
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                        this.loading = true;
+                        //NProgress.start();
+                        let para = Object.assign({}, this.form);
+						let user = JSON.parse(sessionStorage.getItem('user'))
+						let electronicFence = {}
+                        console.log(para)
+                        electronicFence.name = para.name
+                        electronicFence.longitude = this.longitude
+                        electronicFence.latitude = this.latitude
+                        electronicFence.radius = para.radius
+                        electronicFence.createUserid = user.userId
+						updateRailDeploy(electronicFence).then((res)=>{
+							if(res.code==0){
+							       this.$message({
+							            message: '修改成功',
+							            type: 'success'
+							        });
+							        this.form={
+							            name:"",
+							            radius: '0.1',
+							            longitude: "108.386207",
+							            latitude: "22.830839"
+							        };
+							        this.formVisible=false
+							        this.loading=false
+							        this.$emit("selectElec")
+							    }else{
+							        this.$message({
+							            message: '修改失败',
+							            type: 'error'
+							        });
+							    }
+							}).catch(err=>{
+							    this.$message({
+							        message: '修改失败',
+							        type: 'error'
+							    });
+						})
+                    });
+                }
+            });
         },
         removeSubmit(){
           this.formVisible=false
-            // let id = this.form.id
-            // this.$confirm('确认删除吗？', '提示', {}).then(() => {
-            //     deleteElectronicFence({id:id}).then((res)=>{
-            //         if(res.code==0){
-            //             this.$message({
-            //                 message: '删除成功',
-            //                 type: 'success'
-            //             });
-            //             this.form={
-            //                 name:"",
-            //                 radius: '100',
-            //                 longitude: "108.386207",
-            //                 latitude: "22.830839"
-            //             };
-            //             this.formVisible=false
-            //             this.loadingD=false
-            //             this.$emit("selectElec")
-            //         }else{
-            //             this.$message({
-            //                 message: '删除成功',
-            //                 type: 'error'
-            //             });
-            //         }
-            //     }).catch(err=>{
-            //         this.$message({
-            //             message: '删除成功',
-            //             type: 'error'
-            //         });
-            //     })
-            // });
+            let id = this.id
+            this.$confirm('确认删除吗？', '提示', {}).then(() => {
+                deleteRailDeploy({eid:id}).then((res)=>{
+					console.log(res)
+                    if(res.code==0){
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                        this.form={
+                            name:"",
+                            radius: '100',
+                            longitude: "108.386207",
+                            latitude: "22.830839"
+                        };
+                        this.formVisible=false
+                        this.loadingD=false
+                        this.$emit("selectElec")
+                    }else{
+                        this.$message({
+                            message: '删除失败',
+                            type: 'error'
+                        });
+                    }
+                }).catch(err=>{
+                    this.$message({
+                        message: '删除成功',
+                        type: 'error'
+                    });
+                })
+            });
         }
     },
     mounted(){

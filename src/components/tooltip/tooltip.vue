@@ -51,7 +51,7 @@
         }
       },
       setAdress(){
-        this.$emit('getOrganization',1)
+        // this.$emit('getOrganization',1)
       }
     }
   }

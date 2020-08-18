@@ -12,12 +12,13 @@
             :filter-node-method="filterNode"
              node-key="id"
             highlight-current
-            :default-expanded-keys="[1]"
+            :default-expanded-keys="[treeId]"
             ref="tree"></el-tree>
       </div>
 </template>
 
 <script>
+// import {getOrgList} from '@/api/api.js'
 export default {
   name: 'tree',
   props:{
@@ -28,41 +29,59 @@ export default {
   },
   data(){
     return{
-      filterText:"",
-      isWarnPeople:'',
-      isAllPeople:'primary',
-      data: [{
-          id:1,
-          label: '南宁公安局',
-          children: [
-              {
-                id:11,
-                label: '仙湖派出所',
-              },
-              {
-                id:12,
-                label: '南湖派出所',
-              },
-              {
-                id:13,
-                label: '凤岭派出所',
-              }
-           ]
-        }],
+        filterText:"",
+        isWarnPeople:'',
+        isAllPeople:'primary',
+		data:[],
         defaultProps: {
           children: 'children',
-          label: 'label'
-        }
+          label: 'name'
+        },
+		treeId:'',//跟组织id,用来默认第一级展开
     }
   },
     methods: {
+	  getData(val){
+		  let treeData = val
+		  let arr = []
+		  let children=[];
+		  const data = this.toTree(treeData)
+		  this.data = data
+	  },
+	  //递归
+	  toTree(data) {
+			let _this = this
+	  		  // 删除 所有 children,以防止多次调用
+	  		  data.forEach(function (item) {
+	  			  delete item.children;
+	  		  });
+	  		  // 将数据存储为 以 id 为 KEY 的 map 索引数据列
+	  		  var map = {};
+	  		  data.forEach(function (item) {
+	  			  map[item.id] = item;
+	  		  });
+	  		  var val = [];
+	  		  data.forEach(function (item) {
+	  			  // 以当前遍历项，的pid,去map对象中找到索引的id
+	  			  
+	  			  var parent = map[item.parentId];
+	  			  // 好绕啊，如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
+	  			  if (parent) {
+	  				  (parent.children || ( parent.children = [] )).push(item);
+	  			  } else {
+	  				  //如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 val结果集中，作为顶级
+	  				  val.push(item);
+	  				  _this.treeId = item.id
+	  			  }
+	  		  });
+	  		  return val;
+	  },
       handleNodeClick(data) {
-        console.log(data);
         this.$emit("getOrganization",data)
       },
        filterNode(value, data) {
         if (!value) return true;
-        return data.label.indexOf(value) !== -1;
+        return data.name.indexOf(value) !== -1;
       },
       allPeople(){
         this.isAllPeople = 'primary'
