@@ -91,6 +91,26 @@
         default:false
       }
     },
+	watch:{
+		deep: true,  // 深度监听
+		center(newVal,oldVal) {
+			console.log(newVal,oldVal)
+		},
+		markers(newVal,oldVal) {
+			// console.log(newVal,oldVal)
+			this.getMap()
+		},
+		// polyLineOpt
+		// circleOpt
+		circles(newVal,oldVal) {
+			console.log(newVal,oldVal)
+			this.circles.forEach(i => {
+			  var point = new BMap.Point(i.longitude,i.latitude);
+			  var circle = new BMap.Circle(point,i.radius*1000,this.circleOpt);
+			  this.map.addOverlay(circle);
+			})
+		}
+	},
     data(){
       return{
         marker:[],
@@ -319,15 +339,6 @@
     },
     mounted() {
       this.getMap()
-    },
-    watch:{
-      markers:(oval,val)=>{
-        this.marker = oval
-        // console.log(this)
-        // this.markers = oval
-        // this.map.clearOverlays()
-        // this.a.methods.getMap()
-      }
     }
   }
 </script>
