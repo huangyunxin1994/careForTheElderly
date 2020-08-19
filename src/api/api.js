@@ -13,6 +13,9 @@ export const updateElectronicFence = params => { return puts(`${base}/Electronic
 
 //组织管理
 export const getOrgList = params => { return get(`${base}/organization/`, params); }//获取组织列表信息
+export const newOrg = params => { return post(`${base}/organization/`, params); }//新建组织
+export const changeOrg = params => { return puts(`${base}/organization/`, params); }//新建组织
+export const deleteOrg = params => { return deleteResultful(`${base}/organization/`, params); }//新建组织
 
 //人员列表
 export const PersonnelStatus = params => { return get(`${base}/PersonnelStatus/`, params); }//获取人员状态列表信息

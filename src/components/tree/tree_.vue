@@ -55,7 +55,8 @@ export default {
 		defaultProps: {
 			children: 'children',
 			label: 'name'
-		}
+		},
+		baseOrg:'',
     }
   },
     methods: {
@@ -84,7 +85,8 @@ export default {
       },
       //新建组织
       newOrganization(){
-        this.$emit("newOrganization",1)
+        this.$emit("newOrganization",this.baseOrg)
+		
       },
       //编辑组织
       adminOrganization(){
@@ -99,6 +101,12 @@ export default {
 				let treeData = res.data.data
 				const data = this.toTree(treeData)
 				this.data = data
+				treeData.forEach((item)=>{
+					if(!item.hasOwnProperty('parentId')){
+						this.baseOrg = item
+					}
+				})
+				
 			}
 		})
 	  },
