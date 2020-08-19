@@ -144,8 +144,6 @@ export default {
 </script>
 
 <style lang="scss">
-.dome {
-}
 .hook-icon,.warn-icon {
     position: relative;
 }

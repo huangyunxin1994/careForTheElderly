@@ -8,7 +8,7 @@
                       <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
                       <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">设备状态</label>
-                        <el-select v-model="valueEqState" style="width: 10vw;" filterable placeholder="请选择" @change="eqstateW">
+                        <el-select v-model="valueEqState" style="width: 10vw;" filterable placeholder="请选择" @change="changeData">
                             <el-option
                             v-for="item in eqState"
                             :key="item.value"
@@ -19,7 +19,7 @@
                       </div>
                       <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">所属组织</label>
-                        <el-select v-model="valueOrg" style="width: 10vw;" filterable placeholder="请选择" @change="changeResultW">
+                        <el-select v-model="valueOrg" style="width: 10vw;" filterable placeholder="请选择" @change="changeData">
                             <el-option
                             v-for="item in options"
                             :key="item.value"
@@ -32,7 +32,7 @@
                       </div>
                       <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">是否可用</label>
-                        <el-select v-model="valueUse" style="width: 10vw;" filterable placeholder="请选择" @change="isUseW">
+                        <el-select v-model="valueUse" style="width: 10vw;" filterable placeholder="请选择" @change="changeData">
                             <el-option
                             v-for="item in isUse"
                             :key="item.value"
@@ -49,7 +49,7 @@
                 </div>
                 <div class="newTime">数据最新同步时间： XX年XX月XX日 XX时XX分XX秒</div>
                 <el-table
-                    :data="tables.slice((page-1)*pageSize,page*pageSize)"
+                    :data="tables"
                     border stripe highlight-current-row
                     size="mini" v-loading="listLoading"
                     @selection-change="selsChange"
@@ -88,7 +88,7 @@
                  </div>
             </div>
         </div>
-        <dialog-equipment ref="equipment"></dialog-equipment>
+        <dialog-equipment ref="equipment" @updateMess="updateMess"></dialog-equipment>
   </div>
 </template>
 
@@ -96,7 +96,8 @@
   // import WtInput from '../../components/input.vue'
   import NavBar from '@/components/navBar/navBar.vue'
   import DialogEquipment from '@/components/dialogEquipment/dialogEquipment.vue'
-  export default{
+  import {getEquipment,removeEquipment} from "@/api/api"
+  export default {
     name:'home',
     components:{
       NavBar,
@@ -110,47 +111,16 @@
             page:1,
             pageSize:20,
             tableTitle:[
-                { title : "设备编号", name : "account", type:"input",width:'100'},
-                { title : "设备状态", name : "eqstate", type:"input",width:'100'},
-                { title : "是否可用", name : "isUse", type:"input",width:'100'},
-                { title : "人员姓名", name : "name", type:"input",minwidth:'100'},
-                { title : "所属组织", name : "organization", type:"input",minwidth:'200'},
-                { title : "注册时间", name : "time", type:"input",minwidth:'100'},
-                { title : "SIM卡号", name : "phone", type:"input",width:'150'}
+                { title : "设备编号", name : "code", type:"input",width:'100'},
+                { title : "设备状态", name : "equipmentState", type:"input",width:'100'},
+                { title : "是否可用", name : "isUseful", type:"input",width:'100'},
+                { title : "人员姓名", name : "elderlyName", type:"input",minwidth:'100'},
+                { title : "所属组织", name : "organizationName", type:"input",minwidth:'200'},
+                { title : "注册时间", name : "addTime", type:"input",minwidth:'100'},
+                { title : "SIM卡号", name : "sim", type:"input",width:'150'}
             ],
             //0正常 1异常
-            tableData:[
-              {
-                account:'001',
-                eqstate:1,
-                isUse:1,
-                name:'张三',
-                organization:'南宁总局',
-                time:'2020-06-02',
-                phone:'18045265325',
-                haveRelevance:'0',
-              },
-              {
-                account:'002',
-                eqstate:2,
-                isUse:2,
-                name:'李二',
-                organization:'邕宁分局',
-                time:'2020-06-02',
-                phone:'18045265325',
-                haveRelevance:'0'
-              },
-              {
-                account:'003',
-                eqstate:2,
-                isUse:2,
-                name:'王五',
-                organization:'青秀分局',
-                time:'2020-06-02',
-                phone:'18045265325',
-                haveRelevance:'1'
-              }
-            ],
+            tableData:[],
             tableAllData: [],
             clientHeight:'',
             valueEqState:'',
@@ -243,11 +213,11 @@
       arrFormatter (value,name) {
            if(name=='sex')
            return value == 1 ? '男' : value == 0 ? '女' : '';
-          else if(name=='eqstate')
+          else if(name=='equipmentState')
            return value == 1 ? '在线' : value == 2 ? '离线' : '';
           else if(name=='haveRelevance')
            return value == 1 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">是</span>' :( value == 2 ? '<span style="color:#909399;font-weight:bold">否</span>' : ( value == 3 ? '<span style="color:#67C23A;font-weight:bold">进行中</span>' : ( value == 4 ? '<span style="color:#909399;font-weight:bold">已结束</span>' : '')));
-          else if(name == 'isUse')
+          else if(name == 'isUseful')
             return value == 2 ? '<span style="color:#f79898;font-weight:bold">否</span>' :( value == 1 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">是</span>' : '');
           else
            return value;
@@ -258,36 +228,12 @@
       handleSizeChange(val){
       	this.pageSize = val
       },
-      getEnrollData(){
-          this.listLoading=true
-          getUserList().then(res=>{
-              if(res.code==0){
-                  this.listLoading=false
-                  //console.log(res)
-                  this.tableAllData=res.data.data
-                  this.tableData=this.tableAllData
-              }else{
-                  this.listLoading=false
-                 this.$notify({
-                      title: '错误',
-                      message: res.msg,
-                      type: 'error'
-                  });
-              }
-          }).catch(err=>{
-              this.listLoading=false
-              this.$notify({
-                      title: '错误',
-                      message: err.msg,
-                      type: 'error'
-                  });
-          })
-          //this.tableData = JSON.parse(JSON.stringify(this.tableAllData))
-      },
-      eqstateW(val){
-          //console.log(this.valueW)
+      changeData(val){
+          //console.log(this.valueW) 
           this.tableData = this.tableAllData.filter(item=>{
-              return String(item.eqstate).indexOf(val) > -1
+              return String(item.equipmentState).indexOf(this.valueEqState) > -1
+              &&String(item.organizationName).indexOf(this.valueOrg) > -1
+              &&String(item.isUseful).indexOf(this.valueUse) > -1
           })
       },
       haveRelevanceW(val){
@@ -297,12 +243,12 @@
       },
       isUseW(val){
         this.tableData = this.tableAllData.filter(item=>{
-            return String(item.isUse).indexOf(val) > -1
+            return String(item.isUseful).indexOf(val) > -1
         })
       },
       changeResultW(val){
         this.tableData = this.tableAllData.filter(item=>{
-            return String(item.organization).indexOf(val) > -1
+            return String(item.organizationName).indexOf(val) > -1
         })
       },
       //修改
@@ -314,9 +260,9 @@
         let useData = []
         let noUseData = []
           for(let i in sels){
-            if(sels[i].isUse == '1'){
+            if(sels[i].isUseful == '1'){
               useData.push(sels[i])
-            }else if(sels[i].isUse == '2'){
+            }else if(sels[i].isUseful == '2'){
               noUseData.push(sels[i])
             }
           }
@@ -335,13 +281,13 @@
         return true
       },
       getRowKeys(row) {
-          return row.account;
+          return row.code;
       },
       relevance(){
         // this.$refs.equipment.dialogVisible = true
         let arr = this.sels
         for(let i in arr){
-          if(arr[i].isUse == 2){
+          if(arr[i].isUseful == 2){
             this.$message.error('您所选择的选项中存在不可用设备,不能关联组织,请重新选择!');
             return
           }
@@ -379,47 +325,60 @@
       deletePlatform(){
         let arr = this.sels
         for(let i in arr){
-          if(arr[i].isUse == 1){
+          if(arr[i].isUseful == 1){
             this.$message.error('您所选择的选项中存在可用设备,不能删除,请重新选择!');
             return
           }
         }
-        const h = this.$createElement;
-          this.$msgbox({
-            title: '警告',
-            message: h('p', null, [
-              h('span', null, '确认删除所选设备吗？'),
-            ]),
-            showCancelButton: true,
+         this.$confirm('确认删除所选设备吗?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
-            beforeClose: (action, instance, done) => {
-              if (action === 'confirm') {
-                instance.confirmButtonLoading = true;
-                instance.confirmButtonText = '删除中...';
-                setTimeout(() => {
-                  done();
-                  setTimeout(() => {
-                    instance.confirmButtonLoading = false;
-                  }, 300);
-                }, 3000);
-              } else {
-                done();
-              }
-            }
-          }).then(action => {
-            this.$message({
-              type: 'info',
-              message: 'action: ' + action
-            });
+            type: 'warning'
+          }).then(() => {
+              let str = ""
+              arr.forEach(i => {
+                str+= i.code+","
+              });
+              str = str.substring(0,str.lastIndexOf(","))
+              console.log(str)
+              removeEquipment({equipmentCode:str}).then(res=>{
+                if(res.code == 0){
+                  this.$message({
+                    message: '删除成功',
+                    type: 'success'
+                  });
+                  this.updateMess()
+                }else{
+                  this.$message({
+                    message: '删除失败',
+                    type: 'error'
+                  });
+                }
+              }).catch(err=>{
+                  this.$message({
+                    message: '删除失败',
+                    type: 'error'
+                  })
+               })
+              
+          }).catch(() => {
+                  
           });
+        
       },
       // 更新页面
-      updateMess(val){
-      	this.getEnrollData()
+      updateMess(){
+      	this.getTableAllData()
       },
       //将tabledata的值传给tableAllData(到真正对接时就不用)
       getTableAllData(){
+        getEquipment().then(res=>{
+          if(res.code==0)
+          this.tableData = res.data.data
+          this.tableAllData = this.tableData
+        }).catch(err=>{
+
+        })
         this.tableAllData = this.tableData
       },
     },
@@ -435,7 +394,7 @@
                 if(e.name)
                 arr.push(e.name)
             });
-          return  this.tableData.filter(function(dataNews){
+          return  this.tableAllData.filter(function(dataNews){
             return Object.keys(dataNews).some(function(key){
                     return String(arr).indexOf(key)>-1&&String(dataNews[key]).toLowerCase().indexOf(search) > -1
             })

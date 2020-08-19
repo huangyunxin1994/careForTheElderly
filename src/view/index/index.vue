@@ -56,6 +56,7 @@
   import warn from '@/icons/png/personw.png'
   // import home from '@/icons/png/jiating.png'
   import home from '@/icons/png/jia.png'
+  import { PersonnelStatus } from "@/api/api"
   export default {
     components:{
       NavBar,
@@ -207,6 +208,16 @@
       },
       //显示全部人员
       allPeople(){
+
+        let para = JSON.parse(sessionStorage.getItem('user'))
+        console.log(para)
+        PersonnelStatus({organizationId:para.organizationId}).then(res=>{
+          if(res.code==0){
+            console.log(res)
+          }
+        }).catch(err=>{
+
+        })
         // let myMarkers = []
         // this.markers = myMarkers
         this.$refs.myMap.showAllPeople(0)
@@ -244,9 +255,11 @@
       }
     },
     created() {
-      this.allPeople()
+      
     },
     mounted() {
+      this.allPeople()
+      
       this.getWarnList()
 
     }

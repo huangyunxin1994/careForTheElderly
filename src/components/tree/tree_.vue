@@ -95,6 +95,7 @@ export default {
 		getOrgList().then((res)=>{
 			let arr=[]
 			if(res.code == 0){
+        console.log(res)
 				let treeData = res.data.data
 				const data = this.toTree(treeData)
 				this.data = data

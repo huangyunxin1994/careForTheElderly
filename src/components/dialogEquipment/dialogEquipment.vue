@@ -17,7 +17,8 @@
 
 <script>
   import Tree from '@/components/tree/tree_.vue'
-  export default{
+  import {relatvieEquipment} from "@/api/api"
+  export default {
     components:{
       Tree
     },
@@ -30,14 +31,45 @@
     },
     methods:{
       sureBtn() {
+        console.log(this.eqData)
         if(this.orgData.length == 0){
           this.$message.error('请选择组织进行关联!');
         }else{
-          this.$message({
-            message: '关联成功',
-            type: 'success'
+           this.$confirm('确认将所选设备关联到组织：'+this.orgData.name+' 下吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let str = ""
+          this.eqData.forEach(i => {
+            str+= i.code+","
           });
-          this.dialogVisible = false
+          str = str.substring(0,str.lastIndexOf(","))
+          relatvieEquipment({equipmentCode:str,organizationId:this.orgData.id}).then(res=>{
+            if(res.code == 0){
+              this.$message({
+                message: '关联成功',
+                type: 'success'
+              });
+              this.dialogVisible = false
+              this.$emit("updateMess")
+            }else{
+              this.$message({
+                message: '关联失败',
+                type: 'error'
+              });
+            }
+          }).catch(err=>{
+            this.$message({
+                message: '关联失败',
+                type: 'error'
+              });
+          })
+           
+        }).catch(() => {
+                  
+        });
+         
         }
       },
       cancelBtn(){
@@ -79,9 +111,6 @@
   //   height: 300px;
   //   display: block;
   // }
-  .relevance{
-    // min-height: 500px;
-  }
   .el-dialog__body{
     min-height: 500px !important;
   }
