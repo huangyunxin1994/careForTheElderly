@@ -103,7 +103,8 @@ export default {
 				this.data = data
 				treeData.forEach((item)=>{
 					if(!item.hasOwnProperty('parentId')){
-						this.baseOrg = item
+            this.baseOrg = item
+            this.$emit("baseOrgPos",this.baseOrg)
 					}
 				})
 				

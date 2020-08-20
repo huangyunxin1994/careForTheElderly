@@ -3,14 +3,14 @@
     <nav-bar @getSound="getSound"></nav-bar>
     <div class="main">
       <div class="mainLeft">
-        <tree :people='true'  @allPeople="allPeople" @warnPeople="warnPeople"></tree>
+        <tree :people='true'  @allPeople="allPeople" @warnPeople="warnPeople" @baseOrgPos="baseOrgPos" @handleOrg="handleOrg"></tree>
       </div>
       <div class="mainCenter">
-        <my-map ref="myMap" :dragging="true" :zooming="true" :markers="markers" :view="true"></my-map>
+        <my-map ref="myMap" :dragging="true" :zooming="true" :markers="markers"  :zoomLevel="zoomLevel" :center="center"></my-map>
       </div>
       <div class="mainRight">
         <transition name="el-zoom-in-center">
-            <div class="warnSwarp" v-show="warnList">
+            <div class="warnSwarp" v-show="dashboardContext.length!=0">
               <div class="newWarnTitle" >
                 <i class="iconfont icon-deng"></i>最新预警信息
               </div>
@@ -23,18 +23,18 @@
                 </el-tooltip>
               </div>
               <div class="warnContentSwarp">
-                <el-scrollbar class="dashboard-scrollbar" v-if="dashboardContext.length!=0">
+                <el-scrollbar class="dashboard-scrollbar">
                   <div class="warnContent" v-for="(item,index) in dashboardContext" :key="index">
                     <div class="warnContentList">
                       <div class="contentList name">
-                        <div>{{item.name}}</div>
-                        <div>{{item.time}}</div>
+                        <div>{{item.elderlyName}}</div>
+                        <div>{{item.alertTime}}</div>
                       </div>
-                      <div class="contentList type"><p>{{item.type}}</p></div>
+                      <div class="contentList type"><p>已外出{{item.fenceName}}</p></div>
                     </div>
                     <div class="warnBtn">
-                      <el-button type="danger" size="mini" @click="getLocation(116.310,39.90)">定位</el-button>
-                      <el-button type="danger" size="mini" @click="goPeopleDetails">详情</el-button>
+                      <el-button type="danger" size="mini" @click="getLocation(item.actual,item.triggeres)">定位</el-button>
+                      <el-button type="danger" size="mini" @click="goPeopleDetails(item.elderlyId)">详情</el-button>
                     </div>
                   </div>
                 </el-scrollbar>
@@ -56,7 +56,7 @@
   import warn from '@/icons/png/personw.png'
   // import home from '@/icons/png/jiating.png'
   import home from '@/icons/png/jia.png'
-  import { PersonnelStatus } from "@/api/api"
+  import { getElderList, getEquipmentAlert } from "@/api/api"
   export default {
     components:{
       NavBar,
@@ -109,118 +109,138 @@
           name:'wang',
           age:22
         },
-        markers:[
-          {
-            longitude:"115.304",
-            latitude:"39.945",
-            icon:{
-              name:normal,
-              size:[48, 48],
-              anchor:[24, 48]
-            },
-            type:'0',
-            home:{
-              longitude:"116.468",
-              latitude:"39.902",
-              icon:{
-                name:home,
-                size:[48, 48],
-                anchor:[24, 48]
-              },
-              type:'2'
-            }
-          },
-          {
-            longitude:"116.300",
-            latitude:"39.955",
-            icon:{
-              name:normal,
-              size:[48, 48],
-              anchor:[24, 48]
-            },
-            type:'0',
-            home:{
-              longitude:"116.560",
-              latitude:"39.902",
-              icon:{
-                name:home,
-                size:[48, 48],
-                anchor:[24, 48]
-              },
-              type:'2'
-            }
-          },
-          {
-            longitude:"116.310",
-            latitude:"39.90",
-            icon:{
-              name:warn,
-              size:[48, 48],
-              anchor:[24, 48]
-            },
-            type:'1',
-            home:{
-              longitude:"116.480",
-              latitude:"39.902",
-              icon:{
-                name:home,
-                size:[48, 48],
-                anchor:[24, 48]
-              },
-              type:'2'
-            }
-          },
-          {
-            longitude:"116.360",
-            latitude:"39.922",
-            icon:{
-              name:warn,
-               size:[48, 48],
-              anchor:[24, 48]
-            },
-            type:'1',
-            home:{
-              longitude:"116.460",
-              latitude:"39.902",
-              icon:{
-                name:home,
-                size:[48, 48],
-                anchor:[24, 48]
-              },
-              type:'2'
-            }
-          }
-        ]
+        center:{
+        },
+        markers:[],
+        zoomLevel:14
       }
     },
     methods:{
       getWarnList(){
+        // 
+        getEquipmentAlert({processingResult:1}).then(res=>{
+          this.dashboardContext = res.data.data
+          console.log(this.dashboardContext)
+        }).catch(err=>{
+
+        })
         if(this.dashboardContext.length > 0){
           this.warnList = true
-          // this.play()
+          
         }
       },
-      goPeopleDetails(){
-        this.$router.push('/peopleDetails')
+      goPeopleDetails(id){
+        this.$router.push({
+            path:'/peopleDetails',
+            query: {
+              id: id
+            }
+        })
       },
       getWarnData(){
         this.warnList = !this.warnList
+      },
+      handleOrg(val){
+         this.markers = []
+        console.log(val)
+      
+      
+        getElderList({organizationId:val.id}).then(res=>{
+          if(res.code==0){
+            console.log(res)
+           
+            if(res.data.data.length>0){
+              
+              res.data.data.forEach(i => {
+                let para =  {
+                  id:i.id,
+                  name:i.name,
+                  phone:i.phone,
+                  address:i.address,
+                  warning:i.warning,
+                  longitude:i.longitude,
+                  latitude:i.latitude,
+                  icon:{
+                    name:warn,
+                    size:[48, 48],
+                    anchor:[24, 48]
+                  },
+                  type:'1',
+                  home:{
+                    longitude:i.homeLongitude,
+                    latitude:i.homeLatitude,
+                    icon:{
+                      name:home,
+                      size:[48, 48],
+                      anchor:[24, 48]
+                    },
+                    type:'2'
+                  }
+                }
+                
+                this.markers.push(para)
+                
+              });
+               
+              this.$refs.myMap.showAllPeople(0)
+            }
+            this.$refs.myMap.movePosBypoint(val.longitude,val.latitude)
+          }
+        }).catch(err=>{
+
+        })
       },
       //显示全部人员
       allPeople(){
 
         let para = JSON.parse(sessionStorage.getItem('user'))
         console.log(para)
-        PersonnelStatus({organizationId:para.organizationId}).then(res=>{
+        getElderList({organizationId:para.organizationId}).then(res=>{
           if(res.code==0){
             console.log(res)
+            if(res.data.data.length>0){
+              res.data.data.forEach(i => {
+                let para =  {
+                  id:i.id,
+                  name:i.name,
+                  phone:i.phone,
+                  address:i.address,
+                  warning:i.warning,
+                  longitude:i.longitude,
+                  latitude:i.latitude,
+                  icon:{
+                    name:warn,
+                    size:[48, 48],
+                    anchor:[24, 48]
+                  },
+                  type:'1',
+                  home:{
+                    longitude:i.homeLongitude,
+                    latitude:i.homeLatitude,
+                    icon:{
+                      name:home,
+                      size:[48, 48],
+                      anchor:[24, 48]
+                    },
+                    type:'2'
+                  }
+                }
+                this.markers.push(para)
+              });
+              this.$refs.myMap.showAllPeople(0)
+            }
           }
         }).catch(err=>{
 
         })
         // let myMarkers = []
         // this.markers = myMarkers
-        this.$refs.myMap.showAllPeople(0)
+        
+      },
+      baseOrgPos(val){
+        console.log(val)
+        this.center.longitude = val.longitude
+        this.center.latitude = val.latitude
       },
       //显示预警人员
       warnPeople(){

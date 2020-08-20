@@ -1,4 +1,4 @@
-import {getResultful,get,post,put,puts,putResultful,deleteResultful} from '@/api/https.js'
+import {getResultful,get,post,put,puts,putResultful,deleteResultful,deleteR} from '@/api/https.js'
 let base = '';
 
 export const requestLogin = params => { return get(`${base}/login/`, params); }//登录
@@ -31,3 +31,15 @@ export const familymembers = params => { return getResultful(`${base}/PersonnelS
 export const locationTracking = params => { return getResultful(`${base}/PersonnelStatus/locationTracking`, params); }//获取重点用户最新的坐标
 
 export const BloodPressure = params => { return getResultful(`${base}/PersonnelStatus/BloodPressure`, params); }//心率血压
+
+//设备管理
+export const getEquipment = params => { return get(`${base}/equipment/`, params); }//获取设备列表
+
+export const relatvieEquipment = params => { return put(`${base}/equipment/`, params); }//设备关联组织
+
+export const removeEquipment = params => { return deleteR(`${base}/equipment/`, params); }//删除设备
+
+//首页
+export const getElderList = params => { return get(`${base}/home/coordinate`, params); }//查询人员具体信息与坐标
+
+export const getEquipmentAlert = params => { return get(`${base}/equipmentAlert/`, params); }//查询最新预警信息

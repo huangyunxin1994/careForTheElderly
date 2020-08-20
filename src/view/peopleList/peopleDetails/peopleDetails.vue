@@ -64,16 +64,16 @@
           <div class="selectTime">
               <my-date @getChartData="getChartData" :size="'small'"></my-date>
           </div>
-            <div id="" class="echartNoData"  style="margin-bottom:20px" v-show="heart.length==0">
+            <!-- <div id="" class="echartNoData"  style="margin-bottom:20px" v-show="heart.length==0">
               <div class="echartNoData-title">心率</div>
               <div class="echartNoData-result">暂无数据</div>
-            </div>
-            <div id="heartrate" class="echartItem" :class="{'echartItemAlert':heartrate==1}" style="margin-bottom:20px" v-show="heart.length>0"/>
-            <div id="" class="echartNoData"  style="margin-bottom:20px" v-show="booldH.length==0" >
+            </div> -->
+            <div id="heartrate" class="echartItem" :class="{'echartItemAlert':heartrate==1}" style="margin-bottom:20px" />
+            <!-- <div id="" class="echartNoData"  style="margin-bottom:20px" v-show="booldH.length==0" >
               <div class="echartNoData-title">血压</div>
               <div class="echartNoData-result">暂无数据</div>
-            </div>
-            <div id="bloodpress" class="echartItem" :class="{'echartItemAlert':bloodpress==1}" v-show="booldH.length>0"/>
+            </div> -->
+            <div id="bloodpress" class="echartItem" :class="{'echartItemAlert':bloodpress==1}" />
         </div>
           <div class="mapWrap">
 
@@ -196,6 +196,7 @@
       },
       //绘制图
       drawChart(){
+        console.log(this.booldL)
         let heartrate = echarts.init(document.getElementById('heartrate'));
         let option3={
             title: {text: '心率'},
@@ -491,7 +492,7 @@
       }).catch(err=>{
           console.log(err)
         })
-      if(this.heart.length>0||(this.booldH.length>0&&this.booldL.length>0))
+      // if(this.heart.length>0||(this.booldH.length>0&&this.booldL.length>0))
         await this.drawChart()
     },
   }
