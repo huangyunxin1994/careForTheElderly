@@ -83,7 +83,7 @@
       //默认缩放等级
       zoomLevel:{
         type:[String, Number],
-        default:"16"
+        default:"12"
       },
       //是否获取最佳视野
       view:{
@@ -94,8 +94,17 @@
 	watch:{
 		deep: true,  // 深度监听
 		center(newVal,oldVal) {
-			// console.log(newVal,oldVal)
-			this.getMap()
+// <<<<<<< .mine
+// 			// console.log(newVal,oldVal)
+// 			this.getMap()
+
+
+// =======
+      console.log(this.center.longitude, this.center.latitude)
+        var point = new BMap.Point(this.center.longitude, this.center.latitude);
+        this.map.centerAndZoom(point, 12); // 初始化地图,设置中心点坐标和地图级别
+        this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+// >>>>>>> .theirs
 		},
 		markers(newVal,oldVal) {
 			this.getMap()
@@ -103,7 +112,6 @@
 		// polyLineOpt
 		// circleOpt
 		circles(newVal,oldVal) {
-			console.log(newVal,oldVal)
 			this.circles.forEach(i => {
 			  var point = new BMap.Point(i.longitude,i.latitude);
 			  var circle = new BMap.Circle(point,i.radius*1000,this.circleOpt);
@@ -143,20 +151,20 @@
             var myIcon = new BMap.Icon(i.icon.name, new BMap.Size(i.icon.size[0],i.icon.size[1]), {
                 anchor: new BMap.Size(i.icon.anchor[0], i.icon.anchor[1]),
             });
-            if(i.type == 0){
+            if(i.warning == 1){
               myIcon.setName("0");
-            }else if(i.type == 1){
+            }else if(i.type == 2){
               myIcon.setName("1");
             }
             // 创建标注对象并添加到地图
             var marker = new BMap.Marker(point, {icon: myIcon});
             this.map.addOverlay(marker);
             var content= `<p class='mymap-item'>
-                            <span">家庭地址：广西南宁市青秀区</span>
+                            <span">家庭地址：${i.address}</span>
                           <p/>
-                          <p>联系方式: XXXXXXXXXXX</p>
+                          <p>联系方式: ${i.phone}</p>
                           <div style='display: flex;justify-content: space-between;align-items: center;'>
-                              <div>状态:预警</div>
+                              <div>状态:${i.warning == 1 ?'正常':'异常'}</div>
                               <input class='mymap-button'
                                      style='background:rgba(29,164,255,1);
                                      color:#fff; border:1px solid rgba(29,164,255,1);
@@ -194,8 +202,8 @@
                   // _this.movePosition(e)
                   var btn = document.getElementById("gotDetail")
                       setTimeout(() => {
-                        btn.onclick = () =>{
-                          that.getPersonData()
+                        btn.onclick = (e) =>{
+                          that.getPersonData(i.id)
                         }
                       },500)
                 });
@@ -322,16 +330,17 @@
         let point = new BMap.Point(x,y);
         this.map.panTo(point);
       },
-      getPersonData(){
-        this.$router.push('/peopleDetails')
+      getPersonData(id){
+        this.$router.push({
+          path:'/peopleDetails',
+          query: {
+              id: id
+            }
+        })
       },
       // 重新定位中心点
       setCenter(val){
-        var point = new BMap.Point(val.longitude, val.latitude);
-
-
-        this.map.centerAndZoom(point, 16); // 初始化地图,设置中心点坐标和地图级别
-        this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+        
       },
       //点击marker图标
       setMarker(){

@@ -19,16 +19,13 @@
                       </div>
                       <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">所属组织</label>
-                        <el-select v-model="valueOrg" style="width: 10vw;" filterable placeholder="请选择" @change="changeData">
-                            <el-option
-                            v-for="item in options"
-                            :key="item.value"
-                            style="width:20vw"
-                            :label="item.label"
-                            :value="item.value">
-
-                            </el-option>
-                        </el-select>
+                        <el-cascader
+                        	v-model="platformName" 
+                        	:props="{ label: 'name',value:'id',checkStrictly:'true',emitPath:false }" 
+                        	:options="options" 
+                        	:show-all-levels="false"
+                        	@change="handleChange">
+                        </el-cascader>
                       </div>
                       <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">是否可用</label>
@@ -96,7 +93,7 @@
   // import WtInput from '../../components/input.vue'
   import NavBar from '@/components/navBar/navBar.vue'
   import DialogEquipment from '@/components/dialogEquipment/dialogEquipment.vue'
-  import {getEquipment,removeEquipment} from "@/api/api"
+  import {getEquipment,removeEquipment,getOrgList} from "@/api/api"
   export default {
     name:'home',
     components:{
@@ -111,7 +108,7 @@
             page:1,
             pageSize:20,
             tableTitle:[
-                { title : "设备编号", name : "code", type:"input",width:'100'},
+                { title : "设备编号", name : "code", type:"input",minwidth:'100'},
                 { title : "设备状态", name : "equipmentState", type:"input",width:'100'},
                 { title : "是否可用", name : "isUseful", type:"input",width:'100'},
                 { title : "人员姓名", name : "elderlyName", type:"input",minwidth:'100'},
@@ -176,29 +173,12 @@
               }
             ],
             //所属组织
-            options:[
-                {
-                value: '',
-                label: '全部'
-                },
-                {
-                value: '南宁总局',
-                label: '南宁总局'
-                },
-                {
-                value: '邕宁分局',
-                label: '邕宁分局'
-                },
-                {
-                value: '青秀分局',
-                label: '青秀分局'
-                },
-            ],
+            options:[],
             valueW:"",
             platformName:'sss',
             isUseArr:[],
             noUseArr:[],
-
+			baseOrg:'',
       }
     },
     methods:{
@@ -229,7 +209,6 @@
       	this.pageSize = val
       },
       changeData(val){
-          //console.log(this.valueW) 
           this.tableData = this.tableAllData.filter(item=>{
               return String(item.equipmentState).indexOf(this.valueEqState) > -1
               &&String(item.organizationName).indexOf(this.valueOrg) > -1
@@ -373,6 +352,7 @@
       //将tabledata的值传给tableAllData(到真正对接时就不用)
       getTableAllData(){
         getEquipment().then(res=>{
+			console.log(res)
           if(res.code==0)
           this.tableData = res.data.data
           this.tableAllData = this.tableData
@@ -381,9 +361,63 @@
         })
         this.tableAllData = this.tableData
       },
+	  //获取组织列表
+	  getOrgList(){
+	  		getOrgList().then((res)=>{
+	  			let arr=[]
+	  			if(res.code == 0){
+	  				let treeData = res.data.data
+	  				const data = this.toTree(treeData)
+	  				this.data = data
+	  				treeData.forEach((item)=>{
+	  					if(!item.hasOwnProperty('parentId')){
+							// this.options = item
+							this.options.push(item)
+	  					}
+	  				})
+					console.log(this.options)
+	  			}
+	  		})
+	  },
+	  //递归
+	  toTree(data) {
+	  		  let _this = this
+	  		  // 删除 所有 children,以防止多次调用
+	  		  data.forEach(function (item) {
+	  			  delete item.children;
+	  		  });
+	  		  // 将数据存储为 以 id 为 KEY 的 map 索引数据列
+	  		  var map = {};
+	  		  data.forEach(function (item) {
+	  			  map[item.id] = item;
+	  		  });
+	  		  var val = [];
+	  		  data.forEach(function (item) {
+	  			  // 以当前遍历项，的pid,去map对象中找到索引的id
+	  			  
+	  			  var parent = map[item.parentId];
+	  			  // 如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
+	  			  if (parent) {
+	  				  (parent.children || ( parent.children = [] )).push(item);
+	  			  } else {
+	  				  //如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 val结果集中，作为顶级
+	  				  val.push(item);
+	  				  _this.treeId = item.id
+	  			  }
+	  		  });
+	  		  return val;
+	  },
+	  //级联下拉框选中
+	  handleChange(val){
+			console.log(val)
+			this.tableData = this.tableAllData.filter(item=>{
+			    return String(val).indexOf(val) > -1
+			})
+	  },
     },
     mounted(){
       this.getTableAllData()
+	  this.getOrgList()
     },
     computed:{
       tables:function(){
@@ -428,6 +462,7 @@
       .enroll-manage-container{
           padding: 20px;
           background: #fff;
+		  height: calc(100% - 40px);
 		  // height: calc(100vh - 105px);
           &-handle{
               display: flex;

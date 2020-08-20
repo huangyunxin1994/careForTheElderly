@@ -1,4 +1,6 @@
+
 import {getResultful,get,post,put,puts,myput,putResultful,deleteR,deleteResultful} from '@/api/https.js'
+
 let base = '';
 
 export const requestLogin = params => { return get(`${base}/login/`, params); }//登录
@@ -41,3 +43,14 @@ export const BloodPressure = params => { return getResultful(`${base}/PersonnelS
 export const getAlertList = params => { return get(`${base}/equipmentAlert/`, params); }//获取预警中心列表信息
 export const changeAlert = params => { return myput(`${base}/equipmentAlert/`, params); }//批量修改预警信息
 export const getOtherAlertList = params => { return get(`${base}/equipmentAlert/other/`, params); }//获取预警中心列表信息
+//设备管理
+export const getEquipment = params => { return get(`${base}/equipment/`, params); }//获取设备列表
+
+export const relatvieEquipment = params => { return put(`${base}/equipment/`, params); }//设备关联组织
+
+export const removeEquipment = params => { return deleteR(`${base}/equipment/`, params); }//删除设备
+
+//首页
+export const getElderList = params => { return get(`${base}/home/coordinate`, params); }//查询人员具体信息与坐标
+
+export const getEquipmentAlert = params => { return get(`${base}/equipmentAlert/`, params); }//查询最新预警信息

@@ -3,7 +3,11 @@
     <nav-bar></nav-bar>
     <div class="main">
       <div class="mainLeft">
+<<<<<<< .mine
         <tree ref="tree" @handleOrg="handleOrg"></tree>
+=======
+        <tree @handleOrg="handleOrg"></tree>
+>>>>>>> .theirs
       </div>
       <div class="mainRight">
                 <div class="enroll-manage-container" ref="container">
@@ -87,7 +91,7 @@
   import Tree from '@/components/tree/tree_.vue'
   import GuardianMess from '@/components/dialogGuardianMess/dialogGuardianMess.vue'
   import DialogPeopleMess from '@/components/dialogPeopleMess/dialogPeopleMess.vue'
-  import { PersonnelStatus,familymembers,elderlyStatus } from '@/api/api'
+  import { PersonnelStatus,familymembers,elderlyStatus, getElderList } from '@/api/api'
   export default {
     components:{
       NavBar,
@@ -180,6 +184,19 @@
           else
            return value;
 
+      },
+      handleOrg(val){
+      
+      
+        getElderList({organizationId:val.id}).then(res=>{
+          if(res.code==0){
+            console.log(res)
+            this.tableData = res.data.data
+            
+          }
+        }).catch(err=>{
+
+        })
       },
       handleCurrentChange(val){
          this.page = val;

@@ -106,6 +106,7 @@ export default {
 				treeData.forEach((item)=>{
 					if(!item.hasOwnProperty('parentId')){
 						this.baseOrg = item
+						this.$emit("baseOrgPos",this.baseOrg)
 					}
 				})
 				this.setBaseData()
