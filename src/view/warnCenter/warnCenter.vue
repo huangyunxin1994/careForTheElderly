@@ -97,7 +97,7 @@ export default {
 </style>
 <style lang="scss" scoped>
   .warningcenter-level1{
-    border-left: 5px solid transparent;
+    border-left: 0.2vw solid transparent;
     margin: 10px;
     height: 30px;
     line-height: 30px;
@@ -105,7 +105,7 @@ export default {
     text-align: left !important;
   }
   .is-active {
-      border-left: 5px solid #409EFF !important;
+      border-left: 0.2vw solid #409EFF !important;
   }
   a{
     text-decoration:none;
@@ -151,6 +151,7 @@ export default {
   padding:20px;
   box-sizing: border-box;
   background-color: rgb(244, 244, 245);
+  overflow: hidden;
 }
 // .menu{
 //   height:calc(100vh - 65px);

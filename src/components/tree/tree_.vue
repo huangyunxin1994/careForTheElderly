@@ -85,19 +85,21 @@ export default {
       },
       //新建组织
       newOrganization(){
-        this.$emit("newOrganization",this.baseOrg)
-		
+        this.$emit("newOrganization",this.baseOrg,this.data)
       },
       //编辑组织
       adminOrganization(){
-        this.$emit("adminOrganization",2)
+        this.$emit("adminOrganization",this.data)
       },
+	  //新建用户时，默认选中跟组织，将跟组织传递出去
+	  setBaseData(){
+		  this.$emit("setBaseData",this.baseOrg)
+	  },
 	  //获取组织列表
 	  getOrgList(){
 		getOrgList().then((res)=>{
 			let arr=[]
 			if(res.code == 0){
-        console.log(res)
 				let treeData = res.data.data
 				const data = this.toTree(treeData)
 				this.data = data
@@ -106,7 +108,7 @@ export default {
 						this.baseOrg = item
 					}
 				})
-				
+				this.setBaseData()
 			}
 		})
 	  },
@@ -127,7 +129,7 @@ export default {
 			  // 以当前遍历项，的pid,去map对象中找到索引的id
 			  
 			  var parent = map[item.parentId];
-			  // 好绕啊，如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
+			  // 如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
 			  if (parent) {
 				  (parent.children || ( parent.children = [] )).push(item);
 			  } else {

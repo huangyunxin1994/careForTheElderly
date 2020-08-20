@@ -28,6 +28,7 @@
                             type="daterange"
                             class="seclectTime"
                             style="width:10vw"
+							@change="changeResultW"
                             range-separator="至"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期">
@@ -35,7 +36,7 @@
                         </div>
                         <div class="selectItem">
                             <label for="" class="enroll-manage-container-handle-label">预警类型</label>
-                            <el-select v-model="valueW" style="width:10vw" filterable placeholder="请选择" @change="changeResultType">
+                            <el-select v-model="valueType" style="width:10vw" filterable placeholder="请选择" @change="changeResultType">
                                 <el-option
                                 v-for="item in warnType"
                                 :key="item.value"
@@ -50,7 +51,7 @@
                         border stripe highlight-current-row
                         size="mini" v-loading="listLoading"
                         class="myTable" ref="table"
-                        height="calc(100vh - 257px)"
+                        height="calc(100% - 110px)"
                         :row-key="getRowKeys">
                          <el-table-column type="index" width="60" label="序号">
                          </el-table-column>
@@ -93,6 +94,8 @@
 
 <script>
   import DialogHandleResult from '@/components/dialogHandleResult/dialogHandleResult.vue'
+  import {getOtherAlertList} from '@/api/api.js'
+  import {parseTime} from '@/utils/index.js'
   export default{
     components:{
       DialogHandleResult
@@ -107,128 +110,20 @@
         sels:[],
         disableda:true,
         pageSize:20,
+		warnType:'',//用来存放预警类型筛选的值
         time:'',
         tableTitle:[
-            { title : "姓名", name : "name", type:"link",width:"120"},
-            { title : "预警类型", name : "activeState", type:"input",width:"150"},
-            { title : "详情", name : "warnDetails", type:"input",minwidth:'150'},
-            { title : "所属组织", name : "belongPlatform", type:"input",minwidth:'150'},
-            { title : "预警时间", name : "warnTime", type:"input",width:"150"},
-            { title : "处理状态", name : "handleState", type:"input",width:"100"},
+            { title : "姓名", name : "elderlyName", type:"link",width:"120"},
+            { title : "预警类型", name : "alertType", type:"input",width:"150"},
+            // { title : "详情", name : "warnDetails", type:"input",minwidth:'150'},
+            { title : "所属组织", name : "organizationName", type:"input",minwidth:'150'},
+            { title : "预警时间", name : "alertTime", type:"input",width:"150"},
+            { title : "处理状态", name : "processingResult", type:"input",width:"100"},
             { title : "处理时间", name : "handleTime", type:"input",width:"150"},
-            { title : "处理人", name : "handleName", type:"input",width:"150"},
+            { title : "处理人", name : "handleUsername", type:"input",width:"150"},
             // { title : "监护人信息",type : "input", name:"guardianMess",button:[],width:'120'},
         ],
-        tableData:[
-          {
-            account:'001',
-            name:'王',
-            activeState:'1',
-            equState:1,
-            warnDetails:'心率过快',
-            belongPlatform:'南宁总局',
-            warnTime:'2020-06-02',
-            handleState:'1',
-            handleTime:'2020-08-12',
-            handleName:'赵二',
-          },
-          {
-            account:'002',
-            name:'王',
-            activeState:'2',
-            equState:1,
-            warnDetails:'血压低',
-            belongPlatform:'南宁总局',
-            warnTime:'2020-06-02',
-            handleState:'2',
-            handleTime:'2020-08-12',
-            handleName:'赵二',
-          },
-          {
-            account:'003',
-            name:'王',
-            activeState:'3',
-            equState:1,
-            warnDetails:'',
-            belongPlatform:'南宁总局',
-            warnTime:'2020-06-02',
-            handleState:'1',
-            handleTime:'2020-08-12',
-            handleName:'赵二',
-          },
-          {
-            account:'004',
-            name:'王',
-            activeState:'4',
-            equState:1,
-            warnDetails:'',
-            belongPlatform:'南宁总局',
-            warnTime:'2020-06-02',
-            handleState:'1',
-            handleTime:'2020-08-12',
-            handleName:'赵二',
-          },
-          {
-            account:'005',
-            name:'王',
-            activeState:'2',
-            equState:1,
-            warnDetails:'血压低',
-            belongPlatform:'南宁总局',
-            warnTime:'2020-06-02',
-            handleState:'2',
-            handleTime:'2020-08-12',
-            handleName:'赵二',
-          },
-          {
-            account:'006',
-            name:'王',
-            activeState:'2',
-            equState:1,
-            warnDetails:'血压高',
-            belongPlatform:'南宁总局',
-            warnTime:'2020-06-02',
-            handleState:'2',
-            handleTime:'2020-08-12',
-            handleName:'赵二',
-          },
-          {
-            account:'007',
-            name:'王',
-            activeState:'3',
-            equState:1,
-            warnDetails:'',
-            belongPlatform:'南宁总局',
-            warnTime:'2020-06-02',
-            handleState:'1',
-            handleTime:'2020-08-12',
-            handleName:'赵二',
-          },
-          {
-            account:'008',
-            name:'王',
-            activeState:'4',
-            equState:1,
-            warnDetails:'',
-            belongPlatform:'南宁总局',
-            warnTime:'2020-06-02',
-            handleState:'2',
-            handleTime:'2020-08-12',
-            handleName:'赵二',
-          },
-          {
-            account:'009',
-            name:'王',
-            activeState:'1',
-            equState:1,
-            warnDetails:'心率过高',
-            belongPlatform:'南宁总局',
-            warnTime:'2020-06-02',
-            handleState:'2',
-            handleTime:'2020-08-12',
-            handleName:'赵二',
-          }
-        ],
+        tableData:[],
         tableAllData: [],
         clientHeight:'',
         activeOptions:[
@@ -237,17 +132,13 @@
               label: '全部'
             },
             {
-              value: '1',
+              value: '2',
               label: '已处理'
             },
             {
-              value: '0',
+              value: '1',
               label: '未处理'
-            },
-            {
-              value: '2',
-              label: '已忽略'
-            },
+            }
         ],
         warnType:[
           {
@@ -256,22 +147,37 @@
           },
           {
             value: '1',
-            label: '心率异常'
+            label: '低电'
           },
           {
             value: '2',
-            label: '血压异常'
+            label: '离线'
           },
           {
             value: '3',
-            label: '离家异常'
+            label: '电子围栏触发'
           },
           {
             value: '4',
             label: 'SOS'
+          },
+          {
+            value: '5',
+            label: '离家异常'
+          },
+          {
+            value: '6',
+            label: '心率异常'
+          },
+          {
+            value: '7',
+            label: '血压异常'
           }
         ],
         valueW:"",
+		valueType:'',
+		beginTime:'',//开始时间
+		endTime:'',//结束时间
       }
     },
     methods:{
@@ -291,10 +197,10 @@
            return value == 1 ? '男' : value == 0 ? '女' : '';
           else if(name=='multiplexMark')
            return value == 1 ? '是' : value == 0 ? '否' : '';
-          else if(name=='handleState')
-           return value == 1 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">已处理</span>' :( value == 2 ? '<span style="color:#f79898;font-weight:bold">未处理</span>' : '');
-          else if(name=='activeState')
-           return value == 1 ? '<span style="color:#606266;">心率异常</span>' :( value == 2 ? '<span style="color:#606266;">血压异常</span>' : ( value == 3 ? '<span style="color:#606266;">离家异常</span>' : ( value == 4 ? '<span style="color:#606266;">SOS</span>' : '' ) ));
+          else if(name=='processingResult')
+           return value == 2 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">已处理</span>' :( value == 1 ? '<span style="color:#606266;font-weight:bold">未处理</span>' : '');
+          else if(name=='alertType')
+           return value == 1 ? '<span style="color:#606266;">低电</span>' :( value == 2 ? '<span style="color:#606266;">离线</span>' : ( value == 3 ? '<span style="color:#606266;">电子围栏触发</span>' : ( value == 4 ? '<span style="color:#606266;">SOS</span>' : ( value == 5 ? '<span style="color:#606266;">离家异常</span>' : ( value == 6 ? '<span style="color:#606266;">心率异常</span>' : ( value == 7 ? '<span style="color:#606266;">血压异常</span>' : '' ) ) ) ) ));
           else if(name=='equState')
            return value == 0 ? '<span style="color:#f79898;font-weight:bold">离线</span>' :( value == 1 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">在线</span>' : ( value == 2 ? '<span style="color:#e6a23c;font-weight:bold">低电量</span>' : '' ));
           else
@@ -309,7 +215,8 @@
       },
       getEnrollData(){
           this.listLoading=true
-          getUserList().then(res=>{
+          getOtherAlertList().then(res=>{
+			  console.log(res)
               if(res.code==0){
                   this.listLoading=false
                   this.tableAllData=res.data.data
@@ -333,12 +240,12 @@
       },
       changeResultType(val){
           this.tableData = this.tableAllData.filter(item=>{
-              return String(item.activeState).indexOf(val) > -1
+              return String(item.alertType).indexOf(val) > -1
           })
       },
       changeResult(val){
         this.tableData = this.tableAllData.filter(item=>{
-            return String(item.activeState).indexOf(val) > -1
+            return String(item.processingResult).indexOf(val) > -1
         })
       },
       // 更新页面
@@ -350,49 +257,56 @@
           this.sels = sels
       },
       getRowKeys(row) {
-          return row.account;
+          return row.id;
       },
-      //忽略
-      handleSearch(index,val){
-        // this.$refs.guardianMess.dialogVisible = true
-        this.$confirm('是否忽略本次预警?', '提示', {
-                  confirmButtonText: '确定',
-                  cancelButtonText: '取消',
-                  type: 'warning'
-                }).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '忽略成功!'
-                  });
-                }).catch(() => {
-                  this.$message({
-                    type: 'info',
-                    message: '已取消忽略'
-                  });
-                });
-      },
-      //填写处理结果
-      peopleAndEquiment(index,val){
-
-        this.$refs.DialogHandleResult.dialogHandleResult = true
-      },
-      userDetails(){
+      userDetails(index,row){
+		  console.log(row)
         this.$router.push(
         {
-            path: '/peopleDetails'
-            // query: {
-            //   id: val.keyUserid,
-            //   type:'2'
-            // }
+            path: '/peopleDetails',
+            query: {
+              id: row.elderlyId
+            }
         })
       },
-      //将tabledata的值传给tableAllData(到真正对接时就不用)
-      getTableAllData(){
-        this.tableAllData = this.tableData
-      }
+	  //时间框筛选
+	  changeResultW(val){
+	      if(val.length == 0){
+	       this.beginTime = ""
+	       this.endTime = ""
+	      }else{
+	        this.beginTime = parseTime(val[0],`{y}-{m}-{d}`)+" 00:00:00"
+	        this.endTime = parseTime(val[1],`{y}-{m}-{d}`)+" 23:59:59"
+	      }
+	  		   let param = {
+	  			   startTime:this.beginTime,
+	  			   endTime:this.endTime
+	  		   }
+	  		   getOtherAlertList(param).then(res=>{
+	  		       if(res.code==0){
+	  		           this.listLoading=false
+	  		           this.tableAllData=res.data.data
+	  		           this.tableData=this.tableAllData
+	  		       }else{
+	  		           this.listLoading=false
+	  		          this.$notify({
+	  		               title: '错误',
+	  		               message: res.msg,
+	  		               type: 'error'
+	  		           });
+	  		       }
+	  		   }).catch(err=>{
+	  		       this.listLoading=false
+	  		       this.$notify({
+	  		               title: '错误',
+	  		               message: err.msg,
+	  		               type: 'error'
+	  		           });
+	  		   })
+	  },
     },
     mounted() {
-      this.getTableAllData()
+      this.getEnrollData()
     },
     computed:{
       tables:function(){
@@ -416,23 +330,20 @@
 </script>
 
 <style lang='scss' scoped>
- /* /deep/.el-table th > .cell {
-  	  text-align: center;
-  	}
-  	/deep/.el-table .cell {
-  	  text-align: center;
-  	} */
     /deep/.el-table--mini td{
       padding: 0px;
     }
   .main{
     .mainRight{
+		height: calc(100vh - 65px);
       padding: 20px 20px 20px 0px;
+	  box-sizing: border-box;
       background-color: rgb(244, 244, 245);
       box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
 
         .enroll-manage-container{
-            min-height: calc(88% - 119px);
+            height: calc(100vh - 105px);
+			box-sizing: border-box;
             padding: 20px;
             background: #fff;
             &-title{

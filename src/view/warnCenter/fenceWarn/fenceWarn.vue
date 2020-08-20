@@ -45,16 +45,16 @@
                          size="mini" v-loading="listLoading"
                          @selection-change="selsChange"
                          class="myTable" ref="table"
-                         height="calc(100vh - 257px)"
+                         height="calc(100% - 110px)"
                          :row-key="getRowKeys">
-                          <el-table-column type="selection" width="55" :reserve-selection="true">
+                          <el-table-column type="selection" width="55" :reserve-selection="true" :selectable="selectTable">
                           </el-table-column>
                           <el-table-column type="index" width="60" label="序号">
                           </el-table-column>
                           <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" :sortable="item.type!='button'&&item.type!='handle'?true:false" show-overflow-tooltip>
                               <template slot-scope="scope">
                                   <el-link type="primary" v-if="item.type=='link'" @click="userDetails(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
-                                  <div v-else-if="item.type=='handle' &&scope.row['handleState'] ==1" align="center">
+                                  <div v-else-if="item.type=='handle' &&scope.row['processingResult'] ==2" align="center">
                                     <!-- <el-button  type="primary" content="查看"  size="small" round @click="handleSearch(scope.$index, scope.row)">忽略</el-button> -->
                                     <el-button   type="primary" icon="el-icon-search" size="small" round @click="findHandleResult(scope.$index, scope.row)">处理结果</el-button>
                                   </div>
@@ -90,7 +90,7 @@
          </el-scrollbar>
        </div>
      </div>
-     <dialog-handle-result ref='DialogHandleResult'></dialog-handle-result>
+     <dialog-handle-result ref='DialogHandleResult' @getData="getData"></dialog-handle-result>
      <find-handle-result ref='FindHandleResult'></find-handle-result>
    </div>
  </template>
@@ -99,6 +99,7 @@
    import DialogHandleResult from '@/components/dialogHandleResult/dialogHandleResult.vue'
    import FindHandleResult from '@/components/dialogHandleResult/findHandleResult.vue'
    import {parseTime} from '@/utils/index.js'
+   import {getAlertList,changeAlert} from '@/api/api.js'
    export default{
      components:{
        DialogHandleResult,
@@ -116,124 +117,15 @@
          pageSize:20,
          time:'',
          tableTitle:[
-             { title : "姓名", name : "name", type:"link",width:"120"},
-             { title : "预警类型", name : "activeState", type:"input",width:'150'},
+             { title : "姓名", name : "elderlyName", type:"link",width:"120"},
+             { title : "预警类型", name : "alertType", type:"input",width:'150'},
              { title : "围栏名称", name : "fenceName", type:"input",minwidth:'120'},
-             { title : "所属组织", name : "belongPlatform", type:"input",minwidth:'120'},
-             { title : "预警时间", name : "warnTime", type:"input",width:'120'},
-             { title : "处理状态", name : "handleState", type:"input",width:'120'},
+             { title : "所属组织", name : "organizationName", type:"input",minwidth:'120'},
+             { title : "预警时间", name : "alertTime", type:"input",width:'120'},
+             { title : "处理状态", name : "processingResult", type:"input",width:'120'},
              { title : "处理结果", type : "handle",button:[],width:'170'}
          ],
-         tableData:[
-           {
-             account:'001',
-             name:'王',
-             activeState:1,
-             equState:1,
-             fenceName:'南宁青秀围栏',
-             belongPlatform:'南宁总局',
-             warnTime:'2020-06-02',
-             handleState:1,
-             handleTime:'2020-08-12',
-             handleName:'赵二',
-           },
-           {
-             account:'002',
-             name:'王',
-             activeState:2,
-             equState:1,
-             fenceName:'南宁青秀围栏',
-             belongPlatform:'南宁总局',
-             warnTime:'2020-06-02',
-             handleState:1,
-             handleTime:'2020-08-12',
-             handleName:'赵二',
-           },
-           {
-             account:'003',
-             name:'王',
-             activeState:3,
-             equState:1,
-             fenceName:'南宁青秀围栏',
-             belongPlatform:'南宁总局',
-             warnTime:'2020-06-02',
-             handleState:1,
-             handleTime:'2020-08-12',
-             handleName:'赵二',
-           },
-           {
-             account:'004',
-             name:'王',
-             activeState:4,
-             equState:1,
-             fenceName:'南宁青秀围栏',
-             belongPlatform:'南宁总局',
-             warnTime:'2020-06-02',
-             handleState:2,
-             handleTime:'2020-08-12',
-             handleName:'赵二',
-           },
-           {
-             account:'005',
-             name:'王',
-             activeState:'电子围栏触发',
-             equState:1,
-             fenceName:'南宁青秀围栏',
-             belongPlatform:'南宁总局',
-             warnTime:'2020-06-02',
-             handleState:2,
-             handleTime:'2020-08-12',
-             handleName:'赵二',
-           },
-           {
-             account:'006',
-             name:'王',
-             activeState:'电子围栏触发',
-             equState:1,
-             fenceName:'南宁青秀围栏',
-             belongPlatform:'南宁总局',
-             warnTime:'2020-06-02',
-             handleState:2,
-             handleTime:'2020-08-12',
-             handleName:'赵二',
-           },
-           {
-             account:'007',
-             name:'王',
-             activeState:'电子围栏触发',
-             equState:1,
-             fenceName:'南宁青秀围栏',
-             belongPlatform:'南宁总局',
-             warnTime:'2020-06-02',
-             handleState:3,
-             handleTime:'2020-08-12',
-             handleName:'赵二',
-           },
-           {
-             account:'008',
-             name:'王',
-             activeState:'电子围栏触发',
-             equState:1,
-             fenceName:'南宁青秀围栏',
-             belongPlatform:'南宁总局',
-             warnTime:'2020-06-02',
-             handleState:3,
-             handleTime:'2020-08-12',
-             handleName:'赵二',
-           },
-           {
-             account:'009',
-             name:'王',
-             activeState:'电子围栏触发',
-             equState:1,
-             fenceName:'南宁青秀围栏',
-             belongPlatform:'南宁总局',
-             warnTime:'2020-06-02',
-             handleState:3,
-             handleTime:'2020-08-12',
-             handleName:'赵二',
-           }
-         ],
+         tableData:[],
          tableAllData: [],
          clientHeight:'',
          activeOptions:[
@@ -242,17 +134,13 @@
                label: '全部'
              },
              {
-               value: '1',
+               value: '2',
                label: '已处理'
              },
              {
-               value: '2',
+               value: '1',
                label: '未处理'
-             },
-             {
-               value: '3',
-               label: '已忽略'
-             },
+             }
          ],
          valueW:"",
          beginTime:'',
@@ -274,12 +162,10 @@
            }
            else if(name=='sex')
             return value == 1 ? '男' : value == 0 ? '女' : '';
-           else if(name=='multiplexMark')
-            return value == 1 ? '是' : value == 0 ? '否' : '';
-           // else if(name=='activeState')
-           //  return value == 1 ? '<span style="color:#909399;font-weight:bold">心率异常</span>' :( value == 2 ? '<span style="color:#909399;font-weight:bold">血压异常</span>' : ( value == 3 ? '<span style="color:#909399;font-weight:bold">离家异常</span>' : ( value == 4 ? '<span style="color:#909399;font-weight:bold">SOS</span>' : '')));
-           else if(name=='handleState')
-            return value == 1 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">已处理</span>' :( value == 2 ? '<span style="color:#f79898;font-weight:bold">未处理</span>' : ( value == 3 ? '<span style="color:#909399;font-weight:bold">已忽略</span>' : '' ));
+		   else if(name=='alertType')
+		    return value == 1 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">已处理</span>' :( value == 2 ? '<span style="color:#f79898;font-weight:bold">未处理</span>' : ( value == 3 ? '<span style="color:#f79898;font-weight:bold">外出围栏</span>' : '' ));
+           else if(name=='processingResult')
+            return value == 2 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">已处理</span>' :( value == 3 ? '<span style="color:#f79898;font-weight:bold">已处理</span>' : ( value == 1 ? '<span style="color:#909399;font-weight:bold">未处理</span>' : '' ));
            else
             return value;
 
@@ -290,9 +176,10 @@
        handleSizeChange(val){
        	this.pageSize = val
        },
+	   //获取到围栏预警数据
        getEnrollData(){
            this.listLoading=true
-           getUserList().then(res=>{
+           getAlertList().then(res=>{
                if(res.code==0){
                    this.listLoading=false
                    this.tableAllData=res.data.data
@@ -313,12 +200,8 @@
                        type: 'error'
                    });
            })
-           //this.tableData = JSON.parse(JSON.stringify(this.tableAllData))
        },
        changeResultW(val){
-           // this.tableData = this.tableAllData.filter(item=>{
-           //     return String(item.handleTime).indexOf(parseTime(val)) > -1
-           // })
            if(val.length == 0){
             this.beginTime = ""
             this.endTime = ""
@@ -326,37 +209,93 @@
              this.beginTime = parseTime(val[0],`{y}-{m}-{d}`)+" 00:00:00"
              this.endTime = parseTime(val[1],`{y}-{m}-{d}`)+" 23:59:59"
            }
-           console.log(this.beginTime)
-           console.log(this.endTime)
+		   let param = {
+			   startTime:this.beginTime,
+			   endTime:this.endTime
+		   }
+		   getAlertList(param).then(res=>{
+		       if(res.code==0){
+		           this.listLoading=false
+		           this.tableAllData=res.data.data
+		           this.tableData=this.tableAllData
+		       }else{
+		           this.listLoading=false
+		          this.$notify({
+		               title: '错误',
+		               message: res.msg,
+		               type: 'error'
+		           });
+		       }
+		   }).catch(err=>{
+		       this.listLoading=false
+		       this.$notify({
+		               title: '错误',
+		               message: err.msg,
+		               type: 'error'
+		           });
+		   })
        },
        changeResult(val){
          this.tableData = this.tableAllData.filter(item=>{
-             return String(item.handleState).indexOf(val) > -1
+             return String(item.processingResult).indexOf(val) > -1
          })
        },
        // 更新页面
        updateMess(val){
        	this.getEnrollData()
        },
+	   getData(){
+		   this.getEnrollData()
+	   },
        // 批量选中
        selsChange(sels){
            this.sels = sels
        },
+	   //判断是否可以点击
+	   selectTable(row,index){
+	     if(row.processingResult == 2){
+	       //可用，不可点击，需禁用
+	       return false
+	     }else{
+	       return true
+	     }
+	   },
        getRowKeys(row) {
-           return row.account;
+           return row.id;
        },
        //忽略
        handleSearch(index,val){
-         // this.$refs.guardianMess.dialogVisible = true
-         this.$confirm('是否忽略本次预警?', '提示', {
+		 let user = JSON.parse(sessionStorage.getItem('user'))
+		 let time = parseTime(new Date(),`{y}-{m}-{d} {h}:{i}:{s}`)
+		 let arr = this.sels
+		 let array = []
+		 for(let i in arr){
+			 let obj = {}
+			 obj.processingResult = 2
+			 obj.id = arr[i].id
+			 obj.handleRecord = "本条预警已被忽略!"
+			 obj.handleUsername = user.name
+			 obj.handleUserid = user.userId
+			 obj.handleTime = time
+			 array.push(obj)
+		 }
+         this.$confirm('是否忽略预警?', '提示', {
                    confirmButtonText: '确定',
                    cancelButtonText: '取消',
                    type: 'warning'
                  }).then(() => {
-                   this.$message({
-                     type: 'success',
-                     message: '忽略成功!'
-                   });
+					 changeAlert(array).then((res)=>{
+						 console.log(res)
+						 if(res.code == 0){
+						 	this.$message({
+						 	  message: '忽略成功',
+						 	  type: 'success'
+						 	});
+						 	this.getEnrollData()
+						 }else{
+						 	this.$message.error('忽略失败');
+						 }
+					 })
                  }).catch(() => {
                    this.$message({
                      type: 'info',
@@ -366,30 +305,29 @@
        },
        //填写处理结果
        peopleAndEquiment(index,val){
-
-         this.$refs.DialogHandleResult.dialogHandleResult = true
+         this.$refs.DialogHandleResult.getData(this.sels)
        },
        //查看处理结果
        findHandleResult(index,val){
-         this.$refs.FindHandleResult.dialogHandleResult = true
+         this.$refs.FindHandleResult.getData(val)
        },
-       userDetails(){
+       userDetails(index,row){
          this.$router.push(
          {
-             path: '/peopleDetails'
-             // query: {
-             //   id: val.keyUserid,
-             //   type:'2'
-             // }
+             path: '/peopleDetails',
+             query: {
+               id: row.elderlyId
+             }
          })
        },
        //将tabledata的值传给tableAllData(到真正对接时就不用)
        getTableAllData(){
          this.tableAllData = this.tableData
-       }
+       },
      },
      mounted() {
-       this.getTableAllData()
+       // this.getTableAllData()
+	   this.getEnrollData()
      },
      computed:{
        tables:function(){
@@ -413,12 +351,6 @@
  </script>
 
  <style lang='scss' scoped>
-   /* /deep/.el-table th > .cell {
-   	  text-align: center;
-   	}
-   	/deep/.el-table .cell {
-   	  text-align: center;
-   	} */
     /deep/.el-table--mini td{
       padding: 0px;
     }
@@ -427,13 +359,16 @@
       padding: 12px 1.4vw;
     }
    .main{
+	  height: calc(100vh - 65px);
      .mainRight{
-       padding: 20px 20px 20px 0px;
-       background-color: rgb(244, 244, 245);
-       box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+		height: 100%;
+        padding: 20px 20px 20px 0px;
+		box-sizing: border-box;
+        background-color: rgb(244, 244, 245);
+        /* box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1); */
 
          .enroll-manage-container{
-             /* min-height: calc(88% - 119px); */
+			 height: calc(100vh - 105px);
              padding: 20px;
              box-sizing: border-box;
              background: #fff;

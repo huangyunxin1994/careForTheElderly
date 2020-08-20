@@ -4,7 +4,7 @@
             <el-form-item label="电子围栏名称" prop="name" required>
                 <el-input v-model="form.name" placeholder="请输入" style="width:10vw"></el-input>
             </el-form-item>
-            <el-form-item label="围栏中心位置" prop="center" required>
+            <el-form-item label="围栏中心位置"  required>
                 <get-adress ref="getAdress" :map="map" @getItem="getItem"></get-adress>
             </el-form-item>
             <el-form-item label="电子围栏范围" prop="radius" required class="deployRange">
@@ -16,7 +16,6 @@
             <div id="allmap" ref="allmap" class="dialog-map">
 
             </div>
-            <!-- <my-map ref='myMap'></my-map> -->
         </div>
     <div slot="footer" class="dialog-footer">
             <el-button type="primary" @click.native="handleClose">取消</el-button>
@@ -172,45 +171,48 @@ export default {
         addSubmit(){
             this.$refs.form.validate((valid) => {
                 if (valid) {
-                    this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                        this.loading = true;
-                        let para = Object.assign({}, this.form);
-						let user = JSON.parse(sessionStorage.getItem('user'))
-						let electronicFence = {}
-                        electronicFence.name = para.name
-                        electronicFence.longitude = this.longitude
-                        electronicFence.latitude = this.latitude
-                        electronicFence.radius = para.radius
-						electronicFence.createUserid = user.userId
-						console.log(electronicFence)
-                        addRailDeploy(electronicFence).then((res)=>{
-                            if(res.code==0){
-                               this.$message({
-                                    message: '添加成功',
-                                    type: 'success'
-                                });
-                                this.form={
-                                    name:"",
-                                    radius: '100',
-                                    longitude: "108.386207",
-                                    latitude: "22.830839"
-                                };
-                                this.formVisible=false
-                                this.loading=false
-                                this.$emit("selectElec")
-                            }else{
-                                this.$message({
-                                    message: '添加失败',
-                                    type: 'error'
-                                });
-                            }
-                        }).catch(err=>{
-                            this.$message({
-                                message: '添加失败',
-                                type: 'error'
-                            });
-                        })
-                    });
+					if(this.longitude == '' || this.latitude == ''){
+						this.$message.error('请输入地图中心位置');
+					}else{
+						this.$confirm('确认提交吗？', '提示', {}).then(() => {
+						    this.loading = true;
+						    let para = Object.assign({}, this.form);
+							let user = JSON.parse(sessionStorage.getItem('user'))
+							let electronicFence = {}
+						    electronicFence.name = para.name
+						    electronicFence.longitude = this.longitude
+						    electronicFence.latitude = this.latitude
+						    electronicFence.radius = para.radius
+							electronicFence.createUserid = user.userId
+						    addRailDeploy(electronicFence).then((res)=>{
+						        if(res.code==0){
+						           this.$message({
+						                message: '添加成功',
+						                type: 'success'
+						            });
+						            this.form={
+						                name:"",
+						                radius: '100',
+						                longitude: "108.386207",
+						                latitude: "22.830839"
+						            };
+						            this.formVisible=false
+						            this.loading=false
+						            this.$emit("addselectElec")
+						        }else{
+						            this.$message({
+						                message: '添加失败',
+						                type: 'error'
+						            });
+						        }
+						    }).catch(err=>{
+						        this.$message({
+						            message: '添加失败',
+						            type: 'error'
+						        });
+						    })
+						});
+					}
                 }
             });
         },

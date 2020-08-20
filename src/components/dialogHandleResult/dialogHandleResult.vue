@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="填写处理结果" :visible.sync="dialogHandleResult" center :append-to-body='true' :lock-scroll="false" width="30%">
+  <el-dialog title="填写处理结果" :visible.sync="dialogHandleResult" center :append-to-body='true' :before-close="handleClose" :lock-scroll="false" width="30%">
   <div class="warnList">
 
     <div class="warnResultRight">
@@ -21,44 +21,70 @@
 </template>
 
 <script>
-import {dealEquipmentAlert} from "@/api/api"
+import {changeAlert} from "@/api/api"
+import {parseTime} from '@/utils/index.js'
   export default {
     data() {
       return {
         dialogHandleResult:false,
         changeDataResult:'',
         textarea: '',
-        id:""
+        id:"",
+		sels:[]
       }
     },
     methods:{
+	  getData(val){
+		  this.sels = val
+		  this.dialogHandleResult = true
+	  },
       cancel(){
-        // this.$emit('dialog','1')
         this.dialogHandleResult = false
+		this.textarea = ""
       },
+	  handleClose() {
+	      this.dialogHandleResult = false
+	      this.textarea = ""
+	  },
       sureBtn(){
         if(this.textarea!=""){
           let user = JSON.parse(sessionStorage.getItem("user"))
-          dealEquipmentAlert({eid:this.id,uid:user.userId,handleRecord :this.textarea}).then(res=>{
-            if(res.code == 0){
-              this.$message({
-              message: '提交成功',
-              type: 'success'
-            });
-            this.dialogHandleResult = false
-            this.$emit("removeWarn",this.id)
-            }else{
-              this.$message({
-              message: res.msg,
-              type: 'error'
-            });
-            }
-          }).catch(err=>{
-            this.$message({
-              message: err.msg,
-              type: 'error'
-            });
-          })
+		  let time = parseTime(new Date(),`{y}-{m}-{d} {h}:{i}:{s}`)
+		  let arr = this.sels
+		  let array = []
+		  for(let i in arr){
+		  			 let obj = {}
+		  			 obj.processingResult = 2
+		  			 obj.id = arr[i].id
+		  			 obj.handleRecord = this.textarea
+		  			 obj.handleUsername = user.name
+		  			 obj.handleUserid = user.userId
+		  			 obj.handleTime = time
+		  			 array.push(obj)
+		  }
+          this.$confirm('确认提交处理结果?', '提示', {
+			confirmButtonText: '确定',
+			cancelButtonText: '取消',
+			type: 'warning'
+		  }).then(() => {
+					 changeAlert(array).then((res)=>{
+						 console.log(res)
+						 if(res.code == 0){
+							this.$message({
+							  message: '忽略成功',
+							  type: 'success'
+							});
+							this.$emit('getData')
+						 }else{
+							this.$message.error('忽略失败');
+						 }
+					 })
+		  }).catch(() => {
+			this.$message({
+			  type: 'info',
+			  message: '已取消忽略'
+			});
+		  });
         }else{
           this.$message({
             message: '请填写处理结果',

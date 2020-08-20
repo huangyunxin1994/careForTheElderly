@@ -3,7 +3,7 @@
     <nav-bar></nav-bar>
     <div class="main">
       <div class="mainLeft">
-        <tree></tree>
+        <tree ref="tree" @handleOrg="handleOrg"></tree>
       </div>
       <div class="mainRight">
                 <div class="enroll-manage-container" ref="container">
@@ -27,7 +27,6 @@
                                   v-for="item in equipmentOptions"
                                   :key="item.value"
                                   :label="item.label"
-
                                   :value="item.value">
                                   </el-option>
                               </el-select>
@@ -120,160 +119,7 @@
             { title : "操作", type : "handle",button:[],width:'255'}
         ],
         tableData:[
-          {
-            name:'王',
-            activeState:0,
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'001',
-          },
-          {
-            name:'李',
-            activeState:'1',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'002',
-          },
-          {
-            name:'李',
-            activeState:'1',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'003',
-          },
-          {
-            name:'李',
-            activeState:'1',
-            equState:0,
-            belongPlatform:'南宁总局',
-            equAccount:'004',
-          },
-          {
-            name:'李',
-            activeState:'0',
-            equState:2,
-            belongPlatform:'南宁总局',
-            equAccount:'005',
-          },
-          {
-            name:'李',
-            activeState:'1',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'006',
-          },
-          {
-            name:'李',
-            activeState:'0',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'007',
-          },
-          {
-            name:'李',
-            activeState:'1',
-            equState:0,
-            belongPlatform:'南宁总局',
-            equAccount:'008',
-          },
-          {
-            name:'李',
-            activeState:'0',
-            equState:2,
-            belongPlatform:'南宁总局',
-            equAccount:'009',
-          },
-          {
-            name:'李',
-            activeState:'1',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'010',
-          },
-          {
-            name:'李',
-            activeState:'0',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'011',
-          },
-          {
-            name:'李',
-            activeState:'1',
-            equState:0,
-            belongPlatform:'南宁总局',
-            equAccount:'012',
-          },
-          {
-            name:'李',
-            activeState:'0',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'013',
-          },
-          {
-            name:'李',
-            activeState:'0',
-            equState:2,
-            belongPlatform:'南宁总局',
-            equAccount:'014',
-          },
-          {
-            name:'李',
-            activeState:'0',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'015',
-          },
-          {
-            name:'李',
-            activeState:'0',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'016',
-          },
-          {
-            name:'李',
-            activeState:'0',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'017',
-          },
-          {
-            name:'李',
-            activeState:'0',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'018',
-          },
-          {
-            name:'李',
-            activeState:'0',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'019',
-          },
-          {
-            name:'李',
-            activeState:'0',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'020',
-          },
-          {
-            name:'李',
-            activeState:'0',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'021',
-          },
-          {
-            name:'李',
-            activeState:'0',
-            equState:1,
-            belongPlatform:'南宁总局',
-            equAccount:'022',
-          }
+         
         ],
         tableAllData: [],
         clientHeight:'',
@@ -283,12 +129,12 @@
               label: '全部'
             },
             {
-              value: '0',
+              value: '1',
               label: '正常'
             },
             {
-              value: '1',
-              label: '异常'
+              value: '2',
+              label: '预警'
             },
         ],
         equipmentOptions:[
@@ -301,12 +147,12 @@
             label: '在线'
           },
           {
-            value: '0',
+            value: '2',
             label: '离线'
           },
           {
-            value: '2',
-            label: '低电量'
+            value: '3',
+            label: '预警'
           },
         ],
         valueW:"",
@@ -328,7 +174,7 @@
           else if(name=='multiplexMark')
            return value == 1 ? '是' : value == 0 ? '否' : '';
           else if(name=='warning')
-           return value == '0' ? '<span style="color:rgb(112, 182, 3)">正常</span>' :'<span style="color:#e6a23c">异常</span>';
+           return value == '1' ? '<span style="color:rgb(112, 182, 3)">正常</span>' :'<span style="color:#e6a23c">预警</span>';
           else if(name=='equipmentState')
            return value == 0 ? '<span style="color:#909399">离线</span>' :( value == 1 ? '<span style="color:rgb(112, 182, 3)">在线</span>' : ( value == 2 ? '<span style="color:#e6a23c">低电量</span>' : '' ));
           else
@@ -341,13 +187,18 @@
       handleSizeChange(val){
       	this.pageSize = val
       },
-      getEnrollData(){
+      handleOrg(val){
           this.listLoading=true
-          getUserList().then(res=>{
+		  console.log(val)
+		  let param = {
+			  organizationId:val.id
+		  }
+          PersonnelStatus(param).then(res=>{
+			  console.log(res)
               if(res.code==0){
-                  this.listLoading=false
-                  this.tableAllData=res.data.data
-                  this.tableData=this.tableAllData
+				  this.listLoading=false
+				  this.tableData = res.data.list
+				  this.tableAllData = this.tableData
               }else{
                   this.listLoading=false
                  this.$notify({
@@ -357,23 +208,18 @@
                   });
               }
           }).catch(err=>{
-              this.listLoading=false
-              this.$notify({
-                      title: '错误',
-                      message: err.msg,
-                      type: 'error'
-                  });
+              
           })
           //this.tableData = JSON.parse(JSON.stringify(this.tableAllData))
       },
       changeResultW(val){
           this.tableData = this.tableAllData.filter(item=>{
-              return String(item.equState).indexOf(val) > -1
+              return String(item.equipmentState).indexOf(val) > -1
           })
       },
       changeResult(val){
         this.tableData = this.tableAllData.filter(item=>{
-            return String(item.activeState).indexOf(val) > -1
+            return String(item.warning).indexOf(val) > -1
         })
       },
       // 更新页面
@@ -410,6 +256,7 @@
         this.$refs.peopleMess.dialogVisible = true
       },
       userDetails(index,row){
+		  console.log(row)
         this.$router.push(
         {
             path: '/peopleDetails',
@@ -421,8 +268,8 @@
       //将tabledata的值传给tableAllData(到真正对接时就不用)
       getTableAllData(){
        let para = JSON.parse(sessionStorage.getItem('user'))
-       console.log(para)
         PersonnelStatus({userId:para.userId}).then(res=>{
+			console.log(res)
           if(res.code==0){
             this.tableData = res.data.list
              this.tableAllData = this.tableData
@@ -495,7 +342,6 @@
             box-sizing: border-box;
             padding: 20px;
             height: 100%;
-            box-shadow: border-box;
             background: #fff;
             &-handle{
                 display: flex;

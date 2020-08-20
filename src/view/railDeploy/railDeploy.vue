@@ -42,7 +42,7 @@
       </el-row>
       <relevance-user ref='relevanceUser'></relevance-user>
        <dialog-map-e ref="dialogmape" @selectElec="selectElec"></dialog-map-e>
-       <dialog-map ref="dialogmap"></dialog-map>
+       <dialog-map ref="dialogmap" @addselectElec="addselectElec"></dialog-map>
     </el-container>
   </div>
 </template>
@@ -141,6 +141,9 @@ export default {
       selectElec(){
 		  this.getRailList()
       },
+	  addselectElec(){
+		  this.getRailList()
+	  },
 	  //获取电子围栏信息
 	  getRailList(){
 		  getRailList().then((res)=>{

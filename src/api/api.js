@@ -1,4 +1,4 @@
-import {getResultful,get,post,put,puts,putResultful,deleteResultful} from '@/api/https.js'
+import {getResultful,get,post,put,puts,myput,putResultful,deleteR,deleteResultful} from '@/api/https.js'
 let base = '';
 
 export const requestLogin = params => { return get(`${base}/login/`, params); }//登录
@@ -14,8 +14,13 @@ export const updateElectronicFence = params => { return puts(`${base}/Electronic
 //组织管理
 export const getOrgList = params => { return get(`${base}/organization/`, params); }//获取组织列表信息
 export const newOrg = params => { return post(`${base}/organization/`, params); }//新建组织
-export const changeOrg = params => { return puts(`${base}/organization/`, params); }//新建组织
-export const deleteOrg = params => { return deleteResultful(`${base}/organization/`, params); }//新建组织
+export const changeOrg = params => { return puts(`${base}/organization/`, params); }//修改组织
+export const deleteOrg = params => { return deleteR(`${base}/organization/`, params); }//删除组织
+
+export const addUser = params => { return post(`${base}/user/`, params); }//添加用户
+export const changeUser = params => { return puts(`${base}/user/`, params); }//修改用户
+export const getUserList = params => { return get(`${base}/user/user`, params); }//获取用户列表信息
+export const verifyAccount = params => { return get(`${base}/user/distinct`, params); }//判断账号有没有重复
 
 //人员列表
 export const PersonnelStatus = params => { return get(`${base}/PersonnelStatus/`, params); }//获取人员状态列表信息
@@ -31,3 +36,8 @@ export const familymembers = params => { return getResultful(`${base}/PersonnelS
 export const locationTracking = params => { return getResultful(`${base}/PersonnelStatus/locationTracking`, params); }//获取重点用户最新的坐标
 
 export const BloodPressure = params => { return getResultful(`${base}/PersonnelStatus/BloodPressure`, params); }//心率血压
+
+//预警中心
+export const getAlertList = params => { return get(`${base}/equipmentAlert/`, params); }//获取预警中心列表信息
+export const changeAlert = params => { return myput(`${base}/equipmentAlert/`, params); }//批量修改预警信息
+export const getOtherAlertList = params => { return get(`${base}/equipmentAlert/other/`, params); }//获取预警中心列表信息

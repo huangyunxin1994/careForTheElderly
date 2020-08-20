@@ -54,7 +54,7 @@
                     size="mini" v-loading="listLoading"
                     @selection-change="selsChange"
                     class="myTable" ref="table"
-                    height="calc(100vh - 275px)"
+                    height="calc(100% - 130px)"
                     :row-key="getRowKeys">
                      <el-table-column type="selection" width="55" :reserve-selection="true" :selectable="selectTable">
                      </el-table-column>
@@ -420,22 +420,15 @@
     font-size: 12px;
   }
   .enroll-manage-main {
-      width: calc(100vw - 40px);
-      height: calc(100vh - 105px);
+      width: 100vw;
+      height: calc(100vh - 65px);
       box-sizing: border-box;
-      // box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
-      margin: 20px;
+      padding: 20px;
 
       .enroll-manage-container{
           padding: 20px;
           background: #fff;
-          &-title{
-              padding: 2px 0;
-              border-left: 4px solid #409EFF;
-              text-indent: 20px;
-              font-size: 18px;
-              font-weight: 700;
-          }
+		  // height: calc(100vh - 105px);
           &-handle{
               display: flex;
               margin-bottom: 20px;

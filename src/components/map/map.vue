@@ -94,10 +94,10 @@
 	watch:{
 		deep: true,  // 深度监听
 		center(newVal,oldVal) {
-			console.log(newVal,oldVal)
+			// console.log(newVal,oldVal)
+			this.getMap()
 		},
 		markers(newVal,oldVal) {
-			// console.log(newVal,oldVal)
 			this.getMap()
 		},
 		// polyLineOpt
@@ -339,7 +339,10 @@
       }
     },
     mounted() {
-      this.getMap()
+		this.$nextTick(_=>{
+			this.getMap()
+		})
+      
     }
   }
 </script>

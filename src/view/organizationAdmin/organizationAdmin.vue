@@ -3,7 +3,13 @@
     <nav-bar></nav-bar>
     <div class="main">
       <div class="mainLeft">
-        <tree @newOrganization="newOrganization" @adminOrganization="adminOrganization" :organization="true" @handleOrg="handleOrg"></tree>
+        <tree 
+			@newOrganization="newOrganization" 
+			@adminOrganization="adminOrganization" 
+			:organization="true" 
+			@handleOrg="handleOrg"
+			@setBaseData="setBaseData"
+			ref="tree"></tree>
       </div>
       <div class="mainRight">
         <el-scrollbar>
@@ -20,21 +26,19 @@
                         border stripe highlight-current-row
                         size="mini" v-loading="listLoading"
                         class="myTable" ref="table"
-                        height="calc(100vh - 260px)"
+                        height="calc(100% - 110px)"
                         :row-key="getRowKeys">
-                         <!-- <el-table-column type="selection" width="55" :reserve-selection="true">
-                         </el-table-column> -->
                          <el-table-column type="index" width="60" label="序号">
                          </el-table-column>
                          <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" :sortable="item.type!='button'&&item.type!='handle'?true:false">
                              <template slot-scope="scope">
                                  <el-link type="primary" v-if="item.type=='link'" @click="userDetails(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
-                                 <div v-else-if="item.type=='handle' && scope.row['identity'] ==1" align="center">
+                                 <div v-else-if="item.type=='handle' && scope.row['account'] == 'admin'" align="center">
                                    <el-tooltip content="修改密码" placement="top">
                                       <el-button circle type="primary" icon="el-icon-edit" size="small" @click="changePass(scope.$index, scope.row)"></el-button>
                                    </el-tooltip>
                                  </div>
-                                 <div v-else-if="item.type=='handle' && scope.row['identity'] ==2" align="center">
+                                 <div v-else-if="item.type=='handle' && scope.row['account'] !='admin'" align="center">
                                    <el-tooltip content="编辑" placement="top">
                                      <el-button circle type="primary" icon="el-icon-edit"   size="small"  @click="adminMess(scope.$index, scope.row)"></el-button>
                                    </el-tooltip>
@@ -45,7 +49,6 @@
 
                      </el-table>
                      <div class="foot">
-                       <!-- <el-button type="danger"  :disabled="this.asels.length===0">批量删除</el-button> -->
                        <div class="enroll-check-container-tools">
                            <span class="enroll-check-container-tools-span"></span>
                            <el-pagination
@@ -67,9 +70,9 @@
         </el-scrollbar>
       </div>
     </div>
-    <dialog-organization ref='organization' ></dialog-organization>
-    <dialog-change-pass ref="changePass"></dialog-change-pass>
-    <editedit-mess ref="editeditMess"></editedit-mess>
+    <dialog-organization ref='organization' @getOrg="getOrg"></dialog-organization>
+    <dialog-change-pass ref="changePass" @getUserAdmin="getUserAdmin"></dialog-change-pass>
+    <editedit-mess ref="editeditMess" @getUser="getUser"></editedit-mess>
   </div>
 </template>
 
@@ -80,7 +83,7 @@
   import DialogOrganization from '@/components/dialogOrganizationAdmin/organizationAdmin.vue'
   import DialogChangePass from '@/components/dialogOrganizationAdmin/changePass.vue'
   import EditeditMess from '@/components/dialogOrganizationAdmin/editeditMess.vue'
-  import {newOrg,changeOrg} from '@/api/api.js'
+  import {addUser,changeUser,getUserList} from '@/api/api.js'
   export default{
     components:{
       NavBar,
@@ -102,186 +105,10 @@
         tableTitle:[
             { title : "账号", name : "account", type:"input",width:"200"},
             { title : "用户名", name : "name", type:"input",width:"200"},
-            { title : "所属组织", name : "belongPlatform", type:"input"},
+            { title : "所属组织", name : "organizationName", type:"input"},
             { title : "操作", type : "handle",button:[],width:'100'}
         ],
-        tableData:[
-          {
-            account:'123456',
-            name:'admin',
-            belongPlatform:'广西总局',
-            identity:1,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'123457',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:1,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'123458',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'123459',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'1234510',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'1234511',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'1234512',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'1234513',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            phone:'15869586239',
-          },
-          {
-            account:'1234514',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:1,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-             account:'1234515',
-             name:'王',
-             belongPlatform:'南宁总局',
-             identity:2,
-             pass:'123568',
-             phone:'15869586239',
-          },
-          {
-            account:'1234516',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'11',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'10',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'9',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'8',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'7',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'6',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'5',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'4',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'3',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'2',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          },
-          {
-            account:'1',
-            name:'王',
-            belongPlatform:'南宁总局',
-            identity:2,
-            pass:'123568',
-            phone:'15869586239',
-          }
-        ],
+        tableData:[],
         tableAllData: [],
         clientHeight:'',
         activeOptions:[
@@ -318,6 +145,7 @@
         ],
         valueW:"",
         organizationName:'',
+		baseData:'',
       }
     },
     methods:{
@@ -387,36 +215,40 @@
       updateMess(val){
       	this.getEnrollData()
       },
+	  //新增和修改成功后刷新页面
+	  getOrg(){
+		this.$refs.tree.getOrgList()
+	  },
       getRowKeys(row) {
           return row.account;
       },
       //新建组织
-      newOrganization(val){
-        this.$refs.organization.dialogVisible = true
-        this.$refs.organization.addBtn = true
-        this.$refs.organization.removeBtn = false
+      newOrganization(base,tree){
 		if(this.organizationName == ''){
-		  this.$refs.organization.newOrganization(val)
+		  this.$refs.organization.newOrganization(base)
+		  this.$refs.organization.getOrgTree(tree)
 		}else{
-			console.log(this.organizationName)
 		  this.$refs.organization.newOrganization(this.organizationName)
+		  this.$refs.organization.getOrgTree(tree)
 		}
       },
       //编辑组织
       adminOrganization(val){
-        // this.$refs.organization.dialogVisible = true
-        // this.$refs.organization.addBtn = true
-        // this.$refs.organization.removeBtn = true
         if(this.organizationName == ''){
           this.$message.error('请选择组织!');
         }else{
           this.$refs.organization.editOrganization(this.organizationName)
+		  this.$refs.organization.getOrgTree(val)
         }
       },
+	  //新建用户时，如果不选组织，就默认选择跟组织
+	  setBaseData(val){
+		  this.baseData = val
+	  },
       // 新建用户
       newUser(){
         if(this.organizationName == ''){
-          this.$message.error('请选择组织!');
+		  this.$refs.editeditMess.newOrganization(this.baseData)
         }else{
           this.$refs.editeditMess.newOrganization(this.organizationName)
         }
@@ -425,22 +257,49 @@
       adminMess(index,item){
         this.$refs.editeditMess.getOrganization(item)
       },
+	  //对用户进行操作后，重新请求数据
+	  getUser(){
+		  this.getEnrollData()
+	  },
       //修改密码
-      changePass(){
-        this.$refs.changePass.dialogVisible = true
+      changePass(index,item){
+		this.$refs.changePass.getUserData(item)
       },
-      //将tabledata的值传给tableAllData(到真正对接时就不用)
-      getTableAllData(){
-        this.tableAllData = this.tableData
-      },
+	  //修改密码成功时刷新页面
+	  getUserAdmin(){
+		  this.getEnrollData()
+	  },
       //点击组织
       handleOrg(val){
         this.organizationName = val
-		console.log(val)
+		let param = {
+			id:val.id
+		}
+		getUserList(param).then(res=>{
+		    if(res.code==0){
+		        this.listLoading=false
+		        this.tableAllData=res.data.data
+		        this.tableData=this.tableAllData
+		    }else{
+		        this.listLoading=false
+		       this.$notify({
+		            title: '错误',
+		            message: res.msg,
+		            type: 'error'
+		        });
+		    }
+		}).catch(err=>{
+		    this.listLoading=false
+		    this.$notify({
+		            title: '错误',
+		            message: err.msg,
+		            type: 'error'
+		        });
+		})
       },
     },
     mounted() {
-      this.getTableAllData()
+	  this.getEnrollData()
     },
     computed:{
       tables:function(){
@@ -470,7 +329,6 @@
   .main{
     display: flex;
     align-items: flex-start;
-    /* margin: 20px; */
     padding: 20px;
     background-color: rgb(244, 244, 245);
     .mainLeft{
@@ -483,17 +341,22 @@
       padding: 19px 0.5vw 0.5vw;
       margin-right: 20px;
       overflow: hidden;
+	  
+	  .dashboard-scrollbar{
+	    height: 85vh;
+	  }
     }
     .mainRight{
       width: calc(100vw - 260px);
-      min-height: calc(100vh - 125px);
+      height: calc(100vh - 105px);
       /* box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1); */
       box-sizing: border-box;
 
         .enroll-manage-container{
-            min-height: calc(88% - 119px);
+            box-sizing: border-box;
             padding: 20px;
-            /* margin-bottom: 2%; */
+            /* height: 100%; */
+			height: calc(100vh - 105px);
             background: #fff;
             &-title{
                 margin-bottom: 20px;
@@ -515,10 +378,15 @@
                     font-weight: 700;
                     margin-right: 5px;
                 }
-                .seclect{
+                /* .seclect{
                   width: 20vw;
                   max-width: 150px;
-                }
+                } */
+				.selectItem{
+				  display: flex;
+				  align-items: center;
+				  justify-content: flex-start;
+				}
             }
             &-tools{
                 display: flex;

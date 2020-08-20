@@ -155,6 +155,23 @@ export function put (url, data = {}) {
    * @param data
    * @returns {Promise}
    */
+  export function myput (url, data = {}) {
+    // let para = Qs.stringify(data)
+    return new Promise((resolve, reject) => {
+      service.put(url, data)
+        .then(response => {
+          resolve(response.data)
+        }, err => {
+          reject(err)
+        })
+    })
+    }
+  /**
+   * put 方法封装
+   * @param url
+   * @param data
+   * @returns {Promise}
+   */
   export function putResultful (url, data = {}) {
     return new Promise((resolve, reject) => {
         //console.log(data)

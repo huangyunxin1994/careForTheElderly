@@ -17,6 +17,7 @@
 </template>
 
 <script>
+	import {changeUser} from '@/api/api.js'
   export default{
     data(){
       var validatePass = (rule, value, callback) => {
@@ -49,6 +50,7 @@
           pass: '',
           passAgain: ''
         },
+		baseData:'',
         rules2:{
           pass:[
           	{ required: true,validator: validatePass, trigger: 'blur' }
@@ -61,11 +63,36 @@
     },
     methods:{
       sureBtn() {
-        this.dialogVisible = false
-      },
+        // this.dialogVisible = false
+		let param={
+			account:this.baseData.account,
+			name:this.baseData.name,
+			password:this.form.pass,
+			userId:this.baseData.userId
+		}
+		console.log(param)
+		changeUser(param).then((res)=>{
+			if(res.code == 0){
+				this.dialogVisible = false
+				this.$message({
+				  message: '修改成功',
+				  type: 'success'
+				});
+				this.$emit('getUserAdmin',1)
+			}else{
+				this.dialogVisible = false
+				this.$message.error('修改失败');
+			}
+		})
+	  },
       cancelBtn(){
         this.dialogVisible = false
       },
+	  getUserData(val){
+		  console.log(val)
+		  this.dialogVisible = true
+		  this.baseData = val
+	  },
       handleClose(){
         this.dialogVisible = false
         this.form = {
@@ -73,7 +100,7 @@
           passAgain: ''
         },
         this.$nextTick(()=>{
-                    this.$refs.ruleForm2.clearValidate();
+//                     this.$refs.ruleForm2.clearValidate();
                 })
       }
     },

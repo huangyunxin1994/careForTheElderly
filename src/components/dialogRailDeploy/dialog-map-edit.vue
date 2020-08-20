@@ -4,7 +4,7 @@
             <el-form-item label="电子围栏名称" prop="name" required>
                 <el-input v-model="form.name" placeholder="请输入"></el-input>
             </el-form-item>
-            <el-form-item label="围栏中心位置" prop="center" required>
+            <el-form-item label="围栏中心位置"  required>
                 <get-adress ref="getAdress" :map="map" @getItem="getItem"></get-adress>
             </el-form-item>
             <el-form-item label="电子围栏范围" prop="radius" required class="deployRange">
