@@ -79,7 +79,7 @@
                    						:current-page="page"
                    						:page-sizes="[10, 15, 20, 25]"
                    						:page-size="pageSize"
-                   						:total="tables.length" >
+                   						:total="count" >
                         </el-pagination>
                    </div>
                  </div>
@@ -106,7 +106,8 @@
         sels:[],
             inputValue:"",
             page:1,
-            pageSize:20,
+            pageSize:10,
+			count:0,
             tableTitle:[
                 { title : "设备编号", name : "code", type:"input",minwidth:'100'},
                 { title : "设备状态", name : "equipmentState", type:"input",width:'100'},
@@ -204,9 +205,35 @@
       },
       handleCurrentChange(val){
          this.page = val;
+		 let param = {
+			 currentPage:this.page,
+			 pageSize:this.pageSize
+		 }
+		 getEquipment(param).then(res=>{
+		 	// console.log(res)
+		     if(res.code==0)
+		 	  this.tableData = res.data.data
+		 	  this.tableAllData = this.tableData
+		 	  this.count = res.data.count
+		 	}).catch(err=>{
+		 
+		 	})
       },
       handleSizeChange(val){
       	this.pageSize = val
+		let param = {
+			 currentPage:this.page,
+			 pageSize:this.pageSize
+		}
+		getEquipment(param).then(res=>{
+			console.log(res)
+		    if(res.code==0)
+			  this.tableData = res.data.data
+			  this.tableAllData = this.tableData
+			  this.count = res.data.count
+			}).catch(err=>{
+		
+			})
       },
       changeData(val){
           this.tableData = this.tableAllData.filter(item=>{
@@ -352,14 +379,14 @@
       //将tabledata的值传给tableAllData(到真正对接时就不用)
       getTableAllData(){
         getEquipment().then(res=>{
-			console.log(res)
-          if(res.code==0)
-          this.tableData = res.data.data
-          this.tableAllData = this.tableData
-        }).catch(err=>{
+			// console.log(res)
+            if(res.code==0)
+			  this.tableData = res.data.data
+			  this.tableAllData = this.tableData
+			  this.count = res.data.count
+			}).catch(err=>{
 
-        })
-        this.tableAllData = this.tableData
+			})
       },
 	  //获取组织列表
 	  getOrgList(){

@@ -33,7 +33,7 @@
                             </div>
                     </div>
                     <el-table
-                        :data="tables.slice((page-1)*pageSize,page*pageSize)"
+                        :data="tables"
                         border stripe highlight-current-row
                         size="mini" v-loading="listLoading"
                         class="myTable" ref="table"
@@ -70,7 +70,7 @@
                        						:current-page="page"
                        						:page-sizes="[10, 15, 20, 25]"
                        						:page-size="pageSize"
-                       						:total="tables.length" >
+                       						:total="count" >
                             </el-pagination>
                        </div>
                      </div>
@@ -109,6 +109,8 @@
         fData:[],
         activeState:'',
         equState:'',
+		count:0,
+		organizationId:'',//组织id
         tableTitle:[
             { title : "姓名", name : "name", type:"link",width:"120"},
             { title : "活动状态", name : "warning", type:"input",width:'120'},
@@ -156,6 +158,7 @@
           },
         ],
         valueW:"",
+		userId:'',
       }
     },
     methods:{
@@ -181,50 +184,86 @@
            return value;
 
       },
-      handleOrg(val){
+  //     handleOrg(val){
       
-      
-        getElderList({organizationId:val.id}).then(res=>{
-          if(res.code==0){
-            console.log(res)
-            this.tableData = res.data.data
+		// this.organizationId = val.id
+  //       getElderList({organizationId:val.id}).then(res=>{
+		// 	//首页查询人员具体信息与坐标
+  //         if(res.code==0){
+  //           console.log(res)
+  //           this.tableData = res.data.data
             
-          }
-        }).catch(err=>{
+  //         }
+  //       }).catch(err=>{
 
-        })
-      },
+  //       })
+  //     },
+	  handleOrg(val){
+	      this.listLoading=true
+	  		  let param = {
+	  			  organizationId:val.id,
+				  userId:this.userId
+	  		  }
+	  		  this.organizationId = val.id
+	      PersonnelStatus(param).then(res=>{
+			  //人员列表  获取人员状态列表信息
+	  			  // console.log(res)
+	          if(res.code==0){
+	  				  this.listLoading=false
+	  				  this.tableData = res.data.list
+	  				  this.tableAllData = this.tableData
+	          }else{
+	              this.listLoading=false
+	             this.$notify({
+	                  title: '错误',
+	                  message: res.msg,
+	                  type: 'error'
+	              });
+	          }
+	      }).catch(err=>{
+	          
+	      })
+	      //this.tableData = JSON.parse(JSON.stringify(this.tableAllData))
+	  },
       handleCurrentChange(val){
          this.page = val;
+		 let param = {
+		 	currentPage:this.page,
+		 	pageSize:this.pageSize,
+		 	organizationId:this.organizationId,
+		 	userId:this.userId
+		 }
+		 PersonnelStatus(param).then(res=>{
+		 	// console.log(res)
+		   if(res.code==0){
+		     this.tableData = res.data.list
+		      this.tableAllData = this.tableData
+		 	 this.count = res.data.count
+		   }
+		 }).catch(err=>{
+		 
+		 })
       },
       handleSizeChange(val){
       	this.pageSize = val
-      },
-      handleOrg(val){
-          this.listLoading=true
-		  console.log(val)
-		  let param = {
-			  organizationId:val.id
+		let param = {
+			currentPage:this.page,
+			pageSize:this.pageSize,
+			organizationId:this.organizationId,
+			userId:this.userId
+		}
+		PersonnelStatus(param).then(res=>{
+			// console.log(res)
+		  if(res.code==0){
+		    this.tableData = res.data.list
+		     this.tableAllData = this.tableData
+			 this.count = res.data.count
 		  }
-          PersonnelStatus(param).then(res=>{
-			  console.log(res)
-              if(res.code==0){
-				  this.listLoading=false
-				  this.tableData = res.data.list
-				  this.tableAllData = this.tableData
-              }else{
-                  this.listLoading=false
-                 this.$notify({
-                      title: '错误',
-                      message: res.msg,
-                      type: 'error'
-                  });
-              }
-          }).catch(err=>{
-              
-          })
-          //this.tableData = JSON.parse(JSON.stringify(this.tableAllData))
+		}).catch(err=>{
+		
+		})
       },
+      
       changeResultW(val){
           this.tableData = this.tableAllData.filter(item=>{
               return String(item.equipmentState).indexOf(val) > -1
@@ -240,7 +279,7 @@
       	this.getEnrollData()
       },
       getRowKeys(row) {
-          return row.account;
+          return row.id;
       },
       //查看监护人信息
       handleSearch(index,val){
@@ -281,11 +320,12 @@
       //将tabledata的值传给tableAllData(到真正对接时就不用)
       getTableAllData(){
        let para = JSON.parse(sessionStorage.getItem('user'))
+	   this.userId = para.userId
         PersonnelStatus({userId:para.userId}).then(res=>{
-			console.log(res)
           if(res.code==0){
             this.tableData = res.data.list
              this.tableAllData = this.tableData
+			 this.count = res.data.count
           }
         }).catch(err=>{
 

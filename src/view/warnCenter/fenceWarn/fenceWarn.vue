@@ -40,7 +40,7 @@
                             </div>
                      </div>
                      <el-table
-                         :data="tables.slice((page-1)*pageSize,page*pageSize)"
+                         :data="tables"
                          border stripe highlight-current-row
                          size="mini" v-loading="listLoading"
                          @selection-change="selsChange"
@@ -79,7 +79,7 @@
                         						:current-page="page"
                         						:page-sizes="[10, 15, 20, 25]"
                         						:page-size="pageSize"
-                        						:total="tables.length" >
+                        						:total="count" >
                              </el-pagination>
                         </div>
                       </div>
@@ -114,7 +114,7 @@
          inputValue:"",
          page:1,
          disableda:true,
-         pageSize:20,
+         pageSize:10,
          time:'',
          tableTitle:[
              { title : "姓名", name : "elderlyName", type:"link",width:"120"},
@@ -128,6 +128,7 @@
          tableData:[],
          tableAllData: [],
          clientHeight:'',
+		 count:0,
          activeOptions:[
              {
                value: '',
@@ -170,20 +171,78 @@
             return value;
 
        },
+	   //当前页
        handleCurrentChange(val){
           this.page = val;
+		  let param = {
+		  	 currentPage:this.page,
+		  	 pageSize:this.pageSize
+		  }
+		  this.listLoading=true
+		  getAlertList(param).then(res=>{
+		      if(res.code==0){
+		          this.listLoading=false
+		          this.tableAllData=res.data.data
+		          this.tableData=this.tableAllData
+		  		this.count = res.data.count
+		      }else{
+		          this.listLoading=false
+		         this.$notify({
+		              title: '错误',
+		              message: res.msg,
+		              type: 'error'
+		          });
+		      }
+		  }).catch(err=>{
+		      this.listLoading=false
+		      this.$notify({
+		              title: '错误',
+		              message: err.msg,
+		              type: 'error'
+		          });
+		  })
        },
+	   //页数大小
        handleSizeChange(val){
        	this.pageSize = val
+		let param = {
+			 currentPage:this.page,
+			 pageSize:this.pageSize
+		}
+		this.listLoading=true
+		getAlertList(param).then(res=>{
+		    if(res.code==0){
+		        this.listLoading=false
+		        this.tableAllData=res.data.data
+		        this.tableData=this.tableAllData
+				this.count = res.data.count
+		    }else{
+		        this.listLoading=false
+		       this.$notify({
+		            title: '错误',
+		            message: res.msg,
+		            type: 'error'
+		        });
+		    }
+		}).catch(err=>{
+		    this.listLoading=false
+		    this.$notify({
+		            title: '错误',
+		            message: err.msg,
+		            type: 'error'
+		        });
+		})
        },
 	   //获取到围栏预警数据
        getEnrollData(){
            this.listLoading=true
            getAlertList().then(res=>{
+			   console.log(res)
                if(res.code==0){
                    this.listLoading=false
                    this.tableAllData=res.data.data
                    this.tableData=this.tableAllData
+				   this.count = res.data.count
                }else{
                    this.listLoading=false
                   this.$notify({

@@ -16,11 +16,14 @@
 		</el-cascader>
       </el-form-item>
       <el-form-item label="首页地图初始经纬度" >
-        <get-adress ref="getAdress" :map="map" @getItem="getItem"></get-adress>
+        <get-adress ref="getAdress" :map="map" @getItem="getItem" ></get-adress>
       </el-form-item>
     </el-form>
     <div class="map">
-      <my-map ref="myMap" @getMap="getMap" :center="mycenter" :markers="markers"></my-map>
+      <my-map ref="myMap" @getAdressName="getAdressName" @getMap="getMap" @getcenter="getcenter" :zoomLevel="zoomLevel" :center="mycenter" ></my-map>
+	  <div class="mapIcon">
+		  <img class="iconImg" src="../../icons/png/dingwei.png" alt="">
+	  </div>
     </div>
     <div class="foot">
       <el-button type="primary"  class="btn" @click="cancelBtn">取消</el-button>
@@ -60,24 +63,16 @@
         map:{},
         item:'',//用来记录坐标点
 		options:[],
+		nowCenter:'',//当前地图的中心点
 		isDisabled:false,
 		mycenter:{
-			latitude:'',
-			longitude:''
 		},
-		markers:[
-		  {
-		    longitude:"",
-		    latitude:"",
-		    icon:{
-		      name:adress,
-		      size:[48, 48],
-		      anchor:[24, 48]
-		    }
-		  }
-		],
+		mycenter1:{},
+		markers:[],
+		zoomLevel:16, //缩放等级
 		addmitType:1,//用来判断是修改还是新增   1新增  2修改
 		nowMess:{},//编辑时,用来存放本条消息
+		adressName:'',
       }
     },
     methods:{
@@ -87,14 +82,15 @@
           if(valid){
             if(this.addmitType == 1){
             	//新增
-				if(this.mycenter.latitude == '' || this.mycenter.longitude == ''){
+				if(this.mycenter1.latitude == '' || this.mycenter1.longitude == ''){
 					this.$message.error('请输入地图的初始中心位置');
 				}else{
 					let param = {
 						name:this.form.organization,
 						parentId:this.form.superiorOrganization,
-						latitude:this.mycenter.latitude,
-						longitude:this.mycenter.longitude,
+						latitude:this.mycenter1.latitude,
+						longitude:this.mycenter1.longitude,
+						address:this.adressName,
 						level:1
 					}
 					newOrg(param).then((res)=>{
@@ -114,15 +110,16 @@
             	
             }else{
             	//修改
-				if(this.mycenter.latitude == '' || this.mycenter.longitude == ''){
+				if(this.mycenter1.latitude == '' || this.mycenter1.longitude == ''){
 					this.$message.error('请输入地图的初始中心位置');
 				}else{
 					let param = {
 						id:this.nowMess.id,
 						name:this.form.organization,
 						parentId:this.form.superiorOrganization,
-						latitude:this.mycenter.latitude,
-						longitude:this.mycenter.longitude,
+						latitude:this.mycenter1.latitude,
+						longitude:this.mycenter1.longitude,
+						address:this.adressName,
 						level:1
 					}
 					changeOrg(param).then((res)=>{
@@ -173,9 +170,7 @@
           address: '',
         }
         this.$refs.getAdress.address = ''
-        this.$nextTick(()=>{
-//                     this.$refs.form.clearValidate();
-                })
+        this.$nextTick(()=>{})
       },
       //新建组织
 	  newOrganization(val){
@@ -206,18 +201,25 @@
 		}else{
 			this.form.superiorOrganization = val.id
 		}
-		this.mycenter = {
+		console.log()
+		let para = {
 			latitude : val.latitude,
 			longitude : val.longitude
 		}
-		// console.log(this.mycenter)
-		this.markers[0].latitude = val.latitude
-		this.markers[0].longitude = val.longitude
-		console.log(this.markers)
-		//  this.$nextTick(()=>{
-		// this.$refs.myMap.setCenter(this.mycenter)
-		// })
+		// this.$refs.myMap.movePosBypoint(val.latitude,val.longitude)
+		this.mycenter={}
+		this.mycenter = para
       },
+	  //获取到地址名称
+	  getAdressName(val,lng,lat){
+		  console.log(val)
+		  this.adressName = val
+		  this.$refs.getAdress.address = val
+		  this.mycenter1 = {
+		  	latitude : lat,
+		  	longitude : lng
+		  }
+	  },
 	  //编辑组织时，要获取到组织树结构
 	  getOrgTree(val){
 		  this.options = val
@@ -226,6 +228,16 @@
       getMap(val){
         this.map = val
       },
+	  //随着地图的移动  获取到当前地图的中心点
+	  getcenter(val){
+		this.nowCenter = val
+		this.mycenter = {
+		  longitude:val.lng,
+		  latitude:val.lat
+		}
+		this.$refs.getAdress.getNowAdress(val)
+		// console.log(this.mycenter)
+	  },
 	  //级联下拉框选中
 	  handleChange(val){
 		console.log(this.form.superiorOrganization)
@@ -236,9 +248,18 @@
           longitude:val.point.lng,
           latitude:val.point.lat
         }
-		this.markers[0].latitude = val.point.lat
-		this.markers[0].longitude = val.point.lng
-        // this.$refs.myMap.setCenter(this.item)
+		this.adressName = val.address + val.title;
+		this.markers=[]
+		let para = {
+		  longitude:val.point.lng,
+		  latitude:val.point.lat,
+		  icon:{
+		    name:adress,
+		    size:[48, 48],
+		    anchor:[24, 48]
+		  }
+		}
+		this.markers.push(para)
       }
     },
     mounted() {
@@ -256,7 +277,23 @@
     height: 300px;
     border: 1px solid #ccc;
     margin-bottom: 22px;
+	position: relative;
   }
+  .mapIcon{
+	  position: absolute;
+	  display: block;
+	  width: 48px;
+	  height: 48px;
+	  top:50%;
+	  left:50%; 
+	  transform: translate(-50%,-50%);
+	  z-index: 100;
+  }
+  .mapIcon .iconImg{
+	width: 100%;
+	height: 100%;
+  }
+  
   .foot{
     display: flex;
     justify-content: flex-end;

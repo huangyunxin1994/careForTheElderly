@@ -94,20 +94,21 @@
 	watch:{
 		deep: true,  // 深度监听
 		center(newVal,oldVal) {
-// <<<<<<< .mine
-// 			// console.log(newVal,oldVal)
-// 			this.getMap()
-
-
-// =======
-      console.log(this.center.longitude, this.center.latitude)
-        var point = new BMap.Point(this.center.longitude, this.center.latitude);
-        this.map.centerAndZoom(point, 12); // 初始化地图,设置中心点坐标和地图级别
-        this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
-// >>>>>>> .theirs
+			console.log(newVal,oldVal)
+			var point = new BMap.Point(this.center.longitude, this.center.latitude);
+			this.map.centerAndZoom(point, this.zoomLevel); // 初始化地图,设置中心点坐标和地图级别
+			this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
 		},
 		markers(newVal,oldVal) {
-			this.getMap()
+			this.markers.forEach((item)=>{
+				var point = new BMap.Point(item.longitude, item.latitude);
+				var myIcon = new BMap.Icon(item.icon.name, new BMap.Size(item.icon.size[0],item.icon.size[1]), {
+				    anchor: new BMap.Size(item.icon.anchor[0], item.icon.anchor[1]),
+				});
+				var marker = new BMap.Marker(point, {icon: myIcon});
+				this.map.addOverlay(marker);
+			})
+			
 		},
 		// polyLineOpt
 		// circleOpt
@@ -117,6 +118,9 @@
 			  var circle = new BMap.Circle(point,i.radius*1000,this.circleOpt);
 			  this.map.addOverlay(circle);
 			})
+		},
+		zoomLevel(newVal,oldVal) {
+			
 		}
 	},
     data(){
@@ -268,11 +272,32 @@
 
         this.map.centerAndZoom(point, zoom); // 初始化地图,设置中心点坐标和地图级别
         this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+		let that = this
+		this.map.addEventListener("moveend",function(e){
+			that.getCenter1()
+		})
         this.$emit('getMap',this.map)
       },
+	  getCenter1(){
+		  console.log(252)
+		  let nowcenter =  this.map.getCenter()
+		  console.log(nowcenter.lng)
+		  // this.$emit('getcenter',nowcenter)
+		  let point = new BMap.Point(nowcenter.lng,nowcenter.lat);
+		  		  var geoc = new BMap.Geocoder();
+		  		  let that = this
+		  		  geoc.getLocation(point,  (rs)=> {
+		  			var addComp = rs.addressComponents;
+		  			// console.log(addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber)
+		  			let address = addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber
+		  　　　　　　console.log(address)
+		  			this.$emit('getAdressName',address,nowcenter.lng,nowcenter.lat)
+		  	　　//对应的省市区、县街道，街道号address
+		  		  });
+	  },
       //显示所有的预警人员
       showWarnPeople(val){
-        console.log(this.homeMarkerItem)
+        // console.log(this.homeMarkerItem)
         let allOverlay = this.map.getOverlays()
         for(let i in allOverlay){
           if(allOverlay[i].toString() == "[object Marker]"){

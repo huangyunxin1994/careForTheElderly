@@ -65,6 +65,20 @@
 		                      this.$refs.form.clearValidate();
 		                  })
 		  this.address = ''
+	  },
+	  //已知坐标点 将坐标解析成地址
+	  getNowAdress(val){
+		  let point = new BMap.Point(val.lng,val.lat);
+		  var geoc = new BMap.Geocoder();
+		  let that = this
+		  geoc.getLocation(point, function (rs) {
+			var addComp = rs.addressComponents;
+			// console.log(addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber)
+			let address = addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber
+  　　　　　　that.address = address
+			// this.emit('getAdressName',this.address)
+	　　//对应的省市区、县街道，街道号address
+		  });
 	  }
     },
     mounted() {

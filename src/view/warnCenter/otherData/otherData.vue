@@ -47,7 +47,7 @@
                         </div>
                     </div>
                     <el-table
-                        :data="tables.slice((page-1)*pageSize,page*pageSize)"
+                        :data="tables"
                         border stripe highlight-current-row
                         size="mini" v-loading="listLoading"
                         class="myTable" ref="table"
@@ -79,7 +79,7 @@
                        						:current-page="page"
                        						:page-sizes="[10, 15, 20, 25]"
                        						:page-size="pageSize"
-                       						:total="tables.length" >
+                       						:total="count" >
                             </el-pagination>
                        </div>
                      </div>
@@ -178,6 +178,7 @@
 		valueType:'',
 		beginTime:'',//开始时间
 		endTime:'',//结束时间
+		count:0,
       }
     },
     methods:{
@@ -209,9 +210,65 @@
       },
       handleCurrentChange(val){
          this.page = val;
+		 this.listLoading=true
+		 let param = {
+			 currentPage:this.page,
+			 pageSize:this.pageSize
+		 }
+		 getOtherAlertList(param).then(res=>{
+		 			  console.log(res)
+		     if(res.code==0){
+		         this.listLoading=false
+		         this.tableAllData=res.data.data
+		         this.tableData=this.tableAllData
+		 				  this.count = res.data.count
+		     }else{
+		         this.listLoading=false
+		        this.$notify({
+		             title: '错误',
+		             message: res.msg,
+		             type: 'error'
+		         });
+		     }
+		 }).catch(err=>{
+		     this.listLoading=false
+		     this.$notify({
+		             title: '错误',
+		             message: err.msg,
+		             type: 'error'
+		         });
+		 })
       },
       handleSizeChange(val){
       	this.pageSize = val
+		this.listLoading=true
+		let param = {
+			 currentPage:this.page,
+			 pageSize:this.pageSize
+		}
+		getOtherAlertList(param).then(res=>{
+					  console.log(res)
+		    if(res.code==0){
+		        this.listLoading=false
+		        this.tableAllData=res.data.data
+		        this.tableData=this.tableAllData
+						  this.count = res.data.count
+		    }else{
+		        this.listLoading=false
+		       this.$notify({
+		            title: '错误',
+		            message: res.msg,
+		            type: 'error'
+		        });
+		    }
+		}).catch(err=>{
+		    this.listLoading=false
+		    this.$notify({
+		            title: '错误',
+		            message: err.msg,
+		            type: 'error'
+		        });
+		})
       },
       getEnrollData(){
           this.listLoading=true
@@ -221,6 +278,7 @@
                   this.listLoading=false
                   this.tableAllData=res.data.data
                   this.tableData=this.tableAllData
+				  this.count = res.data.count
               }else{
                   this.listLoading=false
                  this.$notify({

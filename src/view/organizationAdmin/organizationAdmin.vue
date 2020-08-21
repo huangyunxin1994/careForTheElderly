@@ -22,7 +22,7 @@
                         </div>
                     </div>
                     <el-table
-                        :data="tables.slice((page-1)*pageSize,page*pageSize)"
+                        :data="tables"
                         border stripe highlight-current-row
                         size="mini" v-loading="listLoading"
                         class="myTable" ref="table"
@@ -59,7 +59,7 @@
                        						:current-page="page"
                        						:page-sizes="[10, 15, 20, 25]"
                        						:page-size="pageSize"
-                       						:total="tables.length" >
+                       						:total="count" >
                             </el-pagination>
                        </div>
                      </div>
@@ -101,6 +101,7 @@
         inputValue:"",
         page:1,
         disableda:true,
+		count:0,
         pageSize:20,
         tableTitle:[
             { title : "账号", name : "account", type:"input",width:"200"},
@@ -172,17 +173,75 @@
       },
       handleCurrentChange(val){
          this.page = val;
+		 let param = {
+		 	pageSize:this.pageSize,
+		 	currentPage:this.currentPage
+		 }
+		 this.listLoading=true
+		 getUserList().then(res=>{
+		 			  console.log(res)
+		     if(res.code==0){
+		         this.listLoading=false
+		         this.tableAllData=res.data.data
+		         this.tableData=this.tableAllData
+		 				  this.count = res.data.count
+		     }else{
+		         this.listLoading=false
+		        this.$notify({
+		             title: '错误',
+		             message: res.msg,
+		             type: 'error'
+		         });
+		     }
+		 }).catch(err=>{
+		     this.listLoading=false
+		     this.$notify({
+		             title: '错误',
+		             message: err.msg,
+		             type: 'error'
+		         });
+		 })
       },
       handleSizeChange(val){
       	this.pageSize = val
+		let param = {
+			pageSize:this.pageSize,
+			currentPage:this.currentPage
+		}
+		this.listLoading=true
+		getUserList().then(res=>{
+					  console.log(res)
+		    if(res.code==0){
+		        this.listLoading=false
+		        this.tableAllData=res.data.data
+		        this.tableData=this.tableAllData
+						  this.count = res.data.count
+		    }else{
+		        this.listLoading=false
+		       this.$notify({
+		            title: '错误',
+		            message: res.msg,
+		            type: 'error'
+		        });
+		    }
+		}).catch(err=>{
+		    this.listLoading=false
+		    this.$notify({
+		            title: '错误',
+		            message: err.msg,
+		            type: 'error'
+		        });
+		})
       },
       getEnrollData(){
           this.listLoading=true
           getUserList().then(res=>{
+			  console.log(res)
               if(res.code==0){
                   this.listLoading=false
                   this.tableAllData=res.data.data
                   this.tableData=this.tableAllData
+				  this.count = res.data.count
               }else{
                   this.listLoading=false
                  this.$notify({
@@ -271,15 +330,17 @@
 	  },
       //点击组织
       handleOrg(val){
+		  // console.log(val)
         this.organizationName = val
 		let param = {
-			id:val.id
+			organizationId:val.id
 		}
 		getUserList(param).then(res=>{
 		    if(res.code==0){
 		        this.listLoading=false
 		        this.tableAllData=res.data.data
 		        this.tableData=this.tableAllData
+				this.count = res.data.count
 		    }else{
 		        this.listLoading=false
 		       this.$notify({
