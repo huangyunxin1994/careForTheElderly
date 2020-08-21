@@ -3,11 +3,7 @@
     <nav-bar></nav-bar>
     <div class="main">
       <div class="mainLeft">
-<<<<<<< .mine
         <tree ref="tree" @handleOrg="handleOrg"></tree>
-=======
-        <tree @handleOrg="handleOrg"></tree>
->>>>>>> .theirs
       </div>
       <div class="mainRight">
                 <div class="enroll-manage-container" ref="container">

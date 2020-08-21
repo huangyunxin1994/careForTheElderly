@@ -375,7 +375,6 @@
 							this.options.push(item)
 	  					}
 	  				})
-					console.log(this.options)
 	  			}
 	  		})
 	  },
@@ -411,8 +410,9 @@
 	  handleChange(val){
 			console.log(val)
 			this.tableData = this.tableAllData.filter(item=>{
-			    return String(val).indexOf(val) > -1
+			    return String(item.organizationId).indexOf(val) > -1
 			})
+			console.log(this.tableData)
 	  },
     },
     mounted(){
