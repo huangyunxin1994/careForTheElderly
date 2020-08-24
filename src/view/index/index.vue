@@ -70,36 +70,6 @@
             name:"张三",
             time:'2020-06-02 13:00:56',
             type:'外出xxx围栏'
-          },
-          {
-            name:"张三",
-            time:'2020-06-02 13:00:56',
-            type:'外出ssss围栏'
-          },
-          {
-            name:"张三",
-            time:'2020-06-02 13:00:56',
-            type:'外出sdsfs围栏'
-          },
-          {
-            name:"王者荣耀",
-            time:'2020-06-02 13:00:56',
-            type:'外出rtyu拉圣诞节福利卡三等奖偶发rt围栏'
-          },
-          {
-            name:"王者荣耀",
-            time:'2020-06-02 13:00:56',
-            type:'外出rtyu拉圣诞节福利卡三等奖偶发rt围栏'
-          },
-          {
-            name:"王者荣耀",
-            time:'2020-06-02 13:00:56',
-            type:'外出rtyu拉圣诞节福利卡三等奖偶发rt围栏'
-          },
-          {
-            name:"王者荣耀",
-            time:'2020-06-02 13:00:56',
-            type:'外出rtyu拉圣诞节福利卡三等奖偶发rt围栏'
           }
         ],
         warnList:false,
@@ -194,7 +164,6 @@
       allPeople(){
 
         let para = JSON.parse(sessionStorage.getItem('user'))
-        console.log(para)
         getElderList({organizationId:para.organizationId}).then(res=>{
           if(res.code==0){
             console.log(res)

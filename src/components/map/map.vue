@@ -101,12 +101,21 @@
 		},
 		markers(newVal,oldVal) {
 			this.markers.forEach((item)=>{
+				let pointArray = []
+				let homeMarkerItem = this.homeMarkerItem //用来存放房屋覆盖物的中间变量
+				let lineMarkerItem = this.lineMarkerItem //用来存放折线覆盖物的中间变量
+				let zoom = this.zoomLevel
+				let markerArr = []
 				var point = new BMap.Point(item.longitude, item.latitude);
 				var myIcon = new BMap.Icon(item.icon.name, new BMap.Size(item.icon.size[0],item.icon.size[1]), {
 				    anchor: new BMap.Size(item.icon.anchor[0], item.icon.anchor[1]),
 				});
 				var marker = new BMap.Marker(point, {icon: myIcon});
 				this.map.addOverlay(marker);
+				let _this1 = this
+				marker.addEventListener("click",function(e){
+					_this1.setMarker(item,e)
+				})
 			})
 			
 		},
@@ -163,73 +172,6 @@
             // 创建标注对象并添加到地图
             var marker = new BMap.Marker(point, {icon: myIcon});
             this.map.addOverlay(marker);
-            var content= `<p class='mymap-item'>
-                            <span">家庭地址：${i.address}</span>
-                          <p/>
-                          <p>联系方式: ${i.phone}</p>
-                          <div style='display: flex;justify-content: space-between;align-items: center;'>
-                              <div>状态:${i.warning == 1 ?'正常':'异常'}</div>
-                              <input class='mymap-button'
-                                     style='background:rgba(29,164,255,1);
-                                     color:#fff; border:1px solid rgba(29,164,255,1);
-                                     border-radius:2px; font-size:14px; padding:5px;'
-                                     type='button' value='查看详情' id='gotDetail'>
-                          </div>`;
-            let opts = {
-              width:250,  //信息窗口
-              height: 150,    // 信息窗口高度
-              enableMessage:true//设置允许信息窗发送短息
-            }
-            let that = this
-            var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
-            if(i.type == 0 || i.type == 1){
-              markerArr.push(marker)
-              marker.addEventListener("click",function(e){
-                if(homeMarkerItem != ''){
-                  this.map.removeOverlay(homeMarkerItem)
-                }
-                if(lineMarkerItem != ''){
-                  this.map.removeOverlay(lineMarkerItem)
-                }
-                let _this = this
-                let p = e.target;
-                var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
-                this.map.panTo(point);
-
-                var geoc = new BMap.Geocoder();
-                geoc.getLocation(point, (rs)=>{
-                  var addComp = rs.addressComponents;
-                  var adressBtn = ''
-                  let address =  addComp.province + " " + addComp.city + " " + addComp.district + " " + addComp.street + " " + addComp.streetNumber;
-
-                  _this.openInfoWindow(infoWindow,point); //开启信息窗口
-                  // _this.movePosition(e)
-                  var btn = document.getElementById("gotDetail")
-                      setTimeout(() => {
-                        btn.onclick = (e) =>{
-                          that.getPersonData(i.id)
-                        }
-                      },500)
-                });
-
-
-                //添加房屋图标
-                let homePoint = new BMap.Point(i.home.longitude, i.home.latitude);
-                let homeIcon = new BMap.Icon(i.home.icon.name, new BMap.Size(i.home.icon.size[0],i.icon.size[1]), {
-                    anchor: new BMap.Size(i.home.icon.anchor[0], i.home.icon.anchor[1]),
-                });
-                let homemarker = new BMap.Marker(homePoint, {icon: homeIcon});
-                homeMarkerItem = homemarker
-                this.homeMarkerItem1 = homemarker
-                this.map.addOverlay(homemarker);
-
-                //添加折线
-                let polyline = new BMap.Polyline([point,homePoint], {strokeColor:"blue", strokeWeight:2,strokeStyle:"dashed", strokeOpacity:0.5});
-                lineMarkerItem = polyline
-                this.lineMarkerItem1 = polyline
-                this.map.addOverlay(polyline);
-              })
-            }
           })
 
         }
@@ -279,16 +221,12 @@
         this.$emit('getMap',this.map)
       },
 	  getCenter1(){
-		  console.log(252)
 		  let nowcenter =  this.map.getCenter()
-		  console.log(nowcenter.lng)
-		  // this.$emit('getcenter',nowcenter)
 		  let point = new BMap.Point(nowcenter.lng,nowcenter.lat);
 		  		  var geoc = new BMap.Geocoder();
 		  		  let that = this
 		  		  geoc.getLocation(point,  (rs)=> {
 		  			var addComp = rs.addressComponents;
-		  			// console.log(addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber)
 		  			let address = addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber
 		  　　　　　　console.log(address)
 		  			this.$emit('getAdressName',address,nowcenter.lng,nowcenter.lat)
@@ -297,7 +235,6 @@
 	  },
       //显示所有的预警人员
       showWarnPeople(val){
-        // console.log(this.homeMarkerItem)
         let allOverlay = this.map.getOverlays()
         for(let i in allOverlay){
           if(allOverlay[i].toString() == "[object Marker]"){
@@ -333,7 +270,6 @@
       },
       //定位
       movePosBypoint(x,y){
-        console.log(x,y)
         let that = this
         let point = new BMap.Point(x,y);
         this.map.panTo(point);
@@ -368,8 +304,75 @@
         
       },
       //点击marker图标
-      setMarker(){
-        console.log("哈哈哈哈哈")
+      setMarker(item,e){
+		let that = this
+		let pointArray = []
+		let homeMarkerItem = this.homeMarkerItem //用来存放房屋覆盖物的中间变量
+		let lineMarkerItem = this.lineMarkerItem //用来存放折线覆盖物的中间变量
+		let zoom = this.zoomLevel
+		let markerArr = []
+		var content= `<p class='mymap-item'>
+		                <span">家庭地址：${item.address}</span>
+		              <p/>
+		              <p>联系方式: ${item.phone}</p>
+		              <div style='display: flex;justify-content: space-between;align-items: center;'>
+		                  <div>状态:${item.warning == 1 ?'正常':'异常'}</div>
+		                  <input class='mymap-button'
+		                         style='background:rgba(29,164,255,1);
+		                         color:#fff; border:1px solid rgba(29,164,255,1);
+		                         border-radius:2px; font-size:14px; padding:5px;'
+		                         type='button' value='查看详情' id='gotDetail'>
+		              </div>`;
+		let opts = {
+		  width:250,  //信息窗口
+		  height: 150,    // 信息窗口高度
+		  enableMessage:true//设置允许信息窗发送短息
+		}
+		
+		var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
+		
+		if(homeMarkerItem != ''){
+		    this.map.removeOverlay(homeMarkerItem)
+		  }
+		  if(lineMarkerItem != ''){
+		    this.map.removeOverlay(lineMarkerItem)
+		  }
+		  // let _this = this
+		  let p = e.target;
+		  var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+		  this.map.panTo(point);
+		
+		  var geoc = new BMap.Geocoder();
+		  geoc.getLocation(point, (rs)=>{
+		    var addComp = rs.addressComponents;
+		    var adressBtn = ''
+		    let address =  addComp.province + " " + addComp.city + " " + addComp.district + " " + addComp.street + " " + addComp.streetNumber;
+		
+		    this.map.openInfoWindow(infoWindow,point); //开启信息窗口
+		    var btn = document.getElementById("gotDetail")
+		        setTimeout(() => {
+		          btn.onclick = (e) =>{
+		            that.getPersonData(item.id)
+		          }
+		        },500)
+		  });
+		
+		
+		  //添加房屋图标
+		  let homePoint = new BMap.Point(item.home.longitude, item.home.latitude);
+		  let homeIcon = new BMap.Icon(item.home.icon.name, new BMap.Size(item.home.icon.size[0],item.icon.size[1]), {
+		      anchor: new BMap.Size(item.home.icon.anchor[0], item.home.icon.anchor[1]),
+		  });
+		  let homemarker = new BMap.Marker(homePoint, {icon: homeIcon});
+		  homeMarkerItem = homemarker
+		  this.homeMarkerItem1 = homemarker
+		  this.map.addOverlay(homemarker);
+		
+		  //添加折线
+		  let polyline = new BMap.Polyline([point,homePoint], {strokeColor:"blue", strokeWeight:2,strokeStyle:"dashed", strokeOpacity:0.5});
+		  lineMarkerItem = polyline
+		  this.lineMarkerItem1 = polyline
+		  this.map.addOverlay(polyline);
       }
     },
     mounted() {

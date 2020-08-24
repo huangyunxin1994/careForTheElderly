@@ -92,7 +92,6 @@ export default {
 							password:this.ruleForm2.newPassword,
 							userId:user.userId
 						}
-						console.log(param)
 						changeUser(param).then((res)=>{
 							//console.log(res)
 							if(res.code == 0){
