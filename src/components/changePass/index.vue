@@ -22,7 +22,7 @@
 </template>
 
 <script>
-// import {changePass,vaildIdCard} from '@/api/api.js'
+import {changeUser} from '@/api/api.js'
 import {Debounce} from '@/utils/index.js'
 export default {
 	data(){
@@ -81,50 +81,44 @@ export default {
 			 this.$refs.ruleForm2.validate((valid) => {
 
 					if (valid) {
-            this.$message({
-              message: '密码修改成功,3秒后退出系统，请重新登录',
-              type: 'success'
-            });
-            this.$router.replace('/login')
-						// let para = Object.assign({}, this.ruleForm2);
-						// vaildIdCard({idCard: this.ruleForm2.idCard,account:this.ruleForm2.account}).then(res=>{
-						// 	if(res.code==0){
-						// 		// console.log(para)
-						// 		changePass(para).then((res)=>{
-						// 			//console.log(res)
-						// 			if(res.code == 0){
-						// 				this.$message({
-						// 					message: '密码修改成功,3秒后退出系统，请重新登录',
-						// 					type: 'success'
-						// 				});
-						// 				this.ruleForm2={
-						// 					newPassword:'',
-						// 					again:'',
-						// 					idCard:''
-						// 				},
-						// 				this.dialogPassVisible = false
-						// 				this.loading=false
-						// 				setTimeout(_=>{
-						// 					this.$router.push({path:"/login"})
-						// 				},3000)
+						// this.$message({
+						//   message: '密码修改成功,3秒后退出系统，请重新登录',
+						//   type: 'success'
+						// });
+						// this.$router.replace('/login')
+						let user = JSON.parse(sessionStorage.getItem('user'))
+						let para = Object.assign({}, this.ruleForm2);
+						let param = {
+							password:this.ruleForm2.newPassword,
+							userId:user.userId
+						}
+						console.log(param)
+						changeUser(param).then((res)=>{
+							//console.log(res)
+							if(res.code == 0){
+								this.$message({
+									message: '密码修改成功,3秒后退出系统，请重新登录',
+									type: 'success'
+								});
+								this.ruleForm2={
+									newPassword:'',
+									again:'',
+									idCard:''
+								},
+								this.dialogPassVisible = false
+								this.loading=false
+								setTimeout(_=>{
+									this.$router.push({path:"/login"})
+								},3000)
 
-						// 			}else{
-						// 				this.$message.error('密码修改失败');
-						// 				this.loading=false
-						// 			}
-						// 		}).catch((res)=>{
-						// 			this.$message.error('密码修改失败');
-						// 			this.loading=false
-						// 		})
-						// 	}else{
-						// 	  	this.$notify({
-      //               title: '警告',
-      //               message: '账号或身份证号验证错误',
-      //               type: 'warning'
-						// 		});
-						// 		this.loading=false
-						// 	}
-						// })
+							}else{
+								this.$message.error('密码修改失败');
+								this.loading=false
+							}
+						}).catch((res)=>{
+							this.$message.error('密码修改失败');
+							this.loading=false
+						})
 
 					}else{
 						this.loading=false
