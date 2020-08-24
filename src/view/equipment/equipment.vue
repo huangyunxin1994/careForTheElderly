@@ -379,7 +379,7 @@
       //将tabledata的值传给tableAllData(到真正对接时就不用)
       getTableAllData(){
         getEquipment().then(res=>{
-			// console.log(res)
+			console.log(res)
             if(res.code==0)
 			  this.tableData = res.data.data
 			  this.tableAllData = this.tableData

@@ -20,7 +20,7 @@
               <el-scrollbar id="elec-main" class="electricfence-scrollbar" style="height: calc(100% - 50px);">
                 <div :id="'elec-'+index" v-for="(item,index) in filterArr" :key="index" class="electricfence-collapse-item" :class="{'collapse-item-select':enterShowIndex == index}" @click="enterShow(index)">
                     
-                    <div style="width: 60px;" @click="setOrganization(item)">
+                    <div style="width: 4vw;" @click="setOrganization(item)">
                       <my-tooltip
                           :content="item.name"
                           class="wid190"
@@ -106,13 +106,7 @@ export default {
         // this.$refs.map.movePosBypoint(this.filterArr[i].longitude,this.filterArr[i].latitude)
       },
       setUserIn(i,item){
-		//   console.log("&&&&&&&&&&&")
-  //       console.log(i)
-		// console.log(item)
-        // this.$refs.relevanceUser.dialogVisible = true
 		this.$refs.relevanceUser.handleShow(item)
-        // let row = this.filterArr[i]
-        // this.$refs.transfer.handleShow(row)
       },
       //编辑围栏
       editElec(i){

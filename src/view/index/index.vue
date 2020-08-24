@@ -87,7 +87,6 @@
     },
     methods:{
       getWarnList(){
-        // 
         getEquipmentAlert({processingResult:1}).then(res=>{
           this.dashboardContext = res.data.data
           console.log(this.dashboardContext)
@@ -116,6 +115,7 @@
       
       
         getElderList({organizationId:val.id}).then(res=>{
+			console.log(res)
           if(res.code==0){
             console.log(res)
            
@@ -166,7 +166,6 @@
         let para = JSON.parse(sessionStorage.getItem('user'))
         getElderList({organizationId:para.organizationId}).then(res=>{
           if(res.code==0){
-            console.log(res)
             if(res.data.data.length>0){
               res.data.data.forEach(i => {
                 let para =  {

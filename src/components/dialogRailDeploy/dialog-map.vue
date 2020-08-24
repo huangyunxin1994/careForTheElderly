@@ -105,6 +105,7 @@ export default {
                     that.circle = new BMap.Circle(point,that.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
                     that.map.clearOverlays()
                     that.map.addOverlay(that.circle);
+					that.getCenter1()
             });
             this.map.addEventListener("zoomend",function(){
                     that.longitude = that.map.getCenter().lng
@@ -115,6 +116,19 @@ export default {
                     that.map.addOverlay(that.circle);
             });
         },
+		getCenter1(){
+			let nowcenter =  this.map.getCenter()
+			let point = new BMap.Point(nowcenter.lng,nowcenter.lat);
+				var geoc = new BMap.Geocoder();
+				let that = this
+				geoc.getLocation(point,  (rs)=> {
+					var addComp = rs.addressComponents;
+					let address = addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber
+	  　　　　　　	console.log(address)
+		　　			//对应的省市区、县街道，街道号address
+					this.$refs.getAdress.address = address
+				});
+		},
         changeRound(){
             this.longitude = this.map.getCenter().lng
             this.latitude = this.map.getCenter().lat
@@ -164,7 +178,7 @@ export default {
             this.formVisible=false
             this.loading=false
 			this.$nextTick(()=>{
-                    this.$refs.form.clearValidate();
+//                     this.$refs.form.clearValidate();
                 })
 			this.$refs.getAdress.closeHandle()
         },
@@ -252,5 +266,9 @@ export default {
         font-size: 40px;
     }
 }
-
+.dialog-footer{
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
 </style>

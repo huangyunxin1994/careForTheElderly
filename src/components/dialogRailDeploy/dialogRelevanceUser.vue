@@ -103,6 +103,7 @@ import {getRailDeploy,getOrgList,updateElectronicFence} from '@/api/api.js'
 	  //获取组织列表
 	  getOrganizationList(){
 		  getOrgList().then((res)=>{
+			  console.log(res)
 			  if(res.code == 0){
 				  this.$refs.mytree.getData(res.data.data)
 			  }
@@ -116,6 +117,7 @@ import {getRailDeploy,getOrgList,updateElectronicFence} from '@/api/api.js'
 		  this.data = []
 		  this.value = []
 		  getRailDeploy(param).then((res)=>{
+			  console.log(res)
 			  if(res.code == 0){
 				  let userList = res.data.electronicFenceNotRelationList
 				  let userArr = []
@@ -138,7 +140,7 @@ import {getRailDeploy,getOrgList,updateElectronicFence} from '@/api/api.js'
 				  
 				  this.data = userArr
 				  this.value = myValue
-				   console.log(this.data)
+				  console.log(this.data)
 				  console.log(this.value)
 			  }
 		  })
