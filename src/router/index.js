@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+
 // import HelloWorld from '@/components/HelloWorld'
 const Login = () => import('@/view/login/login')//登录页
 const Home = () => import('@/view/index/index')//首页
@@ -15,12 +14,12 @@ const OrganizationAdmin = () => import('@/view/organizationAdmin/organizationAdm
 const Equipment = () => import('@/view/equipment/equipment')//设备管理
 const Bulletinboard = () => import('@/view/bulletinboard/bulletinboard')//看板
 
-Vue.use(Router)
+
 
 const routes = [
   {
     path: '/',
-    redirect:'/login'
+    redirect:'/home'
   },
   {
     path: '/login',
@@ -82,6 +81,4 @@ const routes = [
   }
 ]
 
-export default new Router({
-  routes: routes
-})
+export default routes
