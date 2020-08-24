@@ -239,8 +239,12 @@
       },
       baseOrgPos(val){
         console.log(val)
-        this.center.longitude = val.longitude
-        this.center.latitude = val.latitude
+        let params ={
+          longitude:val.longitude,
+          latitude:val.latitude
+        }
+        this.center = {}
+        this.center = params
       },
       //显示预警人员
       warnPeople(){
