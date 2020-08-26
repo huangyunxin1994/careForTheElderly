@@ -1,37 +1,35 @@
 <template>
-  <div class="login-background">
-    <div class="login-logo"></div>
-    <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm login-container">
+<div class="login-background">
+  <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm login-container">
 
 
-        <h2 style="color: #4b97eb;">欢迎登录</h2>
-      <el-form-item prop="account">
-        <el-input type="text" v-model="ruleForm2.account" prefix-icon="el-icon-user" clearable auto-complete="off" placeholder="账号"></el-input>
+      <h2 style="color: #4b97eb;">欢迎登录</h2>
+    <el-form-item prop="account">
+      <el-input type="text" v-model="ruleForm2.account" prefix-icon="el-icon-user" clearable auto-complete="off" placeholder="账号"></el-input>
+    </el-form-item>
+
+      <el-form-item prop="checkPass">
+        <el-input type="password" v-model="ruleForm2.checkPass" prefix-icon="el-icon-lock" auto-complete="off" placeholder="密码"></el-input>
       </el-form-item>
 
-        <el-form-item prop="checkPass">
-          <el-input type="password" v-model="ruleForm2.checkPass" prefix-icon="el-icon-lock" auto-complete="off" placeholder="密码"></el-input>
-        </el-form-item>
-
-      <div class="login-handle">
-        <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
-        <!-- <el-link :underline="false"  class="remember" @click="changePass">忘记密码?</el-link> -->
-      </div>
-      <el-form-item style="width:100%;">
-        <el-button  class="login-button" @click.native.prevent="handleSubmit2" :loading="logining">登录</el-button>
-      </el-form-item>
-    </el-form>
+    <div class="login-handle">
+    <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
+    </div>
+    <el-form-item style="width:100%;">
+      <el-button  class="login-button" @click.native.prevent="handleSubmit2" :loading="logining">登录</el-button>
+    </el-form-item>
+  </el-form>
   </div>
 </template>
-<script>
-  import {Debounce} from '@/utils/index.js'
-  import { requestLogin } from '@/api/api.js';
-  export default {
-    components:{
 
-    },
-    data(){
-      return{
+<script>
+  import { requestLogin } from '@/api/api.js';
+  import {Debounce} from '@/utils/index.js'
+  //import NProgress from 'nprogress'
+  export default {
+    components:{},
+    data() {
+      return {
         platFormName:"",
         logining: false,
         ruleForm2: {
@@ -49,13 +47,15 @@
           ],
         },
         checked: true
-      }
+      };
     },
-    methods:{
-
-      // handleSubmit2(){
-      //   this.$router.push({ path: '/bulletinboard' });
-      // },
+    methods: {
+      changePass(){
+        this.$refs.changePass.setShow(this.ruleForm2.account)
+      },
+      handleReset2() {
+        this.$refs.ruleForm2.resetFields();
+      },
       handleSubmit2: Debounce(function() {
         var _this = this;
         this.$refs.ruleForm2.validate((valid) => {
@@ -65,10 +65,10 @@
                 requestLogin(loginParams).then(data => {
                     this.logining = false;
                     if(data.code == 0){
-      						let {user} = data.data
+						let {user} = data.data
                         sessionStorage.setItem('user', JSON.stringify(user));
-
-                        this.$router.push({ path: '/bulletinboard' });
+                        
+                        this.$router.push({ path: '/home' });
                         this.$message({
                           message: "登录成功",
                           type: 'success'
@@ -92,42 +92,43 @@
           _this.clearCookie();
         }
       },300),
-      //设置cookie
-      setCookie(c_name, c_pwd, exdays){
-      		var exdate = new Date(); //获取时间
-        exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays); //保存的天数
-        //字符串拼接cookie
-        window.document.cookie =
-      			"userName" + "=" + c_name + ";path=/;expires=" + exdate.toGMTString();
-      		window.document.cookie =
-            "userPwd" + "=" + c_pwd + ";path=/;expires=" + exdate.toGMTString();
-            this.getCookie()
-      },
-      //读取cookie
-      getCookie(){
-      		if(document.cookie.length > 0){
-      			var arr =  window.document.cookie.split("; "); //这里显示的格式需要切割一下自己可输出看下
-      			console.log(arr)
-      			for (var i = 0; i < arr.length; i++) {
-      			  var arr2 = arr[i].split("="); //再次切割
-      			  //判断查找相对应的值
-      			  if (arr2[0] == "userName") {
-      				this.ruleForm2.account = arr2[1]; //保存到保存数据的地方
-      			  } else if (arr2[0] == "userPwd") {
-      				this.ruleForm2.checkPass = arr2[1];
-      			  }
-      			}
-      		}
-      },
-      clearCookie: function() {
+	  //设置cookie
+	  setCookie(c_name, c_pwd, exdays){
+		var exdate = new Date(); //获取时间
+	    exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays); //保存的天数
+	    //字符串拼接cookie
+	    window.document.cookie =
+			"userName" + "=" + c_name + ";path=/;expires=" + exdate.toGMTString();
+		window.document.cookie =
+			"userPwd" + "=" + c_pwd + ";path=/;expires=" + exdate.toGMTString();
+	  },
+	  //读取cookie
+	  getCookie(){
+		if(document.cookie.length > 0){
+			var arr = document.cookie.split("; "); //这里显示的格式需要切割一下自己可输出看下
+			// console.log(arr)
+			for (var i = 0; i < arr.length; i++) {
+			  var arr2 = arr[i].split("="); //再次切割
+			  //判断查找相对应的值
+			  if (arr2[0] == "userName") {
+				this.ruleForm2.account = arr2[1]; //保存到保存数据的地方
+			  } else if (arr2[0] == "userPwd") {
+				this.ruleForm2.checkPass = arr2[1];
+			  }
+			}
+		}
+	  },
+	  clearCookie: function() {
       this.setCookie("", "", -1); //修改2值都为空，天数为负1天就好了
       },
     },
-    mounted() {
+	mounted() {
 		this.getCookie()
-    }
+	}
   }
+
 </script>
+
 <style lang="scss" >
 .login-handle  .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner{
     background-color:#4b97eb;
