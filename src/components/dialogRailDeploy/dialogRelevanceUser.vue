@@ -3,7 +3,7 @@
     <div class="enroll-manage-container-title">关联用户</div>
     <div class="main">
       <div class="mainleft">
-        <tree ref="mytree" @getOrganization="getOrganization"></tree>
+        <tree ref="mytree" @getOrganization="getOrganization" @baseOrgPos="baseOrgPos"></tree>
       </div>
       <div class="shuttle">
         <el-transfer
@@ -36,6 +36,7 @@ import {getRailDeploy,getOrgList,updateElectronicFence} from '@/api/api.js'
         value: [0],
 		fenceId:'',
 		nowOrg:'',//当前点击了那个组织
+		baseOrg:'',//跟组织
       }
     },
     methods:{
@@ -87,11 +88,17 @@ import {getRailDeploy,getOrgList,updateElectronicFence} from '@/api/api.js'
       handleClose(){
         this.dialogVisible = false
       },
+	  //点击组织时
       getOrganization(val){
 		this.nowOrg = val
 		this.getRailDeploy()
 		// console.log("organizationId:"+this.nowOrg.id)
       },
+	  //获取到跟组织
+	  baseOrgPos(val){
+		  this.baseOrg = val
+		  this.getRaiList1()
+	  },
 	  handleShow(val){
 		this.title = val.name
 		this.fenceId = val.id
@@ -140,10 +147,39 @@ import {getRailDeploy,getOrgList,updateElectronicFence} from '@/api/api.js'
 				  
 				  this.data = userArr
 				  this.value = myValue
-				  console.log(this.data)
-				  console.log(this.value)
 			  }
 		  })
+	  },
+	  //一开始就获取电子围栏列表信息
+	  getRaiList1(){
+		  let param = {}
+		  param.fenceId = this.fenceId
+		  param.organizationId = this.baseOrg.id
+		   getRailDeploy(param).then((res)=>{
+			   if(res.code == 0){
+				  let userList = res.data.electronicFenceNotRelationList
+				  let userArr = []
+				  for(let i=0;i<userList.length;i++){
+					  userArr.push({
+						  key:userList[i].id,
+						  label:userList[i].name
+					  })
+				  }
+				  
+				  let myValue = []
+				  let haveUserList = res.data.electronicFenceRelationList
+				  for(let i=0;i<haveUserList.length;i++){
+					  userArr.push({
+						  key:haveUserList[i].id,
+						  label:haveUserList[i].name
+					  })
+					  myValue.push(haveUserList[i].id)
+				  }
+				  
+				  this.data = userArr
+				  this.value = myValue
+			   }
+		   })
 	  }
     },
     mounted() {

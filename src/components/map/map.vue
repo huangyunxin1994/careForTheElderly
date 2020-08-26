@@ -94,7 +94,6 @@
 	watch:{
 		deep: true,  // 深度监听
 		center(newVal,oldVal) {
-			console.log(newVal,oldVal)
 			var point = new BMap.Point(this.center.longitude, this.center.latitude);
 			this.map.centerAndZoom(point, this.zoomLevel); // 初始化地图,设置中心点坐标和地图级别
 			this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
@@ -228,7 +227,6 @@
 		  		  geoc.getLocation(point,  (rs)=> {
 		  			var addComp = rs.addressComponents;
 		  			let address = addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber
-		  　　　　　　console.log(address)
 		  			this.$emit('getAdressName',address,nowcenter.lng,nowcenter.lat)
 		  	　　//对应的省市区、县街道，街道号address
 		  		  });

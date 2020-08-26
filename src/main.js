@@ -7,6 +7,7 @@ import echarts from 'echarts'
 import VueRouter from 'vue-router'
 import  '@/assets/iconfonts/iconfont.css'
 import '@/assets/css/normalize.scss'
+import { Message } from 'element-ui'
 
 Vue.use(ElementUI);
 Vue.use(VueRouter)
@@ -20,24 +21,20 @@ const router = new VueRouter({
 
 
 router.beforeEach((to, from, next) => {
-  //NProgress.start();
-  // if (to.path == '/login') {
-  //   sessionStorage.removeItem('user');
-  // }
-  // let user = JSON.parse(sessionStorage.getItem('user'));
-  // if (!user && to.path != '/login') {
-  //   next({ path: '/login' })
-  // } else {
-  //   next()
-  // }
   if (to.path == '/login') {
     sessionStorage.removeItem('user');
   }
   let adminUser = JSON.parse(sessionStorage.getItem('user'));
-  console.log(adminUser)
   if (!adminUser && to.path != '/userLogin' && to.path != '/login') {
     next({ path: '/login' })
-  } else {
+  }else if((!adminUser||adminUser.account != 'admin') && (to.path == '/organizationAdmin' || to.path == '/equipment')){
+	Message({
+	  message: '抱歉,没有权限!',
+	  type: 'error',
+	  duration: 5 * 1000
+	})
+	// next()
+  }else {
     next()
   }
 })

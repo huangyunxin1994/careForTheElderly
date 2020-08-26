@@ -63,7 +63,7 @@ export default {
             map:null,
             marker:"",
             circle:"",
-
+			address:'',
             ac:{}
             }
 
@@ -127,6 +127,7 @@ export default {
 	  　　　　　　	console.log(address)
 		　　			//对应的省市区、县街道，街道号address
 					this.$refs.getAdress.address = address
+					this.address = address
 				});
 		},
         changeRound(){
@@ -139,6 +140,11 @@ export default {
         },
         getItem(item) {
           this.form.center = item.address + item.title; //记录详细地址，含建筑物名
+		  if(item.province == item.city){
+			  this.address = item.province + item.city + item.address + item.title;
+		  }else{
+			  this.address = item.city + item.address + item.title;
+		  }
           this.longitude = item.point.lng
           this.latitude = item.point.lat
           let point  = new BMap.Point(this.longitude,this.latitude)
@@ -198,6 +204,7 @@ export default {
 						    electronicFence.latitude = this.latitude
 						    electronicFence.radius = para.radius
 							electronicFence.createUserid = user.userId
+							electronicFence.address = this.address
 						    addRailDeploy(electronicFence).then((res)=>{
 						        if(res.code==0){
 						           this.$message({

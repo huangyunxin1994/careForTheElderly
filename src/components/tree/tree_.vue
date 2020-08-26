@@ -17,14 +17,15 @@
               :filter-node-method="filterNode"
                node-key="id"
               highlight-current
-              :default-expanded-keys="[treeId]"
+              :default-expanded-keys="treeId"
               ref="tree"></el-tree>
         </el-scrollbar>
       </div>
 </template>
 
 <script>
-import {getOrgList} from '@/api/api.js'
+	
+import {getOrgList,getTopOrgList} from '@/api/api.js'
 export default {
   name: 'tree',
   props:{
@@ -57,6 +58,8 @@ export default {
 			label: 'name'
 		},
 		baseOrg:'',
+		parant:[],
+		children:[],
     }
   },
     methods: {
@@ -65,11 +68,16 @@ export default {
           data:data,
           node:node.parent
         }
-        this.$emit("handleOrg",data)
+		let children = this.children
+		children.forEach((item)=>{
+			if(item.id == data.id){
+				this.$emit("handleOrg",data)
+			}
+		})
       },
        filterNode(value, data) {
         if (!value) return true;
-        return data.label.indexOf(value) !== -1;
+        return data.name.indexOf(value) !== -1;
       },
       //所有人员
       allPeople(){
@@ -97,21 +105,84 @@ export default {
 	  },
 	  //获取组织列表
 	  getOrgList(){
-		getOrgList().then((res)=>{
-			let arr=[]
-			if(res.code == 0){
-				let treeData = res.data.data
-				const data = this.toTree(treeData)
-				this.data = data
-				treeData.forEach((item)=>{
-					if(!item.hasOwnProperty('parentId')){
-						this.baseOrg = item
-						this.$emit("baseOrgPos",this.baseOrg)
-					}
-				})
-				this.setBaseData()
-			}
-		})
+		let user = JSON.parse(sessionStorage.getItem('user'))
+		let userOrgId = user.organizationId
+		// if(user.account == "admin"){
+			getOrgList().then((res)=>{
+				let arr=[]
+				if(res.code == 0){
+					let treeData = res.data.data
+					const nowData = this.getTreeData(treeData,userOrgId)
+					const data = this.toTree(nowData)
+					this.data = data
+					treeData.forEach((item)=>{
+						if(!item.hasOwnProperty('parentId')){
+							this.baseOrg = item
+							this.$emit("baseOrgPos",this.baseOrg)
+						}
+					})
+					this.$nextTick(()=>{
+						this.$refs.tree.setCurrentKey(this.baseOrg.id)
+					})
+					this.setBaseData()
+				}
+			})
+		// }else{
+		// 	let param = {
+		// 		organizationId:userOrgId
+		// 	}
+		// 	getTopOrgList(param).then((res)=>{
+		// 		let arr=[]
+		// 		if(res.code == 0){
+		// 			let treeData = res.data.data
+		// 			const data = getTreeData(treeData,userOrgId)
+		// 			this.data = data
+		// 			treeData.forEach((item)=>{
+		// 				if(!item.hasOwnProperty('parentId')){
+		// 					this.baseOrg = item
+		// 					this.$emit("baseOrgPos",this.baseOrg)
+		// 				}
+		// 			})
+		// 			this.$nextTick(()=>{
+		// 				this.$refs.tree.setCurrentKey(this.baseOrg.id)
+		// 			})
+		// 			this.setBaseData()
+		// 		}
+		// 	})
+		// }
+		
+	  },
+	  //新递归
+	  getTreeData(data,id){
+		  let arr = []
+		  let parant = []
+		  let children = []
+		  data.forEach((item)=>{
+		    //当前组织的所属组织id等于用户的所属组织   说明当前组织时当前用户所属组织的子组织
+		    if(item.id == id){
+		  	  if(item.parentId){
+		  		 arr.push(data.find(i => i.id == item.parentId)) 
+		  		 parant.push(data.find(i => i.id == item.parentId)) 
+		  	  }
+		  	 arr.push(item) 
+			 children.push(item)
+		    }
+		  })
+		  function getTreeData2(data,id){
+		  	data.forEach((item)=>{
+		  	  //当前组织的所属组织id等于用户的所属组织   说明当前组织时当前用户所属组织的子组织
+		  	  if(item.parentId == id){
+		  		 arr.push(item) 
+				 children.push(item)
+		  		 getTreeData2(data,item.id)
+		  	  }
+		  	})
+		  }
+		  this.parant = parant
+		  this.children = children
+		  getTreeData2(data,id)
+		  
+		  return arr
 	  },
 	  //递归
 	  toTree(data) {
@@ -136,7 +207,7 @@ export default {
 			  } else {
 				  //如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 val结果集中，作为顶级
 				  val.push(item);
-				  _this.treeId = item.id
+				  _this.treeId.push(item.id)
 			  }
 		  });
 		  return val;

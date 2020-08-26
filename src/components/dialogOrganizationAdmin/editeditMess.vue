@@ -188,7 +188,7 @@
           phone:'',
         }
         this.$nextTick(()=>{
-//                     this.$refs.ruleForm2.clearValidate();
+                    this.$refs.ruleForm2.clearValidate();
                 })
       },
 	  //新建用户

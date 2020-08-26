@@ -101,6 +101,7 @@ export default {
     margin: 10px;
     height: 30px;
     line-height: 30px;
+	padding-left: 1vw !important;
     font-size: 0.9vw !important;
     text-align: left !important;
   }

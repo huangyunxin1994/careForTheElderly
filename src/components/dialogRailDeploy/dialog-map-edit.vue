@@ -49,6 +49,7 @@ export default {
             infoWindowArr:[],
             point:"",
             longitude:"",
+			address:'',
             latitude:"",
             form:{
                 name:"",
@@ -109,6 +110,7 @@ export default {
 // 　　　　　　			console.log(address)
 		　　			//对应的省市区、县街道，街道号address
 					this.$refs.getAdress.address = address
+					this.address = address
 				});
 		},
         changeRound(val){
@@ -137,6 +139,7 @@ export default {
 			this.id = val.id
             this.$nextTick(() => {
                 this.getmap();
+				this.$refs.getAdress.address = val.address
             })
         },
         handleClose(){
@@ -159,12 +162,13 @@ export default {
                         let para = Object.assign({}, this.form);
 						let user = JSON.parse(sessionStorage.getItem('user'))
 						let electronicFence = {}
-                        console.log(para)
                         electronicFence.name = para.name
                         electronicFence.longitude = this.longitude
                         electronicFence.latitude = this.latitude
                         electronicFence.radius = para.radius
                         electronicFence.createUserid = user.userId
+						electronicFence.address = this.address
+						electronicFence.id = this.id
 						updateRailDeploy(electronicFence).then((res)=>{
 							if(res.code==0){
 							       this.$message({

@@ -180,6 +180,7 @@
 		  }
 		  this.listLoading=true
 		  getAlertList(param).then(res=>{
+			  console.log(res)
 		      if(res.code==0){
 		          this.listLoading=false
 		          this.tableAllData=res.data.data

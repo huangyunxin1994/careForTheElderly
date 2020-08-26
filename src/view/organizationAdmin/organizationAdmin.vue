@@ -102,7 +102,7 @@
         page:1,
         disableda:true,
 		count:0,
-        pageSize:20,
+        pageSize:10,
         tableTitle:[
             { title : "账号", name : "account", type:"input",width:"200"},
             { title : "用户名", name : "name", type:"input",width:"200"},
@@ -307,8 +307,10 @@
       // 新建用户
       newUser(){
         if(this.organizationName == ''){
+			console.log(this.baseData)
 		  this.$refs.editeditMess.newOrganization(this.baseData)
         }else{
+			console.log(this.organizationName)
           this.$refs.editeditMess.newOrganization(this.organizationName)
         }
       },
@@ -362,6 +364,20 @@
     mounted() {
 	  this.getEnrollData()
     },
+	beforeRouteEnter:(to,from,next)=>{
+		console.log(to)
+		console.log(from)
+		next(vm=>{
+			// alert("hello");
+			let user = JSON.parse(sessionStorage.getItem('user'))
+			console.log(user)
+			// if(user.account == 'admin'){
+			// 			  this.isadmin = true
+			// }else{
+			// 			  this.isadmin = false
+			// }
+		})
+	},
     computed:{
       tables:function(){
         var search=this.inputValue;

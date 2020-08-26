@@ -103,7 +103,7 @@
         inputValue:"",
         page:1,
         disableda:true,
-        pageSize:20,
+        pageSize:10,
         eData:{},
         phoneNumbers:[],
         fData:[],
@@ -177,7 +177,7 @@
           else if(name=='multiplexMark')
            return value == 1 ? '是' : value == 0 ? '否' : '';
           else if(name=='warning')
-           return value == '1' ? '<span style="color:rgb(112, 182, 3)">正常</span>' :'<span style="color:#e6a23c">预警</span>';
+           return value == '1' ? '<span style="color:rgb(112, 182, 3)">正常</span>' :'<span style="color:#e6a23c">异常</span>';
           else if(name=='equipmentState')
            return value == 0 ? '<span style="color:#909399">离线</span>' :( value == 1 ? '<span style="color:rgb(112, 182, 3)">在线</span>' : ( value == 2 ? '<span style="color:#e6a23c">低电量</span>' : '' ));
           else
@@ -207,7 +207,7 @@
 	  		  this.organizationId = val.id
 	      PersonnelStatus(param).then(res=>{
 			  //人员列表  获取人员状态列表信息
-	  			  // console.log(res)
+	  			  console.log(res)
 	          if(res.code==0){
 	  				  this.listLoading=false
 	  				  this.tableData = res.data.list
@@ -287,6 +287,7 @@
         if(res.code == 0){
              this.fData = res.data.list
              this.$refs.guardianMess.dialogVisible = true
+			 this.$refs.guardianMess.title = val.name + "的家属信息"
           }
       }).catch(err=>{
           console.log(err)
@@ -295,17 +296,20 @@
       },
       //人员与设备信息
       peopleAndEquiment(index,val){
+		  console.log(index)
+		  console.log(val)
         elderlyStatus({eid:val.id}).then(res=>{
+		  
           console.log(res)
           if(res.code == 0){
-            this.$refs.peopleMess.initData(res.data)
+            this.$refs.peopleMess.initData(res.data,val.organizationName)
             //   this.$refs.peopleMess.form = res.data.elderly
             // this.$refs.peopleMess.phoneNumbers = res.data.phoneNumbers
           }
         }).catch(err=>{
           console.log(err)
         })
-        this.$refs.peopleMess.dialogVisible = true
+        // this.$refs.peopleMess.dialogVisible = true
       },
       userDetails(index,row){
 		  console.log(row)

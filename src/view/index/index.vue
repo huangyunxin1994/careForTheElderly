@@ -66,11 +66,7 @@
     data(){
       return{
         dashboardContext:[
-          {
-            name:"张三",
-            time:'2020-06-02 13:00:56',
-            type:'外出xxx围栏'
-          }
+          
         ],
         warnList:false,
         isPlaying:true,//默认播放
@@ -111,13 +107,10 @@
       },
       handleOrg(val){
          this.markers = []
-        console.log(val)
       
       
         getElderList({organizationId:val.id}).then(res=>{
-			console.log(res)
           if(res.code==0){
-            console.log(res)
            
             if(res.data.data.length>0){
               
@@ -168,32 +161,64 @@
           if(res.code==0){
             if(res.data.data.length>0){
               res.data.data.forEach(i => {
-                let para =  {
-                  id:i.id,
-                  name:i.name,
-                  phone:i.phone,
-                  address:i.address,
-                  warning:i.warning,
-                  longitude:i.longitude,
-                  latitude:i.latitude,
-                  icon:{
-                    name:warn,
-                    size:[48, 48],
-                    anchor:[24, 48]
-                  },
-                  type:'1',
-                  home:{
-                    longitude:i.homeLongitude,
-                    latitude:i.homeLatitude,
-                    icon:{
-                      name:home,
-                      size:[48, 48],
-                      anchor:[24, 48]
-                    },
-                    type:'2'
-                  }
-                }
-                this.markers.push(para)
+				  if(i.warning == 1){
+					  // 1 正常
+					  let para =  {
+					    id:i.id,
+					    name:i.name,
+					    phone:i.phone,
+					    address:i.address,
+					    warning:i.warning,
+					    longitude:i.longitude,
+					    latitude:i.latitude,
+					    icon:{
+					      name:normal,
+					      size:[48, 48],
+					      anchor:[24, 48]
+					    },
+					    type:'1',
+					    home:{
+					      longitude:i.homeLongitude,
+					      latitude:i.homeLatitude,
+					      icon:{
+					        name:home,
+					        size:[48, 48],
+					        anchor:[24, 48]
+					      },
+					      type:'2'
+					    }
+					  }
+					  this.markers.push(para)
+				  }else{
+					  // 2 是预警
+					  let para =  {
+					    id:i.id,
+					    name:i.name,
+					    phone:i.phone,
+					    address:i.address,
+					    warning:i.warning,
+					    longitude:i.longitude,
+					    latitude:i.latitude,
+					    icon:{
+					      name:warn,
+					      size:[48, 48],
+					      anchor:[24, 48]
+					    },
+					    type:'1',
+					    home:{
+					      longitude:i.homeLongitude,
+					      latitude:i.homeLatitude,
+					      icon:{
+					        name:home,
+					        size:[48, 48],
+					        anchor:[24, 48]
+					      },
+					      type:'2'
+					    }
+					  }
+					  this.markers.push(para)
+				  }
+                
               });
               this.$refs.myMap.showAllPeople(0)
             }
@@ -206,7 +231,6 @@
         
       },
       baseOrgPos(val){
-        console.log(val)
         let params ={
           longitude:val.longitude,
           latitude:val.latitude

@@ -93,19 +93,20 @@
 						address:this.adressName,
 						level:1
 					}
-					newOrg(param).then((res)=>{
-						if(res.code == 0){
-							this.dialogVisible = false
-							this.$message({
-							  message: '添加成功',
-							  type: 'success'
-							});
-							this.$emit('getOrg',1)
-						}else{
-							this.dialogVisible = false
-							this.$message.error('添加失败');
-						}
-					})
+					console.log(param)
+					// newOrg(param).then((res)=>{
+					// 	if(res.code == 0){
+					// 		this.dialogVisible = false
+					// 		this.$message({
+					// 		  message: '添加成功',
+					// 		  type: 'success'
+					// 		});
+					// 		this.$emit('getOrg',1)
+					// 	}else{
+					// 		this.dialogVisible = false
+					// 		this.$message.error('添加失败');
+					// 	}
+					// })
 				}
             	
             }else{

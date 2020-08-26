@@ -106,14 +106,20 @@ export default {
         // this.$refs.map.movePosBypoint(this.filterArr[i].longitude,this.filterArr[i].latitude)
       },
       setUserIn(i,item){
+		  console.log("item")
+		  console.log(item)
 		this.$refs.relevanceUser.handleShow(item)
       },
       //编辑围栏
       editElec(i){
         let id = this.filterArr[i].id
-        let para = JSON.parse(JSON.stringify(this.filterArr[i]))
-        // this.$refs.dialogmape.form = para
-        this.$refs.dialogmape.handleShow(para)
+		let user = JSON.parse(sessionStorage.getItem('user'))
+		let para = JSON.parse(JSON.stringify(this.filterArr[i]))
+		if(user.organizationId == para.organizationId){
+			this.$refs.dialogmape.handleShow(para)
+		}else{
+			this.$message.error('抱歉,您没有权限编辑其他组织的电子围栏!');
+		}
       },
       filterData(val){
         if(val == ''){
@@ -140,8 +146,9 @@ export default {
 	  },
 	  //获取电子围栏信息
 	  getRailList(){
+		  
+		  let user = JSON.parse(sessionStorage.getItem('user'))
 		  getRailList().then((res)=>{
-			  console.log(res)
 			  if(res.code == 0){
 				  this.filterArr = res.data.list
 				  this.circles=[]

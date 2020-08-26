@@ -96,12 +96,17 @@
       handleClose(){
         this.dialogVisible = false
       },
-      initData(data){
+      initData(data,val){
+		this.dialogVisible = true
         this.form = data.elderly
         this.sosNumbers = data.phoneNumbers.filter(i=>i.type==2)
         this.usualNumbers = data.phoneNumbers.filter(i=>i.type==4)
-        this.center.longitude = this.form.longitude
-        this.center.latitude = this.form.latitude
+        this.form.organization = val
+		let param = {
+			longitude:this.form.longitude,
+			latitude:this.form.latitude
+		}
+		this.center = param
         let para = {
             longitude:this.form.longitude,
             latitude:this.form.latitude, 

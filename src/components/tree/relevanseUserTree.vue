@@ -38,6 +38,8 @@ export default {
           label: 'name'
         },
 		treeId:'',//跟组织id,用来默认第一级展开
+		parant:[],
+		children:[],
     }
   },
     methods: {
@@ -45,8 +47,49 @@ export default {
 		  let treeData = val
 		  let arr = []
 		  let children=[];
-		  const data = this.toTree(treeData)
+		  let user = JSON.parse(sessionStorage.getItem('user'))
+		  let userOrgId = user.organizationId
+		  const nowData = this.getTreeData(treeData,userOrgId)
+		  const data = this.toTree(nowData)
+		  treeData.forEach((item)=>{
+		  	if(!item.hasOwnProperty('parentId')){
+		  		this.baseOrg = item
+		  		this.$emit("baseOrgPos",this.baseOrg)
+		  	}
+		  })
 		  this.data = data
+	  },
+	  //新递归
+	  getTreeData(data,id){
+	  		  let arr = []
+	  		  let parant = []
+	  		  let children = []
+	  		  data.forEach((item)=>{
+	  		    //当前组织的所属组织id等于用户的所属组织   说明当前组织时当前用户所属组织的子组织
+	  		    if(item.id == id){
+	  		  	  if(item.parentId){
+	  		  		 arr.push(data.find(i => i.id == item.parentId)) 
+	  		  		 parant.push(data.find(i => i.id == item.parentId)) 
+	  		  	  }
+	  		  	 arr.push(item) 
+	  			 children.push(item)
+	  		    }
+	  		  })
+	  		  function getTreeData2(data,id){
+	  		  	data.forEach((item)=>{
+	  		  	  //当前组织的所属组织id等于用户的所属组织   说明当前组织时当前用户所属组织的子组织
+	  		  	  if(item.parentId == id){
+	  		  		 arr.push(item) 
+	  				 children.push(item)
+	  		  		 getTreeData2(data,item.id)
+	  		  	  }
+	  		  	})
+	  		  }
+	  		  this.parant = parant
+	  		  this.children = children
+	  		  getTreeData2(data,id)
+	  		  
+	  		  return arr
 	  },
 	  //递归
 	  toTree(data) {
@@ -77,7 +120,12 @@ export default {
 	  		  return val;
 	  },
       handleNodeClick(data) {
-        this.$emit("getOrganization",data)
+		let children = this.children
+		children.forEach((item)=>{
+			if(item.id == data.id){
+				this.$emit("getOrganization",data)
+			}
+		})
       },
        filterNode(value, data) {
         if (!value) return true;

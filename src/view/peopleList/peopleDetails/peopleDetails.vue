@@ -3,7 +3,7 @@
     <nav-bar></nav-bar>
     <div class="content">
       <el-container class="contain">
-        <el-header height="90px" style="margin-top: 5px;" class="contain-head">
+        <el-header height="90px" style="margin-top: 5px; width: 100%;" class="contain-head">
 
           <div class="mainleft">
             <!-- <el-avatar :size="70" :src="circleUrl"></el-avatar> -->
@@ -42,7 +42,7 @@
 
           <div class="contain-head-phone">
             <div class="contain-head-mes">
-              <div><span style="font-size: 1vw; color: #150000;">监护人信息</span></div>
+              <div style="width: 100%; text-align: center;"><span style="font-size: 1vw; color: #606266; font-weight: 600; ">监护人信息</span></div>
             </div>
             <div class="contain-head-phone-detais">
               <div>
@@ -165,10 +165,7 @@
         eData:{},//老人与设备信息
         mData:{},//主监护人信息
         warnList:"",//老人预警列表
-        center:{
-          longitude:"116.408",
-          latitude:"39.919",
-        },
+        center:{},
         markers:[],
         polylines:[
 
@@ -183,7 +180,7 @@
         booldH:[],
         booldL:[],
         time:[],
-        pointDate:""
+        pointDate:"",
       }
     },
     methods:{
@@ -380,6 +377,7 @@
                 anchor:[24, 48]
               }
             }
+			console.log(para)
             this.markers=[]
              this.markers.push(para)
             this.$refs.map.movePosBypoint(res.data.coordinate.longitude,res.data.coordinate.latitude)
@@ -391,9 +389,9 @@
       },
       getChartData(time){
         time = parseTime(time,'{y}-{m}-{d}')
-        console.log(time)
           BloodPressure({eid:this.eid,time:time }).then(res=>{
           if(res.code == 0){
+			  console.log(res)
               if(res.data.data&&res.data.data.length>0){
                 let heart=[],booldH=[],booldL=[],time=[]
                 res.data.data.forEach(i => {
@@ -423,7 +421,7 @@
    async mounted() {
       this.eid = this.$route.query.id
       await elderlyStatus({eid:this.eid}).then(res=>{
-          console.log(res)
+		  console.log(res)
           if(res.code == 0){
             this.eData = res.data.elderly
             this.mData = res.data.isMain
@@ -474,10 +472,15 @@
           console.log(err)
         })
       await locationTracking({eid:this.eid}).then(res=>{
+		  console.log(res)
         if(res.code == 0){
-            this.center.longitude = res.data.coordinate.longitude
-            this.center.latitude = res.data.coordinate.latitude
+			let param = {
+				longitude:res.data.coordinate.longitude,
+				latitude:res.data.coordinate.latitude
+			}
+            this.center = param
             this.pointDate = res.data.coordinate.createTime
+			console.log(this.center)
             let para = {
               longitude:res.data.coordinate.longitude,
               latitude:res.data.coordinate.latitude,
@@ -532,14 +535,17 @@
         justify-content: flex-start;
         align-items: center;
         height: 100%;
-        padding: 0px 20px;
+        padding: 0px 1vw;
         border-radius: 10px 0px 0px 10px;
         background-color: #e1f1f8;
+		min-width: 135px;
+		text-align: center;
 
         &-name{
-          font-size: 1.5vw;
+          font-size: 1.2vw;
+		  font-weight: 600;
+		  color: #606266;
           margin-bottom: 20px;
-          margin-left: 10px;
         }
         &-state{
           margin:0px 10px 0px 15px;
@@ -587,19 +593,19 @@
          display: flex;
          justify-content: flex-start;
          align-items: center;
-         min-width: 326px;
+         // min-width: 326px;
          font-size: 0.8vw;
          color: #909399;
          height: 74px;
          border-radius: 10px;
          border: 1px solid #ccc;
-         width: 35vw;
+         width: 45%;
          &-detais{
            display: flex;
            align-items: center;
            justify-content: space-around;
            // padding: 0px 20px;
-           width: calc(35vw - 136px);
+           width: calc(100% - 136px);
 
            &-base{
              display: flex;

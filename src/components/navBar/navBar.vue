@@ -8,8 +8,8 @@
   		<router-link to='/peopleList'>人员列表</router-link>
   		<router-link to='/warnCenter'>预警中心</router-link>
   		<router-link to='/railDeploy'>电子围栏配置</router-link>
-  		<router-link to='/organizationAdmin'>组织管理</router-link>
-  		<router-link to='/equipment'>设备管理</router-link>
+  		<router-link to='/organizationAdmin' v-if="isadmin">组织管理</router-link>
+  		<router-link to='/equipment' v-if="isadmin">设备管理</router-link>
   	</div>
   	<div class="userSwarp">
   		<span class="map">
@@ -33,7 +33,7 @@
           <!-- <router-link tag="i" class=""></router-link> -->
           <div>
             <i class="iconfont icon-wo"></i>
-            <span class="user-name">你好,小李</span>
+            <span class="user-name">你好,{{user.name}}</span>
           </div>
           <el-dropdown-menu slot="dropdown" class="user-dropdown">
             <el-dropdown-item  @click.native="changePass">
@@ -59,7 +59,9 @@
     },
     data(){
       return{
-        sound:false
+        sound:false,
+		isadmin:false,
+		user:'',
       }
     },
     methods:{
@@ -85,10 +87,22 @@
       //修改密码
       changePass(){
         this.$refs.changePass.dialogPassVisible = true
-      }
+      },
+	  //判断是不是最高管理员
+	  isAdmin(){
+		  let user = JSON.parse(sessionStorage.getItem('user'))
+		  // console.log(user)
+		  this.user = user
+		  if(user.account == 'admin'){
+			  this.isadmin = true
+		  }else{
+			  this.isadmin = false
+		  }
+		  
+	  }
     },
     mounted(){
-
+		this.isAdmin()
     }
   }
 </script>

@@ -24,6 +24,8 @@ export const changeUser = params => { return puts(`${base}/user/`, params); }//�
 export const getUserList = params => { return get(`${base}/user/user`, params); }//获取用户列表信息
 export const verifyAccount = params => { return get(`${base}/user/distinct`, params); }//判断账号有没有重复
 
+export const getTopOrgList = params => { return get(`${base}/organization/tree`, params); }//判断账号有没有重复
+
 //人员列表
 export const PersonnelStatus = params => { return get(`${base}/PersonnelStatus/`, params); }//获取人员状态列表信息
 
