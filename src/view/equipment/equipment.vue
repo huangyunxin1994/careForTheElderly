@@ -298,6 +298,7 @@
             return
           }
         }
+		console.log(this.isUseArr)
         this.$refs.equipment.relevance(this.isUseArr)
       },
       //删除

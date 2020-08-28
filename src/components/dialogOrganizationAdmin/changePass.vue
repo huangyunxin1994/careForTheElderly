@@ -64,24 +64,27 @@
     methods:{
       sureBtn() {
         // this.dialogVisible = false
-		let param={
-			account:this.baseData.account,
-			name:this.baseData.name,
-			password:this.form.pass,
-			userId:this.baseData.userId
-		}
-		console.log(param)
-		changeUser(param).then((res)=>{
-			if(res.code == 0){
-				this.dialogVisible = false
-				this.$message({
-				  message: '修改成功',
-				  type: 'success'
-				});
-				this.$emit('getUserAdmin',1)
-			}else{
-				this.dialogVisible = false
-				this.$message.error('修改失败');
+		this.$refs.form.validate((valid) => {
+			if(valid){
+				let param={
+					account:this.baseData.account,
+					name:this.baseData.name,
+					password:this.form.pass,
+					userId:this.baseData.userId
+				}
+				changeUser(param).then((res)=>{
+					if(res.code == 0){
+						this.dialogVisible = false
+						this.$message({
+						  message: '修改成功',
+						  type: 'success'
+						});
+						this.$emit('getUserAdmin',1)
+					}else{
+						this.dialogVisible = false
+						this.$message.error('修改失败');
+					}
+				})
 			}
 		})
 	  },

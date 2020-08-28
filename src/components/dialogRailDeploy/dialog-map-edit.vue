@@ -134,8 +134,6 @@ export default {
         handleShow(val){
             this.formVisible=true
 			this.form = val
-			console.log('******************')
-			console.log(val)
 			this.id = val.id
             this.$nextTick(() => {
                 this.getmap();

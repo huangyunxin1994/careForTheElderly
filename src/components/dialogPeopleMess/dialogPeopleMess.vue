@@ -97,6 +97,8 @@
         this.dialogVisible = false
       },
       initData(data,val){
+		  console.log(data)
+		  console.log(val)
 		this.dialogVisible = true
         this.form = data.elderly
         this.sosNumbers = data.phoneNumbers.filter(i=>i.type==2)

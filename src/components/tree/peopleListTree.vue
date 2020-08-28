@@ -55,7 +55,7 @@ export default {
 		treeId:[],
 		defaultProps: {
 			children: 'children',
-			label: 'dataName'
+			label: 'name'
 		},
 		baseOrg:'',
 		parant:[],
@@ -63,7 +63,6 @@ export default {
   },
     methods: {
       handleNodeClick(data,node) {
-		  console.log(data)
         let tree = {
           data:data,
           node:node.parent
@@ -119,6 +118,7 @@ export default {
 					})
 					const data = this.toTree(treeData)
 					this.data = data
+					this.baseOrg = data[0]
 					this.$emit("baseOrgPos",this.data[0])
 					this.setBaseData()
 				}
@@ -127,13 +127,8 @@ export default {
 			getTopOrgList(param).then((res)=>{
 				let arr=[]
 				if(res.code == 0){
-					console.log(res)
 					let treeData = res.data.data
-					treeData.forEach((item)=>{
-						item.dataName = item.name + '(' + item.equipmentCount + ')'
-					})
 					const data = this.toTree(treeData)
-					console.log(data)
 					this.data = data
 					this.$emit("baseOrgPos",this.data[0])
 					this.setBaseData()
@@ -211,15 +206,10 @@ export default {
 
 <style lang="scss" scoped>
 .tree{
-    // width: 15%;
     height: 100%;
-    // padding-top: 1%;
+    // padding: 1%;
     display: flex;
     flex-direction:column;
-    // justify-content: space-between;
-    // .el-input{
-    //   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
-    // }
     .people{
       height: 5vh;
       padding: 5% 2%;
@@ -228,10 +218,8 @@ export default {
       justify-content: space-between;
     }
     .el-tree{
-      // height: 90%;
       padding: 5% 2%;
       border-radius: 5px;
-      // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
       font-size:0.8vw;
     }
     .dashboard-scrollbar{

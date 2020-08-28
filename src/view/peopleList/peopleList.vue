@@ -8,29 +8,34 @@
       <div class="mainRight">
                 <div class="enroll-manage-container" ref="container">
                     <div class="enroll-manage-container-handle" >
-                            <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
-                            <div class="selectItem">
-                              <label for="" class="enroll-manage-container-handle-label">活动状态</label>
-                              <el-select v-model="activeState"  filterable placeholder="请选择" @change="changeResult" class="seclect"  style="width:10vw">
-                                  <el-option
-                                  v-for="item in activeOptions"
-                                  :key="item.value"
-                                  :label="item.label"
-                                  :value="item.value">
-                                  </el-option>
-                              </el-select>
-                            </div>
-                            <div class="selectItem">
-                              <label for="" class="enroll-manage-container-handle-label">设备状态</label>
-                              <el-select v-model="equState" filterable placeholder="请选择" @change="changeResultW" class="seclect"  style="width:10vw">
-                                  <el-option
-                                  v-for="item in equipmentOptions"
-                                  :key="item.value"
-                                  :label="item.label"
-                                  :value="item.value">
-                                  </el-option>
-                              </el-select>
-                            </div>
+						<div class="handleItem">
+							<el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
+							<div class="selectItem">
+							  <label for="" class="enroll-manage-container-handle-label">活动状态</label>
+							  <el-select v-model="activeState"  filterable placeholder="请选择" @change="changeResult" class="seclect"  style="width:10vw">
+							      <el-option
+							      v-for="item in activeOptions"
+							      :key="item.value"
+							      :label="item.label"
+							      :value="item.value">
+							      </el-option>
+							  </el-select>
+							</div>
+							<div class="selectItem">
+							  <label for="" class="enroll-manage-container-handle-label">设备状态</label>
+							  <el-select v-model="equState" filterable placeholder="请选择" @change="changeResultW" class="seclect"  style="width:10vw">
+							      <el-option
+							      v-for="item in equipmentOptions"
+							      :key="item.value"
+							      :label="item.label"
+							      :value="item.value">
+							      </el-option>
+							  </el-select>
+							</div>
+						</div>
+						<div class="handleItem">
+						  <el-button class="btn"  type="primary" @click="selectAll">显示全部人员</el-button>
+						</div>
                     </div>
                     <el-table
                         :data="tables"
@@ -84,7 +89,7 @@
 
 <script>
   import NavBar from '@/components/navBar/navBar.vue'
-  import Tree from '@/components/tree/tree_.vue'
+  import Tree from '@/components/tree/peopleListTree.vue'
   import GuardianMess from '@/components/dialogGuardianMess/dialogGuardianMess.vue'
   import DialogPeopleMess from '@/components/dialogPeopleMess/dialogPeopleMess.vue'
   import { PersonnelStatus,familymembers,elderlyStatus, getElderList } from '@/api/api'
@@ -159,6 +164,7 @@
         ],
         valueW:"",
 		userId:'',
+		isAllSelect:true,//用来判断是否需要是查看全部人员数据  默认是看全部
       }
     },
     methods:{
@@ -184,57 +190,63 @@
            return value;
 
       },
-  //     handleOrg(val){
-      
-		// this.organizationId = val.id
-  //       getElderList({organizationId:val.id}).then(res=>{
-		// 	//首页查询人员具体信息与坐标
-  //         if(res.code==0){
-  //           console.log(res)
-  //           this.tableData = res.data.data
-            
-  //         }
-  //       }).catch(err=>{
-
-  //       })
-  //     },
+	  //查看显示全部人员
+	  selectAll(){
+		  this.isAllSelect = true
+		  this.getTableAllData()
+		  this.$refs.tree.cancelSelect()
+	  },
 	  handleOrg(val){
+		  this.isAllSelect = false
 	      this.listLoading=true
 	  		  let param = {
 	  			  organizationId:val.id,
-				  userId:this.userId
+				  userId:this.userId,
+				  type:1
 	  		  }
 	  		  this.organizationId = val.id
-	      PersonnelStatus(param).then(res=>{
-			  //人员列表  获取人员状态列表信息
-	  			  console.log(res)
-	          if(res.code==0){
-	  				  this.listLoading=false
-	  				  this.tableData = res.data.list
-	  				  this.tableAllData = this.tableData
-	          }else{
-	              this.listLoading=false
-	             this.$notify({
-	                  title: '错误',
-	                  message: res.msg,
-	                  type: 'error'
-	              });
-	          }
-	      }).catch(err=>{
-	          
-	      })
+			  PersonnelStatus(param).then(res=>{
+				  //人员列表  获取人员状态列表信息
+					  // console.log(res)
+				  if(res.code==0){
+						  this.listLoading=false
+						  this.tableData = res.data.list
+						  this.tableAllData = this.tableData
+				  }else{
+					  this.listLoading=false
+					 this.$notify({
+						  title: '错误',
+						  message: res.msg,
+						  type: 'error'
+					  });
+				  }
+			  }).catch(err=>{
+				  
+			  })
 	      //this.tableData = JSON.parse(JSON.stringify(this.tableAllData))
 	  },
       handleCurrentChange(val){
          this.page = val;
-		 let param = {
-		 	currentPage:this.page,
-		 	pageSize:this.pageSize,
-		 	organizationId:this.organizationId,
-		 	userId:this.userId
+		 let param = {}
+		 if(this.isAllSelect == true){
+			 //是选择全部  不传type
+			 param = {
+			 	currentPage:this.page,
+			 	pageSize:this.pageSize,
+			 	organizationId:this.organizationId,
+			 	userId:this.userId
+			 }
+		 }else{
+			 //选择当前 传type
+			 param = {
+			 	currentPage:this.page,
+			 	pageSize:this.pageSize,
+			 	organizationId:this.organizationId,
+			 	userId:this.userId,
+				type:1
+			 }
 		 }
 		 PersonnelStatus(param).then(res=>{
-		 	// console.log(res)
 		   if(res.code==0){
 		     this.tableData = res.data.list
 		      this.tableAllData = this.tableData
@@ -246,11 +258,24 @@
       },
       handleSizeChange(val){
       	this.pageSize = val
-		let param = {
-			currentPage:this.page,
-			pageSize:this.pageSize,
-			organizationId:this.organizationId,
-			userId:this.userId
+		let param = {}
+		if(this.isAllSelect == true){
+			 //是选择全部  不传type
+			 param = {
+				currentPage:this.page,
+				pageSize:this.pageSize,
+				organizationId:this.organizationId,
+				userId:this.userId
+			 }
+		}else{
+			 //选择当前 传type
+			 param = {
+				currentPage:this.page,
+				pageSize:this.pageSize,
+				organizationId:this.organizationId,
+				userId:this.userId,
+				type:1
+			 }
 		}
 		PersonnelStatus(param).then(res=>{
 			// console.log(res)
@@ -296,11 +321,7 @@
       },
       //人员与设备信息
       peopleAndEquiment(index,val){
-		  console.log(index)
-		  console.log(val)
         elderlyStatus({eid:val.id}).then(res=>{
-		  
-          console.log(res)
           if(res.code == 0){
             this.$refs.peopleMess.initData(res.data,val.organizationName)
             //   this.$refs.peopleMess.form = res.data.elderly
@@ -312,7 +333,6 @@
         // this.$refs.peopleMess.dialogVisible = true
       },
       userDetails(index,row){
-		  console.log(row)
         this.$router.push(
         {
             path: '/peopleDetails',
@@ -325,7 +345,11 @@
       getTableAllData(){
        let para = JSON.parse(sessionStorage.getItem('user'))
 	   this.userId = para.userId
-        PersonnelStatus({userId:para.userId}).then(res=>{
+	   let param = {
+		   userId:para.userId,
+		   organizationId:para.organizationId
+	   }
+        PersonnelStatus(param).then(res=>{
           if(res.code==0){
             this.tableData = res.data.list
              this.tableAllData = this.tableData
@@ -403,7 +427,7 @@
             &-handle{
                 display: flex;
                 margin-bottom: 20px;
-                justify-content: flex-start;
+                justify-content: space-between;
                 align-items: center;
                 &-label{
                   margin-left: 20px;
@@ -412,6 +436,11 @@
                     font-weight: 700;
                     margin-right: 5px;
                 }
+				.handleItem{
+				  display: flex;
+				  justify-content: flex-start;
+				  align-items: center;
+				}
                 .selectItem{
                   display: flex;
                   align-items: center;

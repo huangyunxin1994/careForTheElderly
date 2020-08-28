@@ -115,33 +115,65 @@
             if(res.data.data.length>0){
               
               res.data.data.forEach(i => {
-                let para =  {
-                  id:i.id,
-                  name:i.name,
-                  phone:i.phone,
-                  address:i.address,
-                  warning:i.warning,
-                  longitude:i.longitude,
-                  latitude:i.latitude,
-                  icon:{
-                    name:warn,
-                    size:[48, 48],
-                    anchor:[24, 48]
-                  },
-                  type:'1',
-                  home:{
-                    longitude:i.homeLongitude,
-                    latitude:i.homeLatitude,
-                    icon:{
-                      name:home,
-                      size:[48, 48],
-                      anchor:[24, 48]
-                    },
-                    type:'2'
-                  }
+                if(i.warning == 1){
+				  // 1 正常
+				  let para =  {
+					isIndex:'1',
+					id:i.id,
+					name:i.name,
+					phone:i.phone,
+					address:i.address,
+					warning:i.warning,
+					longitude:i.longitude,
+					latitude:i.latitude,
+					icon:{
+					  name:normal,
+					  size:[48, 48],
+					  anchor:[24, 48]
+					},
+					type:'1',
+					home:{
+					  longitude:i.homeLongitude,
+					  latitude:i.homeLatitude,
+					  icon:{
+						name:home,
+						size:[48, 48],
+						anchor:[24, 48]
+					  },
+					  type:'2'
+					}
+				  }
+				  this.markers.push(para)
+                }else{
+				  // 2 是预警
+				  let para =  {
+					isIndex:'1',
+					id:i.id,
+					name:i.name,
+					phone:i.phone,
+					address:i.address,
+					warning:i.warning,
+					longitude:i.longitude,
+					latitude:i.latitude,
+					icon:{
+					  name:warn,
+					  size:[48, 48],
+					  anchor:[24, 48]
+					},
+					type:'1',
+					home:{
+					  longitude:i.homeLongitude,
+					  latitude:i.homeLatitude,
+					  icon:{
+						name:home,
+						size:[48, 48],
+						anchor:[24, 48]
+					  },
+					  type:'2'
+					}
+				  }
+				  this.markers.push(para)
                 }
-                
-                this.markers.push(para)
                 
               });
                
@@ -155,7 +187,7 @@
       },
       //显示全部人员
       allPeople(){
-
+	
         let para = JSON.parse(sessionStorage.getItem('user'))
         getElderList({organizationId:para.organizationId}).then(res=>{
           if(res.code==0){
@@ -164,6 +196,7 @@
 				  if(i.warning == 1){
 					  // 1 正常
 					  let para =  {
+						isIndex:'1',
 					    id:i.id,
 					    name:i.name,
 					    phone:i.phone,
@@ -192,6 +225,7 @@
 				  }else{
 					  // 2 是预警
 					  let para =  {
+						isIndex:'1',
 					    id:i.id,
 					    name:i.name,
 					    phone:i.phone,

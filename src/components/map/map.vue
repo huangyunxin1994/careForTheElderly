@@ -94,11 +94,13 @@
 	watch:{
 		deep: true,  // 深度监听
 		center(newVal,oldVal) {
-			var point = new BMap.Point(this.center.longitude, this.center.latitude);
+			// console.log(newVal) 
+			var point = new BMap.Point(newVal.longitude, newVal.latitude);
 			this.map.centerAndZoom(point, this.zoomLevel); // 初始化地图,设置中心点坐标和地图级别
 			this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
 		},
 		markers(newVal,oldVal) {
+			console.log(newVal)
 			this.markers.forEach((item)=>{
 				let pointArray = []
 				let homeMarkerItem = this.homeMarkerItem //用来存放房屋覆盖物的中间变量
@@ -112,9 +114,11 @@
 				var marker = new BMap.Marker(point, {icon: myIcon});
 				this.map.addOverlay(marker);
 				let _this1 = this
-				marker.addEventListener("click",function(e){
-					_this1.setMarker(item,e)
-				})
+				if(item.hasOwnProperty('isIndex')){
+					marker.addEventListener("click",function(e){
+						_this1.setMarker(item,e)
+					})
+				}
 			})
 			
 		},
@@ -214,17 +218,21 @@
         this.map.centerAndZoom(point, zoom); // 初始化地图,设置中心点坐标和地图级别
         this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
 		let that = this
-		this.map.addEventListener("moveend",function(e){
+		this.map.addEventListener("dragend",function(e){
+			console.log(e)
 			that.getCenter1()
 		})
         this.$emit('getMap',this.map)
       },
 	  getCenter1(){
+		  console.log(225)
 		  let nowcenter =  this.map.getCenter()
+		   
 		  let point = new BMap.Point(nowcenter.lng,nowcenter.lat);
 		  		  var geoc = new BMap.Geocoder();
 		  		  let that = this
 		  		  geoc.getLocation(point,  (rs)=> {
+					  console.log(rs)
 		  			var addComp = rs.addressComponents;
 		  			let address = addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber
 		  			this.$emit('getAdressName',address,nowcenter.lng,nowcenter.lat)
@@ -375,10 +383,13 @@
     },
     mounted() {
 		this.$nextTick(_=>{
+			// setTimeout(()=>{})
 			this.getMap()
 		})
-      
-    }
+    },
+	updated() {
+		
+	}
   }
 </script>
 

@@ -21,13 +21,13 @@
     <div class="btnWrap">
       <el-button type="primary"  class="btn" @click="cancelBtn">取消</el-button>
       <el-button type="primary"  class="btn" @click="sureBtn">确定</el-button>
-      <el-button type="primary" v-if="removeBtn"  class="btn" @click="removeBtn">删除</el-button>
+      <el-button type="primary" v-if="removeBtn"  class="btn" @click="removeUser">删除</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-	import {addUser,changeUser,getUserList,verifyAccount} from '@/api/api.js'
+	import {addUser,changeUser,getUserList,verifyAccount,deleteUser} from '@/api/api.js'
   export default{
     data(){
       var validateAccount =(rule, value, callback) => {
@@ -85,8 +85,8 @@
           superiorOrganization:'',
           phone:'',
           username:'',
-          removeBtn:false,//删除按钮是否存在
         },
+		removeBtn:false,//删除按钮是否存在
         options:[
           
         ],
@@ -138,6 +138,17 @@
 							  type: 'success'
 							});
 							this.$emit('getUser',1)
+							this.ruleForm2 = {
+							  account:'',
+							  password:'',
+							  superiorOrganization:'',
+							  phone:'',
+							  username:'',
+							  removeBtn:false,//删除按钮是否存在
+							},
+							this.$nextTick(()=>{
+							                    this.$refs.ruleForm2.clearValidate();
+							                })
 						}else{
 							this.dialogVisible = false
 							this.$message.error(res.msg);
@@ -161,7 +172,18 @@
 							  message: '修改成功',
 							  type: 'success'
 							});
+							this.ruleForm2 = {
+							  account:'',
+							  password:'',
+							  superiorOrganization:'',
+							  phone:'',
+							  username:'',
+							  removeBtn:false,//删除按钮是否存在
+							},
 							this.$emit('getUser',1)
+							this.$nextTick(()=>{
+			                    this.$refs.ruleForm2.clearValidate();
+			                })
 						}else{
 							this.dialogVisible = false
 							// this.$message.error("修改失败");
@@ -172,11 +194,46 @@
 			}
 		})
       },
-      removeBtn(){
+      removeUser(){
+		  // console.log("删除")
         this.dialogVisible = false
+		this.$nextTick(()=>{
+                    this.$refs.ruleForm2.clearValidate();
+                })
+		this.$confirm('是否删除该用户?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+				  let param = {
+					  userId:this.userId
+				  }
+				  deleteUser(param).then((res)=>{
+					  console.log(res)
+					  if(res.code == 0){
+						  this.$message({
+						    type: 'success',
+						    message: '删除成功!'
+						  });
+						  this.$emit('getUser',1)
+					  }else{
+						  this.$message.error('删除失败');
+					  }
+				  }).catch((res)=>{
+					  this.$message.error('删除失败');
+				  })
+		        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消删除'
+		          });          
+		        });
       },
       cancelBtn(){
         this.dialogVisible = false
+		this.$nextTick(()=>{
+                    this.$refs.ruleForm2.clearValidate();
+                })
       },
       handleClose(){
         this.dialogVisible = false
@@ -193,15 +250,18 @@
       },
 	  //新建用户
       newOrganization(val){
-        this.dialogVisible = true
-        this.superiorOrg = true
-        this.removeBtn = false
-        this.ruleForm2.superiorOrganization = val.name
+		  console.log(val)
+		this.ruleForm2.superiorOrganization = val.name
+		this.dialogVisible = true
+		this.superiorOrg = true
+		this.removeBtn = false
+		
 		this.baseData = val
 		this.admitType = 1
       },
 	  //修改用户
       getOrganization(val){
+		  console.log("编辑用户")
 		  console.log(val)
         this.dialogVisible = true
         this.superiorOrg = false
@@ -214,6 +274,7 @@
         this.ruleForm2.phone = val.phone
 		this.baseData = val
 		this.admitType = 2
+		this.userId = val.userId
       }
     },
     mounted() {

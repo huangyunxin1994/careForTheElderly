@@ -22,6 +22,7 @@ export const deleteOrg = params => { return deleteR(`${base}/organization/`, par
 export const addUser = params => { return post(`${base}/user/`, params); }//添加用户
 export const changeUser = params => { return puts(`${base}/user/`, params); }//修改用户
 export const getUserList = params => { return get(`${base}/user/user`, params); }//获取用户列表信息
+export const deleteUser = params => { return deleteR(`${base}/user/`, params); }//删除组织
 export const verifyAccount = params => { return get(`${base}/user/distinct`, params); }//判断账号有没有重复
 
 export const getTopOrgList = params => { return get(`${base}/organization/tree`, params); }//判断账号有没有重复

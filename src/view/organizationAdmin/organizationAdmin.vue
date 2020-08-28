@@ -8,6 +8,7 @@
 			@adminOrganization="adminOrganization" 
 			:organization="true" 
 			@handleOrg="handleOrg"
+			@baseOrgPos="baseOrgPos"
 			@setBaseData="setBaseData"
 			ref="tree"></tree>
       </div>
@@ -18,6 +19,7 @@
                     <div class="enroll-manage-container-handle" >
                         <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
                         <div class="btnWrap selectItem">
+						  <el-button type="primary"  class="btn" @click="selectAll">查看全部</el-button>
                           <el-button type="primary"  class="btn" @click="newUser">新建用户</el-button>
                         </div>
                     </div>
@@ -78,7 +80,7 @@
 
 <script>
   import NavBar from '@/components/navBar/navBar.vue'
-  import Tree from '@/components/tree/tree_.vue'
+  import Tree from '@/components/tree/peopleListTree.vue'
   import GuardianMess from '@/components/dialogGuardianMess/dialogGuardianMess.vue'
   import DialogOrganization from '@/components/dialogOrganizationAdmin/organizationAdmin.vue'
   import DialogChangePass from '@/components/dialogOrganizationAdmin/changePass.vue'
@@ -259,6 +261,7 @@
                   });
           })
           //this.tableData = JSON.parse(JSON.stringify(this.tableAllData))
+		  
       },
       changeResultW(val){
           this.tableData = this.tableAllData.filter(item=>{
@@ -286,6 +289,7 @@
 		if(this.organizationName == ''){
 		  this.$refs.organization.newOrganization(base)
 		  this.$refs.organization.getOrgTree(tree)
+		  // this.$message.error('请选择上级组织!');
 		}else{
 		  this.$refs.organization.newOrganization(this.organizationName)
 		  this.$refs.organization.getOrgTree(tree)
@@ -300,6 +304,16 @@
 		  this.$refs.organization.getOrgTree(val)
         }
       },
+	  //点击全部
+	  selectAll(){
+		this.getEnrollData()  
+		this.$refs.tree.cancelSelect()
+		this.organizationName = ''
+	  },
+	  //在获取组织树时，将跟组织传递出来
+	  baseOrgPos(val){
+	  		  this.baseData = val
+	  },
 	  //新建用户时，如果不选组织，就默认选择跟组织
 	  setBaseData(val){
 		  this.baseData = val
@@ -307,15 +321,14 @@
       // 新建用户
       newUser(){
         if(this.organizationName == ''){
-			console.log(this.baseData)
-		  this.$refs.editeditMess.newOrganization(this.baseData)
+			this.$message.error('请选择组织!');
         }else{
-			console.log(this.organizationName)
           this.$refs.editeditMess.newOrganization(this.organizationName)
         }
       },
       //编辑用户
       adminMess(index,item){
+		  console.log(item)
         this.$refs.editeditMess.getOrganization(item)
       },
 	  //对用户进行操作后，重新请求数据
@@ -330,9 +343,10 @@
 	  getUserAdmin(){
 		  this.getEnrollData()
 	  },
+	  
       //点击组织
       handleOrg(val){
-		  // console.log(val)
+		  console.log(val)
         this.organizationName = val
 		let param = {
 			organizationId:val.id

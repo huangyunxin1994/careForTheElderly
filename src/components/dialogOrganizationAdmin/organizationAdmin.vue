@@ -20,7 +20,7 @@
       </el-form-item>
     </el-form>
     <div class="map">
-      <my-map ref="myMap" @getAdressName="getAdressName" @getMap="getMap" @getcenter="getcenter" :zoomLevel="zoomLevel" :center="mycenter" ></my-map>
+      <my-map ref="myMap" @getAdressName="getAdressName" @getMap="getMap" @getcenter="getcenter" :zoomLevel="zoomLevel" :center="mycenter" :markers="markers"></my-map>
 	  <div class="mapIcon">
 		  <img class="iconImg" src="../../icons/png/dingwei.png" alt="">
 	  </div>
@@ -40,6 +40,7 @@
   
   // 图标
   import adress from '@/icons/png/dingwei.png'
+  import warn from '@/icons/png/personw.png'
   export default{
     components:{
       MyMap,
@@ -66,6 +67,8 @@
 		nowCenter:'',//当前地图的中心点
 		isDisabled:false,
 		mycenter:{
+			longitude:116.399,
+			latitude:39.910
 		},
 		mycenter1:{},
 		markers:[],
@@ -93,20 +96,30 @@
 						address:this.adressName,
 						level:1
 					}
-					console.log(param)
-					// newOrg(param).then((res)=>{
-					// 	if(res.code == 0){
-					// 		this.dialogVisible = false
-					// 		this.$message({
-					// 		  message: '添加成功',
-					// 		  type: 'success'
-					// 		});
-					// 		this.$emit('getOrg',1)
-					// 	}else{
-					// 		this.dialogVisible = false
-					// 		this.$message.error('添加失败');
-					// 	}
-					// })
+					// console.log(param)
+					newOrg(param).then((res)=>{
+						if(res.code == 0){
+							this.dialogVisible = false
+							this.$message({
+							  message: '添加成功',
+							  type: 'success'
+							});
+							this.$emit('getOrg',1)
+							this.$refs.getAdress.address = ''
+							this.isDisabled=false
+							this.$nextTick(()=>{
+								this.$refs.form.resetFields();
+							})
+							this.form = {
+							  organization: '',
+							  superiorOrganization:'xsxsxs112',
+							  address: '',
+							}
+						}else{
+							this.dialogVisible = false
+							this.$message.error('添加失败');
+						}
+					})
 				}
             	
             }else{
@@ -123,6 +136,7 @@
 						address:this.adressName,
 						level:1
 					}
+					// console.log(param)
 					changeOrg(param).then((res)=>{
 						if(res.code == 0){
 							this.dialogVisible = false
@@ -131,6 +145,16 @@
 							  type: 'success'
 							});
 							this.$emit('getOrg',1)
+							this.$refs.getAdress.address = ''
+							this.isDisabled=false
+							this.form = {
+							  organization: '',
+							  superiorOrganization:'xsxsxs112',
+							  address: '',
+							}
+							this.$nextTick(()=>{
+								this.$refs.form.resetFields();
+							})
 						}else{
 							this.dialogVisible = false
 							this.$message.error('修改失败');
@@ -154,6 +178,11 @@
 				  type: 'success'
 				});
 				this.$emit('getOrg',1)
+				this.$refs.getAdress.address = ''
+				this.isDisabled=false
+				this.$nextTick(()=>{
+					this.$refs.form.resetFields();
+				})
 			}else{
 				this.dialogVisible = false
 				this.$message.error('删除失败');
@@ -171,7 +200,10 @@
           address: '',
         }
         this.$refs.getAdress.address = ''
-        this.$nextTick(()=>{})
+		this.isDisabled=false
+        this.$nextTick(()=>{
+			this.$refs.form.resetFields();
+		})
       },
       //新建组织
 	  newOrganization(val){
@@ -179,7 +211,15 @@
 		this.addBtn = true
 		this.removeBtn = false
 		this.form.superiorOrganization = val.id
+		// this.form.superiorOrganization = val.parentId
+		this.isDisabled = false
 		this.addmitType = 1
+		let para = {
+			latitude : val.latitude,
+			longitude : val.longitude
+		}
+		this.mycenter={}
+		this.mycenter = para
 	  },
       //编辑组织
       editOrganization(val){
@@ -191,29 +231,38 @@
 		this.addmitType = 2
 		this.nowMess = val
 		
-		if(val.hasOwnProperty('children')){
-			this.isDisabled = true
-		}else{
-			this.isDisabled = false
-		}
+		// if(val.hasOwnProperty('children')){
+		// 	this.isDisabled = true
+		// }else{
+		// 	this.isDisabled = false
+		// }
+		this.isDisabled = true
 		
 		if(val.hasOwnProperty('parentId')){
 			this.form.superiorOrganization = val.parentId
 		}else{
 			this.form.superiorOrganization = val.id
 		}
-		console.log()
 		let para = {
 			latitude : val.latitude,
 			longitude : val.longitude
 		}
-		// this.$refs.myMap.movePosBypoint(val.latitude,val.longitude)
-		this.mycenter={}
 		this.mycenter = para
+		
+		// this.markers=[]
+		// let para2 = {
+		//   longitude:val.latitude,
+		//   latitude:val.longitude,
+		//   icon:{
+		//     name:adress,
+		//     size:[48, 48],
+		//     anchor:[24, 48]
+		//   }
+		// }
+		// this.markers.push(para2)
       },
 	  //获取到地址名称
 	  getAdressName(val,lng,lat){
-		  console.log(val)
 		  this.adressName = val
 		  this.$refs.getAdress.address = val
 		  this.mycenter1 = {

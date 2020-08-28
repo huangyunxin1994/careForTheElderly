@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import {getRailDeploy,getOrgList,updateElectronicFence} from '@/api/api.js'
+import {getRailDeploy,getOrgList,getTopOrgList,updateElectronicFence} from '@/api/api.js'
   import Tree from '@/components/tree/relevanseUserTree.vue'
   export default{
     components:{
@@ -109,12 +109,27 @@ import {getRailDeploy,getOrgList,updateElectronicFence} from '@/api/api.js'
 	  },
 	  //获取组织列表
 	  getOrganizationList(){
-		  getOrgList().then((res)=>{
-			  console.log(res)
-			  if(res.code == 0){
-				  this.$refs.mytree.getData(res.data.data)
-			  }
-		  })
+		  let user = JSON.parse(sessionStorage.getItem('user'))
+		  let userOrgId = user.organizationId
+		  let param = {
+		  	organizationId:userOrgId
+		  }
+		  if(user.account == "admin"){
+			  getTopOrgList().then((res)=>{
+				  console.log(res)
+				  if(res.code == 0){
+					  this.$refs.mytree.getData(res.data.data)
+				  }
+			  })
+		  }else{
+			  getTopOrgList(param).then((res)=>{
+				  console.log(res)
+				  if(res.code == 0){
+					  this.$refs.mytree.getData(res.data.data)
+				  }
+			  })
+		  }
+		  
 	  },
 	  //获取电子围栏关联列表信息
 	  getRailDeploy(){
@@ -155,6 +170,7 @@ import {getRailDeploy,getOrgList,updateElectronicFence} from '@/api/api.js'
 		  let param = {}
 		  param.fenceId = this.fenceId
 		  param.organizationId = this.baseOrg.id
+		  console.log(param)
 		   getRailDeploy(param).then((res)=>{
 			   if(res.code == 0){
 				  let userList = res.data.electronicFenceNotRelationList
