@@ -100,8 +100,12 @@
 			this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
 		},
 		markers(newVal,oldVal) {
+			console.log("map  markers")
 			console.log(newVal)
+			console.log(this.markers)
+			this.map.clearOverlays()
 			this.markers.forEach((item)=>{
+				console.log(item)
 				let pointArray = []
 				let homeMarkerItem = this.homeMarkerItem //用来存放房屋覆盖物的中间变量
 				let lineMarkerItem = this.lineMarkerItem //用来存放折线覆盖物的中间变量
@@ -219,20 +223,20 @@
         this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
 		let that = this
 		this.map.addEventListener("dragend",function(e){
-			console.log(e)
+			// console.log(e)
 			that.getCenter1()
 		})
         this.$emit('getMap',this.map)
       },
 	  getCenter1(){
-		  console.log(225)
+		  // console.log(225)
 		  let nowcenter =  this.map.getCenter()
 		   
 		  let point = new BMap.Point(nowcenter.lng,nowcenter.lat);
 		  		  var geoc = new BMap.Geocoder();
 		  		  let that = this
 		  		  geoc.getLocation(point,  (rs)=> {
-					  console.log(rs)
+					  // console.log(rs)
 		  			var addComp = rs.addressComponents;
 		  			let address = addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber
 		  			this.$emit('getAdressName',address,nowcenter.lng,nowcenter.lat)
@@ -317,18 +321,20 @@
 		let lineMarkerItem = this.lineMarkerItem //用来存放折线覆盖物的中间变量
 		let zoom = this.zoomLevel
 		let markerArr = []
-		var content= `<p class='mymap-item'>
-		                <span">家庭地址：${item.address}</span>
-		              <p/>
-		              <p>联系方式: ${item.phone}</p>
-		              <div style='display: flex;justify-content: space-between;align-items: center;'>
-		                  <div>状态:${item.warning == 1 ?'正常':'异常'}</div>
-		                  <input class='mymap-button'
-		                         style='background:rgba(29,164,255,1);
-		                         color:#fff; border:1px solid rgba(29,164,255,1);
-		                         border-radius:2px; font-size:14px; padding:5px;'
-		                         type='button' value='查看详情' id='gotDetail'>
-		              </div>`;
+		var content= `<div style='overflow-x: hidden;overflow-y: scroll;width: 250px;height: 130px;padding:10px;'>
+						<p class='mymap-item'>
+						  <span">家庭地址：${item.address}</span>
+						<p/>
+						<p>联系方式: ${item.phone}</p>
+						<div style='display: flex;justify-content: space-between;align-items: center;'>
+						    <div>状态:${item.warning == 1 ?'正常':'异常'}</div>
+						    <input class='mymap-button'
+						           style='background:rgba(29,164,255,1);
+						           color:#fff; border:1px solid rgba(29,164,255,1);
+						           border-radius:2px; font-size:14px; padding:5px;'
+						           type='button' value='查看详情' id='gotDetail'>
+						</div>	
+					  </div>`;
 		let opts = {
 		  width:250,  //信息窗口
 		  height: 150,    // 信息窗口高度
@@ -365,20 +371,20 @@
 		
 		
 		  //添加房屋图标
-		  let homePoint = new BMap.Point(item.home.longitude, item.home.latitude);
-		  let homeIcon = new BMap.Icon(item.home.icon.name, new BMap.Size(item.home.icon.size[0],item.icon.size[1]), {
-		      anchor: new BMap.Size(item.home.icon.anchor[0], item.home.icon.anchor[1]),
-		  });
-		  let homemarker = new BMap.Marker(homePoint, {icon: homeIcon});
-		  homeMarkerItem = homemarker
-		  this.homeMarkerItem1 = homemarker
-		  this.map.addOverlay(homemarker);
+		//   let homePoint = new BMap.Point(item.home.longitude, item.home.latitude);
+		//   let homeIcon = new BMap.Icon(item.home.icon.name, new BMap.Size(item.home.icon.size[0],item.icon.size[1]), {
+		//       anchor: new BMap.Size(item.home.icon.anchor[0], item.home.icon.anchor[1]),
+		//   });
+		//   let homemarker = new BMap.Marker(homePoint, {icon: homeIcon});
+		//   homeMarkerItem = homemarker
+		//   this.homeMarkerItem1 = homemarker
+		//   this.map.addOverlay(homemarker);
 		
-		  //添加折线
-		  let polyline = new BMap.Polyline([point,homePoint], {strokeColor:"blue", strokeWeight:2,strokeStyle:"dashed", strokeOpacity:0.5});
-		  lineMarkerItem = polyline
-		  this.lineMarkerItem1 = polyline
-		  this.map.addOverlay(polyline);
+		//   //添加折线
+		//   let polyline = new BMap.Polyline([point,homePoint], {strokeColor:"blue", strokeWeight:2,strokeStyle:"dashed", strokeOpacity:0.5});
+		//   lineMarkerItem = polyline
+		//   this.lineMarkerItem1 = polyline
+		//   this.map.addOverlay(polyline);
       }
     },
     mounted() {

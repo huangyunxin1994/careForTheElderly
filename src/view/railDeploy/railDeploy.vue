@@ -149,6 +149,7 @@ export default {
 		  
 		  let user = JSON.parse(sessionStorage.getItem('user'))
 		  getRailList().then((res)=>{
+			  console.log(res)
 			  if(res.code == 0){
 				  this.filterArr = res.data.list
 				  this.circles=[]

@@ -63,11 +63,12 @@ export default {
   },
     methods: {
       handleNodeClick(data,node) {
-		  console.log(data)
         let tree = {
           data:data,
           node:node.parent
         }
+		this.isAllPeople = ''
+		this.isWarnPeople = ''
 		this.$emit("handleOrg",data)
       },
        filterNode(value, data) {

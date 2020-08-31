@@ -132,6 +132,7 @@ export default {
           this.map.addOverlay(this.circle);
         },
         handleShow(val){
+			console.log(val)
             this.formVisible=true
 			this.form = val
 			this.id = val.id

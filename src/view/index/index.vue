@@ -86,7 +86,6 @@
       getWarnList(){
         getEquipmentAlert({processingResult:1}).then(res=>{
           this.dashboardContext = res.data.data
-          console.log(this.dashboardContext)
         }).catch(err=>{
 
         })
@@ -114,7 +113,6 @@
           if(res.code==0){
            
             if(res.data.data.length>0){
-              
               res.data.data.forEach(i => {
                 if(i.warning == 1){
 				  // 1 正常
@@ -133,16 +131,16 @@
 					  anchor:[24, 48]
 					},
 					type:'1',
-					home:{
-					  longitude:i.homeLongitude,
-					  latitude:i.homeLatitude,
-					  icon:{
-						name:home,
-						size:[48, 48],
-						anchor:[24, 48]
-					  },
-					  type:'2'
-					}
+					// home:{
+					//   longitude:i.homeLongitude,
+					//   latitude:i.homeLatitude,
+					//   icon:{
+					// 	name:home,
+					// 	size:[48, 48],
+					// 	anchor:[24, 48]
+					//   },
+					//   type:'2'
+					// }
 				  }
 				  this.markers.push(para)
                 }else{
@@ -162,16 +160,16 @@
 					  anchor:[24, 48]
 					},
 					type:'1',
-					home:{
-					  longitude:i.homeLongitude,
-					  latitude:i.homeLatitude,
-					  icon:{
-						name:home,
-						size:[48, 48],
-						anchor:[24, 48]
-					  },
-					  type:'2'
-					}
+					// home:{
+					//   longitude:i.homeLongitude,
+					//   latitude:i.homeLatitude,
+					//   icon:{
+					// 	name:home,
+					// 	size:[48, 48],
+					// 	anchor:[24, 48]
+					//   },
+					//   type:'2'
+					// }
 				  }
 				  this.markers.push(para)
                 }
@@ -180,6 +178,7 @@
                
               this.$refs.myMap.showAllPeople(0)
             }
+			console.log(this.markers)
             this.$refs.myMap.movePosBypoint(val.longitude,val.latitude)
           }
         }).catch(err=>{
@@ -192,6 +191,7 @@
         let para = JSON.parse(sessionStorage.getItem('user'))
         getElderList({organizationId:para.organizationId}).then(res=>{
           if(res.code==0){
+			  
             if(res.data.data.length>0){
               res.data.data.forEach(i => {
 				  if(i.warning == 1){
@@ -210,17 +210,17 @@
 					      size:[48, 48],
 					      anchor:[24, 48]
 					    },
-					    type:'1',
-					    home:{
-					      longitude:i.homeLongitude,
-					      latitude:i.homeLatitude,
-					      icon:{
-					        name:home,
-					        size:[48, 48],
-					        anchor:[24, 48]
-					      },
-					      type:'2'
-					    }
+					    type:'1'
+					    // home:{
+					    //   longitude:i.homeLongitude,
+					    //   latitude:i.homeLatitude,
+					    //   icon:{
+					    //     name:home,
+					    //     size:[48, 48],
+					    //     anchor:[24, 48]
+					    //   },
+					    //   type:'2'
+					    // }
 					  }
 					  this.markers.push(para)
 				  }else{
@@ -239,17 +239,17 @@
 					      size:[48, 48],
 					      anchor:[24, 48]
 					    },
-					    type:'1',
-					    home:{
-					      longitude:i.homeLongitude,
-					      latitude:i.homeLatitude,
-					      icon:{
-					        name:home,
-					        size:[48, 48],
-					        anchor:[24, 48]
-					      },
-					      type:'2'
-					    }
+					    type:'1'
+					    // home:{
+					    //   longitude:i.homeLongitude,
+					    //   latitude:i.homeLatitude,
+					    //   icon:{
+					    //     name:home,
+					    //     size:[48, 48],
+					    //     anchor:[24, 48]
+					    //   },
+					    //   type:'2'
+					    // }
 					  }
 					  this.markers.push(para)
 				  }
@@ -276,6 +276,35 @@
       //显示预警人员
       warnPeople(){
         this.$refs.myMap.showWarnPeople(1)
+		this.markers = []
+		let para = JSON.parse(sessionStorage.getItem('user'))
+		getElderList({organizationId:para.organizationId}).then(res=>{
+			if(res.code == 0){
+				if(res.data.data.length>0){
+					res.data.data.forEach((item)=>{
+						if(item.warning == 2){
+							let para =  {
+													isIndex:'1',
+							  id:i.id,
+							  name:i.name,
+							  phone:i.phone,
+							  address:i.address,
+							  warning:i.warning,
+							  longitude:i.longitude,
+							  latitude:i.latitude,
+							  icon:{
+							    name:warn,
+							    size:[48, 48],
+							    anchor:[24, 48]
+							  },
+							  type:'1'
+							}
+							this.markers.push(para)
+						}
+					})
+				}
+			}
+		})
       },
       //定位
       getLocation(x,y){

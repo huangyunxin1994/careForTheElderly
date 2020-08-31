@@ -54,7 +54,7 @@ export const relatvieEquipment = params => { return put(`${base}/equipment/`, pa
 export const removeEquipment = params => { return deleteR(`${base}/equipment/`, params); }//删除设备
 
 //首页
-export const getElderList = params => { return get(`${base}/home/coordinate`, params); }//查询人员具体信息与坐标
+export const getElderList = params => { return get(`${base}/home/coordinate`, params); }//查询某个组织及其下组织的人信息
 
 export const getEquipmentAlert = params => { return get(`${base}/equipmentAlert/`, params); }//查询最新预警信息
 
