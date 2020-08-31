@@ -184,11 +184,10 @@
     methods:{
       //性别显示转换
       formatSex: function (row, column) {
-                //console.log(column.property)
-                if(column.property=="sex")
-                return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '';
-                else
-                return row[column.property]
+		if(column.property=="sex")
+			return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '';
+		else
+			return row[column.property]
       },
       arrFormatter (value,name) {
           if(name == 'name'){
@@ -331,9 +330,35 @@
 		  })
       },
       changeResult(val){
-        this.tableData = this.tableAllData.filter(item=>{
-            return String(item.processingResult).indexOf(val) > -1
-        })
+        // this.tableData = this.tableAllData.filter(item=>{
+        //     return String(item.processingResult).indexOf(val) > -1
+        // })
+		this.listLoading=true
+		let param = {
+			processingResult:val
+		}
+		getOtherAlertList(param).then(res=>{
+		    if(res.code==0){
+		        this.listLoading=false
+		        this.tableAllData=res.data.data
+		        this.tableData=this.tableAllData
+			    this.count = res.data.count
+		    }else{
+		        this.listLoading=false
+		       this.$notify({
+		            title: '错误',
+		            message: res.msg,
+		            type: 'error'
+		        });
+		    }
+		}).catch(err=>{
+		    this.listLoading=false
+		    this.$notify({
+		            title: '错误',
+		            message: err.msg,
+		            type: 'error'
+		        });
+		})
       },
       // 更新页面
       updateMess(val){

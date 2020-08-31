@@ -29,7 +29,7 @@
                       </div>
                       <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">是否可用</label>
-                        <el-select v-model="valueUse" style="width: 10vw;" filterable placeholder="请选择" @change="changeData">
+                        <el-select v-model="valueUse" style="width: 10vw;" filterable placeholder="请选择" @change="isUseW">
                             <el-option
                             v-for="item in isUse"
                             :key="item.value"
@@ -226,7 +226,7 @@
 			 pageSize:this.pageSize
 		}
 		getEquipment(param).then(res=>{
-			console.log(res)
+			// console.log(res)
 		    if(res.code==0)
 			  this.tableData = res.data.data
 			  this.tableAllData = this.tableData
@@ -235,12 +235,25 @@
 		
 			})
       },
+	  //设备状态
       changeData(val){
-          this.tableData = this.tableAllData.filter(item=>{
-              return String(item.equipmentState).indexOf(this.valueEqState) > -1
-              &&String(item.organizationName).indexOf(this.valueOrg) > -1
-              &&String(item.isUseful).indexOf(this.valueUse) > -1
-          })
+          // this.tableData = this.tableAllData.filter(item=>{
+          //     return String(item.equipmentState).indexOf(this.valueEqState) > -1
+          //     &&String(item.organizationName).indexOf(this.valueOrg) > -1
+          //     &&String(item.isUseful).indexOf(this.valueUse) > -1
+          // })
+		  let param = {
+		  	 equipmentState:val
+		  }
+		  getEquipment(param).then(res=>{
+		  	// console.log(res)
+		      if(res.code==0)
+		  	  this.tableData = res.data.data
+		  	  this.tableAllData = this.tableData
+		  	  this.count = res.data.count
+		  	}).catch(err=>{
+		  
+		  	})
       },
       haveRelevanceW(val){
         this.tableData = this.tableAllData.filter(item=>{
@@ -248,9 +261,21 @@
         })
       },
       isUseW(val){
-        this.tableData = this.tableAllData.filter(item=>{
-            return String(item.isUseful).indexOf(val) > -1
-        })
+        // this.tableData = this.tableAllData.filter(item=>{
+        //     return String(item.isUseful).indexOf(val) > -1
+        // })
+		let param = {
+			 isUseful:val
+		}
+		getEquipment(param).then(res=>{
+			// console.log(res)
+		    if(res.code==0)
+			  this.tableData = res.data.data
+			  this.tableAllData = this.tableData
+			  this.count = res.data.count
+			}).catch(err=>{
+		
+			})
       },
       changeResultW(val){
         this.tableData = this.tableAllData.filter(item=>{
@@ -437,10 +462,21 @@
 	  //级联下拉框选中
 	  handleChange(val){
 			console.log(val)
-			this.tableData = this.tableAllData.filter(item=>{
-			    return String(item.organizationId).indexOf(val) > -1
-			})
-			console.log(this.tableData)
+			// this.tableData = this.tableAllData.filter(item=>{
+			//     return String(item.organizationId).indexOf(val) > -1
+			// })
+			let param = {
+				 organizationId:val
+			}
+			getEquipment(param).then(res=>{
+				// console.log(res)
+			    if(res.code==0)
+				  this.tableData = res.data.data
+				  this.tableAllData = this.tableData
+				  this.count = res.data.count
+				}).catch(err=>{
+			
+				})
 	  },
     },
     mounted(){

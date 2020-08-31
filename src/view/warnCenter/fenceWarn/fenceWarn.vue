@@ -297,9 +297,34 @@
        },
 	   //通过处理状态来筛选数据
        changeResult(val){
-         this.tableData = this.tableAllData.filter(item=>{
-             return String(item.processingResult).indexOf(val) > -1
-         })
+         // this.tableData = this.tableAllData.filter(item=>{
+         //     return String(item.processingResult).indexOf(val) > -1
+         // })
+		 let param = {
+		   processingResult:val
+		 }
+		 getAlertList(param).then(res=>{
+			 console.log(res)
+		     if(res.code==0){
+		         this.listLoading=false
+		         this.tableAllData=res.data.data
+		         this.tableData=this.tableAllData
+		     }else{
+		         this.listLoading=false
+		        this.$notify({
+		             title: '错误',
+		             message: res.msg,
+		             type: 'error'
+		         });
+		     }
+		 }).catch(err=>{
+		     this.listLoading=false
+		     this.$notify({
+		             title: '错误',
+		             message: err.msg,
+		             type: 'error'
+		         });
+		 })
        },
        // 更新页面
        updateMess(val){

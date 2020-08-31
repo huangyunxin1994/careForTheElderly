@@ -290,14 +290,66 @@
       },
       
       changeResultW(val){
-          this.tableData = this.tableAllData.filter(item=>{
-              return String(item.equipmentState).indexOf(val) > -1
-          })
+          // this.tableData = this.tableAllData.filter(item=>{
+          //     return String(item.equipmentState).indexOf(val) > -1
+          // })
+		  let param = {}
+		  if(this.isAllSelect == true){
+		  	 //是选择全部  不传type
+		  	 param = {
+		  		organizationId:this.organizationId,
+		  		userId:this.userId,
+				state:val
+		  	 }
+		  }else{
+		  	 //选择当前 传type
+		  	 param = {
+		  		organizationId:this.organizationId,
+		  		userId:this.userId,
+		  		state:val,
+		  		type:1
+		  	 }
+		  }
+		  PersonnelStatus(param).then(res=>{
+		    if(res.code==0){
+		      this.tableData = res.data.list
+		      this.tableAllData = this.tableData
+		  	  this.count = res.data.count
+		    }
+		  }).catch(err=>{
+		  
+		  })
       },
       changeResult(val){
-        this.tableData = this.tableAllData.filter(item=>{
-            return String(item.warning).indexOf(val) > -1
-        })
+        // this.tableData = this.tableAllData.filter(item=>{
+        //     return String(item.warning).indexOf(val) > -1
+        // })
+		let param = {}
+		if(this.isAllSelect == true){
+			 //是选择全部  不传type
+			 param = {
+				organizationId:this.organizationId,
+				userId:this.userId,
+				warning:val
+			 }
+		}else{
+			 //选择当前 传type
+			 param = {
+				organizationId:this.organizationId,
+				userId:this.userId,
+				warning:val,
+				type:1
+			 }
+		}
+		PersonnelStatus(param).then(res=>{
+		  if(res.code==0){
+		    this.tableData = res.data.list
+		    this.tableAllData = this.tableData
+			  this.count = res.data.count
+		  }
+		}).catch(err=>{
+		
+		})
       },
       // 更新页面
       updateMess(val){
@@ -349,9 +401,7 @@
 		   userId:para.userId,
 		   organizationId:para.organizationId
 	   }
-	   console.log(param)
         PersonnelStatus(param).then(res=>{
-			console.log(res)
           if(res.code==0){
             this.tableData = res.data.list
              this.tableAllData = this.tableData
