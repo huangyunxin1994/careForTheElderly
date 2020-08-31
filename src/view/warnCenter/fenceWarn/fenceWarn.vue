@@ -180,7 +180,6 @@
 		  }
 		  this.listLoading=true
 		  getAlertList(param).then(res=>{
-			  console.log(res)
 		      if(res.code==0){
 		          this.listLoading=false
 		          this.tableAllData=res.data.data
@@ -261,6 +260,7 @@
                    });
            })
        },
+	   //通过时间筛选数据
        changeResultW(val){
            if(val.length == 0){
             this.beginTime = ""
@@ -295,6 +295,7 @@
 		           });
 		   })
        },
+	   //通过处理状态来筛选数据
        changeResult(val){
          this.tableData = this.tableAllData.filter(item=>{
              return String(item.processingResult).indexOf(val) > -1

@@ -100,12 +100,8 @@
 			this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
 		},
 		markers(newVal,oldVal) {
-			console.log("map  markers")
-			console.log(newVal)
-			console.log(this.markers)
 			this.map.clearOverlays()
 			this.markers.forEach((item)=>{
-				console.log(item)
 				let pointArray = []
 				let homeMarkerItem = this.homeMarkerItem //用来存放房屋覆盖物的中间变量
 				let lineMarkerItem = this.lineMarkerItem //用来存放折线覆盖物的中间变量
@@ -327,7 +323,7 @@
 						<p/>
 						<p>联系方式: ${item.phone}</p>
 						<div style='display: flex;justify-content: space-between;align-items: center;'>
-						    <div>状态:${item.warning == 1 ?'正常':'异常'}</div>
+							<div>姓名:${item.name}</div>
 						    <input class='mymap-button'
 						           style='background:rgba(29,164,255,1);
 						           color:#fff; border:1px solid rgba(29,164,255,1);

@@ -5,11 +5,21 @@
 
       <h2 style="color: #4b97eb;">欢迎登录</h2>
     <el-form-item prop="account">
-      <el-input type="text" v-model="ruleForm2.account" prefix-icon="el-icon-user" clearable auto-complete="off" placeholder="账号"></el-input>
+      <el-input type="text" 
+				v-model="ruleForm2.account" 
+				prefix-icon="el-icon-user" 
+				clearable auto-complete="off" 
+				placeholder="账号"
+				@keypress.native.enter="handleSubmit2"></el-input>
     </el-form-item>
 
       <el-form-item prop="checkPass">
-        <el-input type="password" v-model="ruleForm2.checkPass" prefix-icon="el-icon-lock" auto-complete="off" placeholder="密码"></el-input>
+        <el-input type="password" 
+				  v-model="ruleForm2.checkPass" 
+				  prefix-icon="el-icon-lock" 
+				  auto-complete="off" 
+				  placeholder="密码"
+				  @keypress.native.enter="handleSubmit2"></el-input>
       </el-form-item>
 
     <div class="login-handle">

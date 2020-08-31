@@ -107,22 +107,26 @@
       },
       handleOrg(val){
          this.markers = []
-      
-      
-        getElderList({organizationId:val.id}).then(res=>{
+		 let user = JSON.parse(sessionStorage.getItem('user'))
+		 console.log(user)
+		 let param = {
+			 organizationId:user.organizationId,
+			 oid:val.id
+		 }
+        getElderList(param).then(res=>{
           if(res.code==0){
            
             if(res.data.data.length>0){
               res.data.data.forEach(i => {
-                if(i.warning == 1){
+                if(i.fenceWarning == 1){
 				  // 1 正常
 				  let para =  {
 					isIndex:'1',
 					id:i.id,
 					name:i.name,
-					phone:i.phone,
+					phone:i.sim,
 					address:i.address,
-					warning:i.warning,
+					warning:i.fenceWarning,
 					longitude:i.longitude,
 					latitude:i.latitude,
 					icon:{
@@ -149,9 +153,9 @@
 					isIndex:'1',
 					id:i.id,
 					name:i.name,
-					phone:i.phone,
+					phone:i.sim,
 					address:i.address,
-					warning:i.warning,
+					warning:i.fenceWarning,
 					longitude:i.longitude,
 					latitude:i.latitude,
 					icon:{
@@ -178,7 +182,7 @@
                
               this.$refs.myMap.showAllPeople(0)
             }
-			console.log(this.markers)
+			// console.log(this.markers)
             this.$refs.myMap.movePosBypoint(val.longitude,val.latitude)
           }
         }).catch(err=>{
@@ -190,19 +194,20 @@
 	
         let para = JSON.parse(sessionStorage.getItem('user'))
         getElderList({organizationId:para.organizationId}).then(res=>{
+			console.log(res)
           if(res.code==0){
 			  
             if(res.data.data.length>0){
               res.data.data.forEach(i => {
-				  if(i.warning == 1){
+				  if(i.fenceWarning == 1){
 					  // 1 正常
 					  let para =  {
 						isIndex:'1',
 					    id:i.id,
 					    name:i.name,
-					    phone:i.phone,
+					    phone:i.sim,
 					    address:i.address,
-					    warning:i.warning,
+					    warning:i.fenceWarning,
 					    longitude:i.longitude,
 					    latitude:i.latitude,
 					    icon:{
@@ -229,9 +234,9 @@
 						isIndex:'1',
 					    id:i.id,
 					    name:i.name,
-					    phone:i.phone,
+					    phone:i.sim,
 					    address:i.address,
-					    warning:i.warning,
+					    warning:i.fenceWarning,
 					    longitude:i.longitude,
 					    latitude:i.latitude,
 					    icon:{
@@ -279,17 +284,18 @@
 		this.markers = []
 		let para = JSON.parse(sessionStorage.getItem('user'))
 		getElderList({organizationId:para.organizationId}).then(res=>{
+			console.log(res)
 			if(res.code == 0){
 				if(res.data.data.length>0){
 					res.data.data.forEach((item)=>{
-						if(item.warning == 2){
+						if(item.fenceWarning == 2){
 							let para =  {
-													isIndex:'1',
+							  isIndex:'1',
 							  id:i.id,
 							  name:i.name,
 							  phone:i.phone,
 							  address:i.address,
-							  warning:i.warning,
+							  warning:i.fenceWarning,
 							  longitude:i.longitude,
 							  latitude:i.latitude,
 							  icon:{
@@ -334,7 +340,6 @@
         }
       },
       initWebSocket(){ //初始化weosocket
-      console.log(251)
         const wsuri = "ws://192.168.9:8085";
         this.websock = new WebSocket(wsuri);
         this.websock.onmessage = this.websocketonmessage;

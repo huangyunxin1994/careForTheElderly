@@ -117,6 +117,8 @@ export default {
 		let para = JSON.parse(JSON.stringify(this.filterArr[i]))
 		if(user.organizationId == para.organizationId){
 			this.$refs.dialogmape.handleShow(para)
+		}else if(user.account == 'admin'){
+			this.$refs.dialogmape.handleShow(para)
 		}else{
 			this.$message.error('抱歉,您没有权限编辑其他组织的电子围栏!');
 		}

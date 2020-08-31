@@ -349,7 +349,9 @@
 		   userId:para.userId,
 		   organizationId:para.organizationId
 	   }
+	   console.log(param)
         PersonnelStatus(param).then(res=>{
+			console.log(res)
           if(res.code==0){
             this.tableData = res.data.list
              this.tableAllData = this.tableData

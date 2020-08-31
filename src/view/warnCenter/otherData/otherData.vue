@@ -247,7 +247,7 @@
 			 pageSize:this.pageSize
 		}
 		getOtherAlertList(param).then(res=>{
-					  console.log(res)
+					  
 		    if(res.code==0){
 		        this.listLoading=false
 		        this.tableAllData=res.data.data
@@ -297,9 +297,38 @@
           })
       },
       changeResultType(val){
-          this.tableData = this.tableAllData.filter(item=>{
-              return String(item.alertType).indexOf(val) > -1
-          })
+          // this.tableData = this.tableAllData.filter(item=>{
+          //     return String(item.alertType).indexOf(val) > -1
+          // })
+		  this.listLoading=true
+		  let param = {
+		  	 currentPage:this.page,
+		  	 pageSize:this.pageSize,
+			 alertType:val
+		  }
+		  getOtherAlertList(param).then(res=>{
+		  			  
+		      if(res.code==0){
+		          this.listLoading=false
+		          this.tableAllData=res.data.data
+		          this.tableData=this.tableAllData
+		  				  this.count = res.data.count
+		      }else{
+		          this.listLoading=false
+		         this.$notify({
+		              title: '错误',
+		              message: res.msg,
+		              type: 'error'
+		          });
+		      }
+		  }).catch(err=>{
+		      this.listLoading=false
+		      this.$notify({
+		              title: '错误',
+		              message: err.msg,
+		              type: 'error'
+		          });
+		  })
       },
       changeResult(val){
         this.tableData = this.tableAllData.filter(item=>{
