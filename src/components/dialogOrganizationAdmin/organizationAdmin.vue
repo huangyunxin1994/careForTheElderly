@@ -41,7 +41,7 @@
   // 图标
   import adress from '@/icons/png/dingwei.png'
   import warn from '@/icons/png/personw.png'
-  export default{
+  export default {
     components:{
       MyMap,
       GetAdress
@@ -236,8 +236,6 @@
 		// }else{
 		// 	this.isDisabled = false
 		// }
-		this.isDisabled = true
-		
 		if(val.hasOwnProperty('parentId')){
 			this.form.superiorOrganization = val.parentId
 		}else{
@@ -248,6 +246,14 @@
 			longitude : val.longitude
 		}
 		this.mycenter = para
+		this.$nextTick(_=>{
+			
+			this.$refs.myMap.getMap();
+		})
+		this.isDisabled = true
+		
+		
+		
 		
 		// this.markers=[]
 		// let para2 = {
@@ -313,7 +319,7 @@
       }
     },
     mounted() {
-
+		console.log(319)
     }
   }
 </script>

@@ -169,7 +169,7 @@
             });
             if(i.warning == 1){
               myIcon.setName("0");
-            }else if(i.type == 2){
+            }else if(i.warning == 2){
               myIcon.setName("1");
             }
             // 创建标注对象并添加到地图
@@ -310,7 +310,7 @@
         
       },
       //点击marker图标
-      setMarker(item,e){
+    setMarker(item,e){
 		let that = this
 		let pointArray = []
 		let homeMarkerItem = this.homeMarkerItem //用来存放房屋覆盖物的中间变量
@@ -350,21 +350,15 @@
 		  var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
 		  this.map.panTo(point);
 		
-		  var geoc = new BMap.Geocoder();
-		  geoc.getLocation(point, (rs)=>{
-		    var addComp = rs.addressComponents;
-		    var adressBtn = ''
-		    let address =  addComp.province + " " + addComp.city + " " + addComp.district + " " + addComp.street + " " + addComp.streetNumber;
-		
+		 
 		    this.map.openInfoWindow(infoWindow,point); //开启信息窗口
-		    var btn = document.getElementById("gotDetail")
+        var btn = document.getElementById("gotDetail")
+        console.log(btn)
 		        setTimeout(() => {
 		          btn.onclick = (e) =>{
 		            that.getPersonData(item.id)
 		          }
 		        },500)
-		  });
-		
 		
 		  //添加房屋图标
 		//   let homePoint = new BMap.Point(item.home.longitude, item.home.latitude);

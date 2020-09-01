@@ -97,7 +97,7 @@
                  <div class="mapPictrue-icon" style="" @click="getNowAdress">
                     <i class="el-icon-aim"></i>
                   </div>
-                <my-map ref="map" :center="center" :markers="markers" :polylines="polylines"></my-map>
+                <my-map ref="map" :center="center" :markers="markers" :polylines="polylines" :view="true"></my-map>
               </div>
             </div>
             <div class="mapContentRight">
@@ -140,7 +140,7 @@
   import echarts from 'echarts'
   import NavBar from '@/components/navBar/navBar.vue'
   import GuardianMess from '@/components/dialogGuardianMess/dialogGuardianMess.vue'
-  import MyMap from '@/components/map/map.vue'
+  import MyMap from '@/components/map/qqmap.vue'
   import myDate from "@/components/date/index"
   import WriteResult from '@/components/dialogHandleResult/dialogHandleResult'
   import home from '@/icons/png/jia.png'
@@ -494,9 +494,10 @@
           }
       }).catch(err=>{
           console.log(err)
-        })
+      })
       // if(this.heart.length>0||(this.booldH.length>0&&this.booldL.length>0))
-        await this.drawChart()
+      await this.drawChart()
+      await this.$refs.map.getMap()
     },
   }
 </script>

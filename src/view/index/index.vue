@@ -48,7 +48,7 @@
 
 <script>
   import NavBar from '@/components/navBar/navBar.vue'
-  import MyMap from '@/components/map/map.vue'
+  import MyMap from '@/components/map/qqmap.vue'
   import Tree from '@/components/tree/tree_.vue'
 
   // 图标
@@ -179,21 +179,22 @@
                 }
                 
               });
-               
-              this.$refs.myMap.showAllPeople(0)
+               console.log(this.markers)
+              
             }
-			// console.log(this.markers)
-            this.$refs.myMap.movePosBypoint(val.longitude,val.latitude)
+      // console.log(this.markers)
+      this.$refs.myMap.reloadMarkers()
+            this.$refs.myMap.moveDeploy(val.longitude,val.latitude)
           }
         }).catch(err=>{
 
         })
       },
       //显示全部人员
-      allPeople(){
+     async allPeople(){
 	
         let para = JSON.parse(sessionStorage.getItem('user'))
-        getElderList({organizationId:para.organizationId}).then(res=>{
+       await getElderList({organizationId:para.organizationId}).then(res=>{
 			console.log(res)
           if(res.code==0){
 			  
@@ -268,7 +269,7 @@
         })
         // let myMarkers = []
         // this.markers = myMarkers
-        
+        await this.$refs.myMap.getMap()
       },
       baseOrgPos(val){
         let params ={
@@ -277,6 +278,7 @@
         }
         this.center = {}
         this.center = params
+        this.allPeople()
       },
       //显示预警人员
       warnPeople(){
@@ -340,7 +342,8 @@
         }
       },
       initWebSocket(){ //初始化weosocket
-        const wsuri = "ws://192.168.9:8085";
+      console.log(251)
+        const wsuri = "ws://192.168.9:8085/PersonnelStatus/";
         this.websock = new WebSocket(wsuri);
         this.websock.onmessage = this.websocketonmessage;
         this.websock.onopen = this.websocketonopen;
@@ -371,10 +374,10 @@
       // this.initWebSocket();
     },
     destroyed() {
-      this.websock.close() //离开路由之后断开websocket连接
+      // this.websock.close() //离开路由之后断开websocket连接
     },
     mounted() {
-      this.allPeople()
+      
       
       this.getWarnList()
     }
