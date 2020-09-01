@@ -301,14 +301,14 @@
       //点击选中建议项时触发的方法
       getItem(val){
         this.mycenter = {
-          longitude:val.point.lng,
-          latitude:val.point.lat
+          longitude:val.latLng.lng,
+          latitude:val.latLng.lat
         }
-		this.adressName = val.address + val.title;
+		this.adressName = val.address + val.name;
 		this.markers=[]
 		let para = {
-		  longitude:val.point.lng,
-		  latitude:val.point.lat,
+		  longitude:val.latLng.lng,
+		  latitude:val.latLng.lat,
 		  icon:{
 		    name:adress,
 		    size:[48, 48],

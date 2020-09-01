@@ -23,7 +23,7 @@
 </template>
 
 <script>
-  export default{
+  export default {
     props:{
       map:{
         type:Object
@@ -37,25 +37,45 @@
     methods:{
       //搜索建议方法
       querySearchAsync(str,cb){
-        var options = {
-          onSearchComplete: function(res){ //检索完成后的回调函数
-            var s = [];
-            if (local.getStatus() == BMAP_STATUS_SUCCESS){
-              for (var i = 0; i < res.getCurrentNumPois(); i ++){
-                s.push(res.getPoi(i));
-              }
-              cb(s) //获取到数据时，通过回调函数cb返回到<el-autocomplete>组件中进行显示
-            } else{
-              cb(s)
-            }
-          }
-        }
-        var local = new BMap.LocalSearch(this.map, options) //创建LocalSearch构造函数
-        local.search(str) //调用search方法，根据检索词str发起检索
+        // var options = {
+        //   onSearchComplete: function(res){ //检索完成后的回调函数
+        //     var s = [];
+        //     if (local.getStatus() == BMAP_STATUS_SUCCESS){
+        //       for (var i = 0; i < res.getCurrentNumPois(); i ++){
+        //         s.push(res.getPoi(i));
+        //       }
+        //       cb(s) //获取到数据时，通过回调函数cb返回到<el-autocomplete>组件中进行显示
+        //     } else{
+        //       cb(s)
+        //     }
+        //   }
+        // }
+        // var local = new BMap.LocalSearch(this.map, options) //创建LocalSearch构造函数
+        // local.search(str) //调用search方法，根据检索词str发起检索
+        let searchService = new qq.maps.SearchService({
+        //检索成功的回调函数
+                complete: function(results) {
+                    //设置回调函数参数
+                   console.log(results)
+                   var s = [];
+                   for(var i=0;i<results.detail.pois.length;i++){
+                     s.push(results.detail.pois[i]);
+                   }
+                   cb(s) //获取到数据时，通过回调函数cb返回到<el-autocomplete>组件中进行显示
+                },
+                //若服务请求失败，则运行以下函数
+                error: function() {
+                  var s = [];
+                   cb(s)
+                }
+            });
+            searchService.setLocation("南宁");
+          searchService.search(str);
       },
       //点击选中建议项时触发的方法
       handleSelect(item) {
-        this.address = item.address + item.title; //记录详细地址，含建筑物名
+        console.log(item)
+        this.address = item.address + item.name; //记录详细地址，含建筑物名
 
         this.$emit('getItem',item)
       },
