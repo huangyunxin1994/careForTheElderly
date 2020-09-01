@@ -16,7 +16,26 @@
 		</el-cascader>
       </el-form-item>
       <el-form-item label="首页地图初始经纬度" >
-        <get-adress ref="getAdress" :map="map" @getItem="getItem" ></get-adress>
+        <!-- <get-adress ref="getAdress" :map="map" @getItem="getItem" ></get-adress> -->
+		<el-autocomplete
+		  v-model="address"
+		  :fetch-suggestions="querySearchAsync"
+		  style="width:100%;min-width: 300px;"
+		  placeholder="请输入内容"
+		  @select="handleSelect"
+		>
+		  <template slot-scope="{ item }">
+		      <div  class="itemContent" >
+		        <i class="el-icon-search fl mgr10"></i>
+		        <div style="overflow:hidden;">
+		          <div class="title">{{ item.title }}</div>
+		          <el-tooltip :content="item.address" placement="top">
+		             <span class="address ellipsis">{{ item.address }}</span>
+		          </el-tooltip>
+		        </div>
+		      </div>
+		    </template>
+		</el-autocomplete>
       </el-form-item>
     </el-form>
     <div class="map">
@@ -34,14 +53,14 @@
 </template>
 
 <script>
-  import MyMap from '@/components/map/map.vue'
+  import MyMap from '@/components/map/qqmap.vue'
   import GetAdress from '@/components/getAdress/getAdress.vue'
   import {newOrg,changeOrg,deleteOrg} from '@/api/api.js'
   
   // 图标
   import adress from '@/icons/png/dingwei.png'
   import warn from '@/icons/png/personw.png'
-  export default{
+  export default {
     components:{
       MyMap,
       GetAdress
@@ -76,6 +95,7 @@
 		addmitType:1,//用来判断是修改还是新增   1新增  2修改
 		nowMess:{},//编辑时,用来存放本条消息
 		adressName:'',
+		address:'',//
       }
     },
     methods:{
@@ -206,7 +226,7 @@
 		})
       },
       //新建组织
-	  newOrganization(val){
+	  async newOrganization(val){
 		this.dialogVisible = true
 		this.addBtn = true
 		this.removeBtn = false
@@ -220,10 +240,11 @@
 		}
 		this.mycenter={}
 		this.mycenter = para
+		
+		await this.$refs.myMap.getMap()
 	  },
       //编辑组织
       editOrganization(val){
-		  console.log(val)
         this.dialogVisible = true
         this.addBtn = true
         this.removeBtn = true
@@ -236,8 +257,6 @@
 		// }else{
 		// 	this.isDisabled = false
 		// }
-		this.isDisabled = true
-		
 		if(val.hasOwnProperty('parentId')){
 			this.form.superiorOrganization = val.parentId
 		}else{
@@ -248,6 +267,14 @@
 			longitude : val.longitude
 		}
 		this.mycenter = para
+		this.$nextTick(_=>{
+			
+			this.$refs.myMap.getMap();
+		})
+		this.isDisabled = true
+		
+		// await this.$refs.myMap.getMap()
+		
 		
 		// this.markers=[]
 		// let para2 = {
@@ -292,6 +319,16 @@
 	  handleChange(val){
 		console.log(this.form.superiorOrganization)
 	  },
+	  querySearchAsync(str,cb){
+		  this.$refs.myMap.geocoderChange(str,(result)=>{
+              console.log(result)
+          })
+	  },
+	  //点击选中建议项时触发的方法
+	  handleSelect(item) {
+	    this.address = item.address + item.title; //记录详细地址，含建筑物名
+	    this.$emit('getItem',item)
+	  },
       //点击选中建议项时触发的方法
       getItem(val){
         this.mycenter = {
@@ -313,7 +350,6 @@
       }
     },
     mounted() {
-
     }
   }
 </script>

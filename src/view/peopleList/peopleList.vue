@@ -123,7 +123,7 @@
 		userId:'',//用户id
         tableTitle:[
             { title : "姓名", name : "name", type:"link",width:"120"},
-            { title : "活动状态", name : "warning", type:"input",width:'120'},
+            { title : "活动状态", name : "fenceWarning", type:"input",width:'120'},
             { title : "设备状态", name : "equipmentState", type:"input",width:'120'},
             { title : "所属组织", name : "organizationName", type:"input",minwidth:'300'},
             { title : "设备编号", name : "code", type:"input",minwidth:'200'},
@@ -186,7 +186,7 @@
            return value == 1 ? '男' : value == 0 ? '女' : '';
           else if(name=='multiplexMark')
            return value == 1 ? '是' : value == 0 ? '否' : '';
-          else if(name=='warning')
+          else if(name=='fenceWarning')
            return value == '1' ? '<span style="color:rgb(112, 182, 3)">正常</span>' :'<span style="color:#e6a23c">异常</span>';
           else if(name=='equipmentState')
            return value == 0 ? '<span style="color:#909399">离线</span>' :( value == 1 ? '<span style="color:rgb(112, 182, 3)">在线</span>' : ( value == 2 ? '<span style="color:#e6a23c">低电量</span>' : '' ));

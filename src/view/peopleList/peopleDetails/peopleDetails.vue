@@ -97,7 +97,7 @@
                  <div class="mapPictrue-icon" style="" @click="getNowAdress">
                     <i class="el-icon-aim"></i>
                   </div>
-                <my-map ref="map" :center="center" :markers="markers" :polylines="polylines"></my-map>
+                <my-map ref="map" :center="center" :markers="markers" :polylines="polylines" :view="true"></my-map>
               </div>
             </div>
             <div class="mapContentRight">
@@ -140,7 +140,7 @@
   import echarts from 'echarts'
   import NavBar from '@/components/navBar/navBar.vue'
   import GuardianMess from '@/components/dialogGuardianMess/dialogGuardianMess.vue'
-  import MyMap from '@/components/map/map.vue'
+  import MyMap from '@/components/map/qqmap.vue'
   import myDate from "@/components/date/index"
   import WriteResult from '@/components/dialogHandleResult/dialogHandleResult'
   import home from '@/icons/png/jia.png'
@@ -422,6 +422,7 @@
    async mounted() {
       this.eid = this.$route.query.id
       await elderlyStatus({eid:this.eid}).then(res=>{
+		  console.log("获取到总的数据")
 		  console.log(res)
           if(res.code == 0){
             this.eData = res.data.elderly
@@ -473,7 +474,6 @@
           console.log(err)
         })
       await locationTracking({eid:this.eid}).then(res=>{
-		  console.log(res)
         if(res.code == 0){
 			let param = {
 				longitude:res.data.coordinate.longitude,
@@ -481,23 +481,36 @@
 			}
             this.center = param
             this.pointDate = res.data.coordinate.createTime
-			console.log(this.center)
-            let para = {
-              longitude:res.data.coordinate.longitude,
-              latitude:res.data.coordinate.latitude,
-              icon:{
-                name:person,
-                size:[62, 48],
-                anchor:[24, 48]
-              }
-            }
-             this.markers.push(para)
+			if(this.eData.fence_warning == 2){
+				let para = {
+				  longitude:res.data.coordinate.longitude,
+				  latitude:res.data.coordinate.latitude,
+				  icon:{
+				    name:person,
+				    size:[62, 48],
+				    anchor:[24, 48]
+				  }
+				}
+				this.markers.push(para)
+			}else{
+				let para = {
+				  longitude:res.data.coordinate.longitude,
+				  latitude:res.data.coordinate.latitude,
+				  icon:{
+				    name:normal,
+				    size:[62, 48],
+				    anchor:[24, 48]
+				  }
+				}
+				this.markers.push(para)
+			}
           }
       }).catch(err=>{
           console.log(err)
-        })
+      })
       // if(this.heart.length>0||(this.booldH.length>0&&this.booldL.length>0))
-        await this.drawChart()
+      await this.drawChart()
+      await this.$refs.map.getMap()
     },
   }
 </script>
