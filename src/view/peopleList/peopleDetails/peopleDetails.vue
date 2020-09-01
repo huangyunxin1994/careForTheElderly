@@ -146,6 +146,7 @@
   import home from '@/icons/png/jia.png'
   import dian from '@/icons/png/dian.png'
   import person from '@/icons/png/personw.png'
+  import normal from '@/icons/png/personn.png'
   import Battery from '@/components/battery/battery.vue'
   import { elderlyStatus,equipmentAlert,familymembers,locationTracking,BloodPressure,dealEquipmentAlert } from '@/api/api'
   import { parseTime } from "@/utils/index.js"
@@ -367,7 +368,7 @@
       getNowAdress(){
         locationTracking({eid:this.eid}).then(res=>{
         if(res.code == 0){
-            
+            console.log(res.data)
             let para = {
               longitude:res.data.coordinate.longitude,
               latitude:res.data.coordinate.latitude,

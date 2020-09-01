@@ -112,10 +112,11 @@
          sels:[],
          asels:"",//用来存放选中的值
          inputValue:"",
-         page:1,
+         page:1,//当前页
          disableda:true,
-         pageSize:10,
-         time:'',
+         pageSize:10,//页数大小
+         time:'',//筛选时间
+		 name:'',//模糊搜索
          tableTitle:[
              { title : "姓名", name : "elderlyName", type:"link",width:"120"},
              { title : "预警类型", name : "alertType", type:"input",width:'150'},

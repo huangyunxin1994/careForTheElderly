@@ -9,7 +9,7 @@
                 <div class="enroll-manage-container" ref="container">
                     <div class="enroll-manage-container-handle" >
 						<div class="handleItem">
-							<el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
+							<el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw" @input="searchInput"></el-input>
 							<div class="selectItem">
 							  <label for="" class="enroll-manage-container-handle-label">活动状态</label>
 							  <el-select v-model="activeState"  filterable placeholder="请选择" @change="changeResult" class="seclect"  style="width:10vw">
@@ -93,6 +93,7 @@
   import GuardianMess from '@/components/dialogGuardianMess/dialogGuardianMess.vue'
   import DialogPeopleMess from '@/components/dialogPeopleMess/dialogPeopleMess.vue'
   import { PersonnelStatus,familymembers,elderlyStatus, getElderList } from '@/api/api'
+  import {Throttle} from '@/utils/index.js'
   export default {
     components:{
       NavBar,
@@ -106,9 +107,12 @@
         listLoading:false,
         asels:"",//用来存放选中的值
         inputValue:"",
-        page:1,
+        page:1,//当前页
         disableda:true,
-        pageSize:10,
+        pageSize:10,//页数大小
+		name:'',//输入框模糊搜索
+		state:'',//设备状态
+		warning:'',//活动状态
         eData:{},
         phoneNumbers:[],
         fData:[],
@@ -116,6 +120,7 @@
         equState:'',
 		count:0,
 		organizationId:'',//组织id
+		userId:'',//用户id
         tableTitle:[
             { title : "姓名", name : "name", type:"link",width:"120"},
             { title : "活动状态", name : "warning", type:"input",width:'120'},
@@ -163,7 +168,6 @@
           },
         ],
         valueW:"",
-		userId:'',
 		isAllSelect:true,//用来判断是否需要是查看全部人员数据  默认是看全部
       }
     },
@@ -190,8 +194,39 @@
            return value;
 
       },
+	  //输入框搜索
+	  searchInput: Throttle(function(e){
+		  this.name = e
+		  let param = {}
+		  if(this.isAllSelect == true){
+			 //是选择全部  不传type
+			 param = {
+				currentPage:this.page,
+				pageSize:this.pageSize,
+				organizationId:this.organizationId,
+				userId:this.userId,
+				name:this.name,
+				state:this.state,
+				warning:this.warning
+			 }
+		  }
+		  PersonnelStatus(param).then(res=>{
+		    if(res.code==0){
+		      this.tableData = res.data.list
+		       this.tableAllData = this.tableData
+		  	 this.count = res.data.count
+		    }
+		  }).catch(err=>{
+		  
+		  })
+	  },1000),
 	  //查看显示全部人员
 	  selectAll(){
+		  this.name = ''
+		  this.page = 1
+		  this.pageSize = 10
+		  this.state = ''
+		  this.warning = ''
 		  this.isAllSelect = true
 		  this.getTableAllData()
 		  this.$refs.tree.cancelSelect()
@@ -234,7 +269,10 @@
 			 	currentPage:this.page,
 			 	pageSize:this.pageSize,
 			 	organizationId:this.organizationId,
-			 	userId:this.userId
+			 	userId:this.userId,
+			 	name:this.name,
+			 	state:this.state,
+			 	warning:this.warning
 			 }
 		 }else{
 			 //选择当前 传type
@@ -243,6 +281,9 @@
 			 	pageSize:this.pageSize,
 			 	organizationId:this.organizationId,
 			 	userId:this.userId,
+			 	name:this.name,
+			 	state:this.state,
+			 	warning:this.warning,
 				type:1
 			 }
 		 }
@@ -265,7 +306,10 @@
 				currentPage:this.page,
 				pageSize:this.pageSize,
 				organizationId:this.organizationId,
-				userId:this.userId
+				userId:this.userId,
+				name:this.name,
+				state:this.state,
+				warning:this.warning
 			 }
 		}else{
 			 //选择当前 传type
@@ -274,6 +318,9 @@
 				pageSize:this.pageSize,
 				organizationId:this.organizationId,
 				userId:this.userId,
+				name:this.name,
+				state:this.state,
+				warning:this.warning,
 				type:1
 			 }
 		}
@@ -294,19 +341,28 @@
           //     return String(item.equipmentState).indexOf(val) > -1
           // })
 		  let param = {}
+		  this.state = val
 		  if(this.isAllSelect == true){
 		  	 //是选择全部  不传type
 		  	 param = {
+		  		currentPage:this.page,
+		  		pageSize:this.pageSize,
 		  		organizationId:this.organizationId,
 		  		userId:this.userId,
-				state:val
+		  		name:this.name,
+		  		state:this.state,
+		  		warning:this.warning
 		  	 }
 		  }else{
 		  	 //选择当前 传type
 		  	 param = {
+		  		currentPage:this.page,
+		  		pageSize:this.pageSize,
 		  		organizationId:this.organizationId,
 		  		userId:this.userId,
-		  		state:val,
+		  		name:this.name,
+		  		state:this.state,
+		  		warning:this.warning,
 		  		type:1
 		  	 }
 		  }
@@ -321,23 +377,29 @@
 		  })
       },
       changeResult(val){
-        // this.tableData = this.tableAllData.filter(item=>{
-        //     return String(item.warning).indexOf(val) > -1
-        // })
 		let param = {}
+		this.warning = val
 		if(this.isAllSelect == true){
 			 //是选择全部  不传type
 			 param = {
+				currentPage:this.page,
+				pageSize:this.pageSize,
 				organizationId:this.organizationId,
 				userId:this.userId,
-				warning:val
+				name:this.name,
+				state:this.state,
+				warning:this.warning
 			 }
 		}else{
 			 //选择当前 传type
 			 param = {
+				currentPage:this.page,
+				pageSize:this.pageSize,
 				organizationId:this.organizationId,
 				userId:this.userId,
-				warning:val,
+				name:this.name,
+				state:this.state,
+				warning:this.warning,
 				type:1
 			 }
 		}
@@ -419,18 +481,18 @@
     computed:{
       tables:function(){
         var search=this.inputValue;
-        if(search){
-             let arr = []
-            this.tableTitle.forEach(e => {
-                if(e.name)
-                arr.push(e.name)
-            });
-          return  this.tableData.filter(function(dataNews){
-            return Object.keys(dataNews).some(function(key){
-                    return String(arr).indexOf(key)>-1&&String(dataNews[key]).toLowerCase().indexOf(search) > -1
-            })
-          })
-        }
+        // if(search){
+        //      let arr = []
+        //     this.tableTitle.forEach(e => {
+        //         if(e.name)
+        //         arr.push(e.name)
+        //     });
+        //   return  this.tableData.filter(function(dataNews){
+        //     return Object.keys(dataNews).some(function(key){
+        //             return String(arr).indexOf(key)>-1&&String(dataNews[key]).toLowerCase().indexOf(search) > -1
+        //     })
+        //   })
+        // }
         return this.tableData
       }
     },

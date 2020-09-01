@@ -100,6 +100,8 @@
 			this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
 		},
 		markers(newVal,oldVal) {
+			console.log(newVal)
+			console.log(this.markers)
 			this.map.clearOverlays()
 			this.markers.forEach((item)=>{
 				let pointArray = []
