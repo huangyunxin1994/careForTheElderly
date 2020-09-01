@@ -12,10 +12,7 @@
             </el-form-item>
         </el-form>
         <div class="dialog-map">
-            <i class="dialog-map-icon iconicon-test-copy"></i>
-            <div id="allmap" ref="allmap" class="dialog-map">
-
-            </div>
+            <my-map ref="mymap1" mapId="container1" :dragging="true" :zooming="true" :circles="circles" :center="center" :zoomLevel="16" @getAddress="getAddress" :geocoder="geocoder"></my-map>
         </div>
     <div slot="footer" class="dialog-footer">
             <el-button type="primary" @click.native="handleClose">取消</el-button>
@@ -26,15 +23,14 @@
 <script>
 import { parseTime } from '@/utils/index.js'
 import { addRailDeploy } from '@/api/api.js'
-import MyMap from '@/components/map/map.vue'
-import axios from 'axios'
+import myMap from '@/components/map/qqmap.vue'
 // import { addElectronicFence,deleteElectronicFence,selectElectronicFenceQuery,updateElectronicFence,selectPosition } from  "@/api/table"
 // import "@/assets/icon/iconfont.css"
 import GetAdress from '@/components/getAdress/getAdress.vue'
 export default {
     name: 'Map',
     components:{
-      MyMap,
+      myMap,
       GetAdress
     },
     data(){
@@ -52,6 +48,18 @@ export default {
             longitude:"",
             latitude:"",
             restaurants: [],
+            markers:[],
+            center:{
+                longitude: "108.386207",
+                latitude: "22.830839"
+            },
+            circles:[
+                {
+                    longitude: "108.386207",
+                    latitude: "22.830839",
+                    radius: '0.1',
+                }
+            ],
             form:{
                 name:"",
                 radius: '0.1',
@@ -69,96 +77,113 @@ export default {
 
     },
     methods:{
-        getmap () {
-            this.map = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例
-            this.map.centerAndZoom(new BMap.Point(this.form.longitude,this.form.latitude), 16) // 初始化地图,设置中心点坐标和地图级别
-            this.map.setCurrentCity('北京') // 设置地图显示的城市 此项是必须设置的
-            this.map.enableScrollWheelZoom(true)// 开启鼠标滚轮缩放
+    //     getmap () {
+    //         this.map = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例
+    //         this.map.centerAndZoom(new BMap.Point(this.form.longitude,this.form.latitude), 16) // 初始化地图,设置中心点坐标和地图级别
+    //         this.map.setCurrentCity('北京') // 设置地图显示的城市 此项是必须设置的
+    //         this.map.enableScrollWheelZoom(true)// 开启鼠标滚轮缩放
 
-            this.longitude = this.map.getCenter().lng
-            this.latitude = this.map.getCenter().lat
-            let point  = new BMap.Point(this.longitude,this.latitude)
+    //         this.longitude = this.map.getCenter().lng
+    //         this.latitude = this.map.getCenter().lat
+    //         let point  = new BMap.Point(this.longitude,this.latitude)
 
-            var navigationControl = new BMap.NavigationControl({ //创建一个特定样式的地图平移缩放控件
-                anchor: BMAP_ANCHOR_TOP_RIGHT, //靠右上角位置
-                type: BMAP_NAVIGATION_CONTROL_SMALL //SMALL控件类型
-            })
-            this.map.addControl(navigationControl ) //将控件添加到地图
+    //         var navigationControl = new BMap.NavigationControl({ //创建一个特定样式的地图平移缩放控件
+    //             anchor: BMAP_ANCHOR_TOP_RIGHT, //靠右上角位置
+    //             type: BMAP_NAVIGATION_CONTROL_SMALL //SMALL控件类型
+    //         })
+    //         this.map.addControl(navigationControl ) //将控件添加到地图
 
-            var geolocationControl = new BMap.GeolocationControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT}) //创建一个地图定位控件
-            geolocationControl.addEventListener("locationSuccess", function(e){ //绑定定位成功后事件
-              that.getAddrByPoint(e.point) //定位成功后调用逆地址解析函数
-            });
-            geolocationControl.addEventListener("locationError",function(e){ //绑定定位失败后事件
-              alert(e.message);
-            });
-            this.map.addControl(geolocationControl) //将控件添加到地图
+    //         var geolocationControl = new BMap.GeolocationControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT}) //创建一个地图定位控件
+    //         geolocationControl.addEventListener("locationSuccess", function(e){ //绑定定位成功后事件
+    //           that.getAddrByPoint(e.point) //定位成功后调用逆地址解析函数
+    //         });
+    //         geolocationControl.addEventListener("locationError",function(e){ //绑定定位失败后事件
+    //           alert(e.message);
+    //         });
+    //         this.map.addControl(geolocationControl) //将控件添加到地图
 
-            //  向地图添加标注
-            this.circle = new BMap.Circle(point,this.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
-            this.map.addOverlay(this.circle);
-            let that = this
-            this.map.addEventListener("moveend",function(){
-                    that.longitude = that.map.getCenter().lng
-                    that.latitude = that.map.getCenter().lat
-                    let point  = new BMap.Point(that.longitude,that.latitude)
-                    that.circle = new BMap.Circle(point,that.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
-                    that.map.clearOverlays()
-                    that.map.addOverlay(that.circle);
-					that.getCenter1()
-            });
-            this.map.addEventListener("zoomend",function(){
-                    that.longitude = that.map.getCenter().lng
-                    that.latitude = that.map.getCenter().lat
-                    let point  = new BMap.Point(that.longitude,that.latitude)
-                    that.circle = new BMap.Circle(point,that.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
-                    that.map.clearOverlays()
-                    that.map.addOverlay(that.circle);
-            });
-        },
-		getCenter1(){
-			let nowcenter =  this.map.getCenter()
-			let point = new BMap.Point(nowcenter.lng,nowcenter.lat);
-				var geoc = new BMap.Geocoder();
-				let that = this
-				geoc.getLocation(point,  (rs)=> {
-					var addComp = rs.addressComponents;
-					let address = addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber
-	  　　　　　　	console.log(address)
-		　　			//对应的省市区、县街道，街道号address
-					this.$refs.getAdress.address = address
-					this.address = address
-				});
-		},
+    //         //  向地图添加标注
+    //         this.circle = new BMap.Circle(point,this.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
+    //         this.map.addOverlay(this.circle);
+    //         let that = this
+    //         this.map.addEventListener("moveend",function(){
+    //                 that.longitude = that.map.getCenter().lng
+    //                 that.latitude = that.map.getCenter().lat
+    //                 let point  = new BMap.Point(that.longitude,that.latitude)
+    //                 that.circle = new BMap.Circle(point,that.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
+    //                 that.map.clearOverlays()
+    //                 that.map.addOverlay(that.circle);
+	// 				that.getCenter1()
+    //         });
+    //         this.map.addEventListener("zoomend",function(){
+    //                 that.longitude = that.map.getCenter().lng
+    //                 that.latitude = that.map.getCenter().lat
+    //                 let point  = new BMap.Point(that.longitude,that.latitude)
+    //                 that.circle = new BMap.Circle(point,that.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
+    //                 that.map.clearOverlays()
+    //                 that.map.addOverlay(that.circle);
+    //         });
+    //     },
+	// 	getCenter1(){
+	// 		let nowcenter =  this.map.getCenter()
+	// 		let point = new BMap.Point(nowcenter.lng,nowcenter.lat);
+	// 			var geoc = new BMap.Geocoder();
+	// 			let that = this
+	// 			geoc.getLocation(point,  (rs)=> {
+	// 				var addComp = rs.addressComponents;
+	// 				let address = addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber
+	//   　　　　　　	console.log(address)
+	// 	　　			//对应的省市区、县街道，街道号address
+	// 				this.$refs.getAdress.address = address
+	// 				this.address = address
+	// 			});
+	// 	},
         changeRound(){
-            this.longitude = this.map.getCenter().lng
-            this.latitude = this.map.getCenter().lat
-            let point  = new BMap.Point(this.longitude,this.latitude)
-            this.circle = new BMap.Circle(point,this.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
-            this.map.clearOverlays()
-            this.map.addOverlay(this.circle);
+            let para ={}
+            para.longitude = this.longitude
+            para.latitude = this.latitude
+            para.radius = this.form.radius
+            this.circles.length = 0
+            this.circles.push(para)
+            console.log(this.circles)
+            this.$refs.mymap1.reloadCircles()
         },
         getItem(item) {
-          this.form.center = item.address + item.title; //记录详细地址，含建筑物名
-		  if(item.province == item.city){
-			  this.address = item.province + item.city + item.address + item.title;
-		  }else{
-			  this.address = item.city + item.address + item.title;
-		  }
-          this.longitude = item.point.lng
-          this.latitude = item.point.lat
-          let point  = new BMap.Point(this.longitude,this.latitude)
-          this.circle = new BMap.Circle(point,this.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
-          this.map.centerAndZoom(new BMap.Point(this.longitude,this.latitude), 16) // 初始化地图,设置中心点坐标和地图级别
-          this.map.clearOverlays()
-          this.map.addOverlay(this.circle);
+            this.form.center = item.address + item.name; //记录详细地址，含建筑物名
+            this.address = item.address + item.name||"";
+            this.longitude = item.latLng.lng
+            this.latitude = item.latLng.lat
+            let para ={}
+            para.longitude = item.latLng.lng
+            para.latitude = item.latLng.lat
+            para.radius = this.form.radius
+            this.circles.length = 0
+            this.circles.push(para)
+            console.log(this.circles)
+            this.$refs.mymap1.reloadCircles()
+             this.$refs.mymap1.moveDeploy(item.latLng.lng,item.latLng.lat)
         },
-
+        getAddress(item){
+            console.log(item)
+            this.form.center = item.detail.address + item.detail.nearPois[0].name; //记录详细地址，含建筑物名
+             this.address = item.detail.address + item.detail.nearPois[0].name; //记录详细地址，含建筑物名
+            this.$refs.getAdress.address = this.form.center
+            this.longitude = item.detail.location.lng
+            this.latitude = item.detail.location.lat
+            let para ={}
+            para.longitude = item.detail.location.lng
+            para.latitude = item.detail.location.lat
+            para.radius = this.form.radius
+            this.circles.length = 0
+            this.circles.push(para)
+            console.log(this.circles)
+            this.$refs.mymap1.reloadCircles()
+        },
 
         handleShow(){
             this.formVisible=true
-            this.$nextTick(() => {
-                this.getmap();
+             this.$nextTick(() => {
+                this.$refs.mymap1.getMap();
             })
             // selectPosition().then(res=>{
             //     if(res.code==0){
@@ -181,14 +206,23 @@ export default {
                 longitude: "108.386207",
                 latitude: "22.830839"
             };
+            this.center={
+                longitude: "108.386207",
+                latitude: "22.830839"
+            }
+            this.circles=[
+                {
+                    longitude: "108.386207",
+                    latitude: "22.830839",
+                    radius: '0.1',
+                }
+            ],
             this.formVisible=false
             this.loading=false
-			this.$nextTick(()=>{
-//                     this.$refs.form.clearValidate();
-                })
 			this.$refs.getAdress.closeHandle()
         },
         addSubmit(){
+            console.log(this.address)
             this.$refs.form.validate((valid) => {
                 if (valid) {
 					if(this.longitude == '' || this.latitude == ''){
@@ -240,8 +274,7 @@ export default {
 
     },
     mounted(){
-
-
+       
     }
 }
 </script>

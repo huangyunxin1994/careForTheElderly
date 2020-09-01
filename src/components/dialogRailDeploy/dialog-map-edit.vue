@@ -13,9 +13,7 @@
         </el-form>
         <div class="dialog-map">
             <i class="dialog-map-icon iconicon-test-copy"></i>
-            <div id="allmap" ref="allmap" class="dialog-map">
-
-            </div>
+            <my-map ref="mymap1" mapId="container2" :dragging="true" :zooming="true" :circles="circles" :center="center" :zoomLevel="16" @getAddress="getAddress" :geocoder="geocoder"></my-map>
         </div>
     <div slot="footer" class="dialog-footer">
             <el-button type="primary" @click.native="handleClose">取消</el-button>
@@ -27,13 +25,15 @@
 <script>
 import { parseTime } from '@/utils/index.js'
 import GetAdress from '@/components/getAdress/getAdress.vue'
+import myMap from '@/components/map/qqmap.vue'
 // import { addElectronicFence,deleteElectronicFence,selectElectronicFenceQuery,updateElectronicFenceMsg } from  "@/api/table"
 // import "@/assets/icon/iconfont.css"
 import {updateRailDeploy,deleteRailDeploy} from '@/api/api.js'
 export default {
     name: 'Map',
     components:{
-      GetAdress
+      GetAdress,
+      myMap
     },
     data(){
         return{
@@ -51,6 +51,9 @@ export default {
             longitude:"",
 			address:'',
             latitude:"",
+            markers:[],
+            center:{},
+            circles:[],
             form:{
                 name:"",
                 radius: '0.1',
@@ -67,76 +70,61 @@ export default {
     methods:{
         getMapData(){
         },
-        getmap () {
-            this.map = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例
-            this.map.centerAndZoom(new BMap.Point(this.form.longitude,this.form.latitude), 16) // 初始化地图,设置中心点坐标和地图级别
-            this.map.setCurrentCity('北京') // 设置地图显示的城市 此项是必须设置的
-            this.map.enableScrollWheelZoom(true)// 开启鼠标滚轮缩放
-            this.longitude = this.map.getCenter().lng
-            this.latitude = this.map.getCenter().lat
-            let point  = new BMap.Point(this.longitude,this.latitude)
-            // // 向地图添加标注
-            // console.log(this.map.getCenter().lng)
-            this.circle = new BMap.Circle(point,this.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
-            this.map.addOverlay(this.circle);
-            let that = this
-            this.map.addEventListener("moveend",function(){
-                    that.longitude = that.map.getCenter().lng
-                    that.latitude = that.map.getCenter().lat
-                    let point  = new BMap.Point(that.longitude,that.latitude)
-                    that.circle = new BMap.Circle(point,that.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
-                    that.map.clearOverlays()
-					that.getCenter1()
-                    that.map.addOverlay(that.circle);
-            });
-            this.map.addEventListener("zoomend",function(){
-                    that.longitude = that.map.getCenter().lng
-                    that.latitude = that.map.getCenter().lat
-                    let point  = new BMap.Point(that.longitude,that.latitude)
-                    that.circle = new BMap.Circle(point,that.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
-                    that.map.clearOverlays()
-                    that.map.addOverlay(that.circle);
-            });
-
-        },
-		getCenter1(){
-			let nowcenter =  this.map.getCenter()
-			let point = new BMap.Point(nowcenter.lng,nowcenter.lat);
-				var geoc = new BMap.Geocoder();
-				let that = this
-				geoc.getLocation(point,  (rs)=> {
-					var addComp = rs.addressComponents;
-					let address = addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber
-// 　　　　　　			console.log(address)
-		　　			//对应的省市区、县街道，街道号address
-					this.$refs.getAdress.address = address
-					this.address = address
-				});
-		},
         changeRound(val){
-            this.longitude = this.map.getCenter().lng
-            this.latitude = this.map.getCenter().lat
-            let point  = new BMap.Point(this.longitude,this.latitude)
-            this.circle = new BMap.Circle(point,this.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
-            this.map.clearOverlays()
-            this.map.addOverlay(this.circle);
+            let para ={}
+            para.longitude = this.longitude
+            para.latitude = this.latitude
+            para.radius = this.form.radius
+            this.circles.length = 0
+            this.circles.push(para)
+            console.log(this.circles)
+            this.$refs.mymap1.reloadCircles()
         },
         getItem(item) {
-          this.form.center = item.address + item.title; //记录详细地址，含建筑物名
-          this.longitude = item.point.lng
-          this.latitude = item.point.lat
-          let point  = new BMap.Point(this.longitude,this.latitude)
-          this.circle = new BMap.Circle(point,this.form.radius*1000,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
-          this.map.centerAndZoom(new BMap.Point(this.longitude,this.latitude), 16) // 初始化地图,设置中心点坐标和地图级别
-          this.map.clearOverlays()
-          this.map.addOverlay(this.circle);
+          this.form.center = item.address + item.name; //记录详细地址，含建筑物名
+            this.address = item.address + item.name||"";
+            this.longitude = item.latLng.lng
+            this.latitude = item.latLng.lat
+            let para ={}
+            para.longitude = item.latLng.lng
+            para.latitude = item.latLng.lat
+            para.radius = this.form.radius
+            this.circles.length = 0
+            this.circles.push(para)
+            console.log(this.circles)
+            this.$refs.mymap1.reloadCircles()
+             this.$refs.mymap1.moveDeploy(item.latLng.lng,item.latLng.lat)
+        },
+         getAddress(item){
+            console.log(item)
+            this.form.center = item.detail.address + item.detail.nearPois[0].name; //记录详细地址，含建筑物名
+            this.address = item.detail.address + item.detail.nearPois[0].name; //记录详细地址，含建筑物名
+            this.$refs.getAdress.address = this.form.center
+            this.longitude = item.detail.location.lng
+            this.latitude = item.detail.location.lat
+            let para ={}
+            para.longitude = item.detail.location.lng
+            para.latitude = item.detail.location.lat
+            para.radius = this.form.radius
+            this.circles.length = 0
+            this.circles.push(para)
+            console.log(this.circles)
+            this.$refs.mymap1.reloadCircles()
         },
         handleShow(val){
             this.formVisible=true
 			this.form = val
-			this.id = val.id
+            this.id = val.id
+            this.longitude=val.longitude
+            this.latitude=val.latitude
+            let para = {}
+             para.longitude=val.longitude
+            para.latitude=val.latitude
+            para.radius=val.radius
+            this.center = para
+            this.circles.push(para)
             this.$nextTick(() => {
-                this.getmap();
+                 this.$refs.mymap1.getMap();
 				this.$refs.getAdress.address = val.address
             })
         },
@@ -151,6 +139,7 @@ export default {
             this.loading=false
         },
         addSubmit(){
+            console.log(this.address)
           // this.formVisible=false
             this.$refs.form.validate((valid) => {
                 if (valid) {

@@ -81,11 +81,8 @@
       },
 	  //关闭时清空adress
 	  closeHandle(){
-		  this.$nextTick(()=>{
-		                      this.$refs.form.clearValidate();
-		                  })
 		  this.address = ''
-	  },
+    },
 	  //已知坐标点 将坐标解析成地址
 	  getNowAdress(val){
 		  let point = new BMap.Point(val.lng,val.lat);

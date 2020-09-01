@@ -1,8 +1,9 @@
 <template>
-    <div id="container"></div>
+    <div :id="mapId" class="map-content"></div>
 </template>
 <script>
 /**
+ * @property {String} mapId 地图中心点 (默认{longitude:116.399,latitude:39.910})
  * @property {Object} center 地图中心点 (默认{longitude:116.399,latitude:39.910})
  * @property {Array} markers 地图上自定义的覆盖物
  * @property {Array} polylines 地图上自定义的线
@@ -11,10 +12,18 @@
  * @property {Object} circleOpt 地图圆的样式 (默认{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8})
  * @property {Boolean} dragging 地图是否禁止拖动（默认false）
  * @property {Boolean} zomming 地图是否禁止缩放（默认false）
+ * @property {Number} zoomLevel 地图初始缩放等级（默认12）
+ * @property {Boolean} view 是否获取最佳视野（默认false）
+ * @property {Boolean} infoWindow 是否添加提示窗口（默认false）
+ * @property {Boolean} geocoder 是否允许拖曳转换地址（默认false）
  */
 export default {
     props:{
       //地图中心
+      mapId:{
+          type: String,
+          default: "container"
+      },
       center:{
         type:Object,
         default(){
@@ -92,7 +101,12 @@ export default {
       infoWindow:{
         type:Boolean,
         default:false
-      }
+      },
+      //是否允许拖曳转换地址
+      geocoder:{
+        type:Boolean,
+        default:false
+      },
     },
     data(){
         return{
@@ -119,11 +133,12 @@ export default {
             console.log(this.center.latitude, this.center.longitude)
              let center = new qq.maps.LatLng(this.center.latitude, this.center.longitude)
             if (this.mapView) {
+                console.log(this.mapView)
                 this.mapView.setCenter(center)
             } else {
                 console.log(center)
                 this.mapView = new qq.maps.Map(
-                    document.getElementById('container'),
+                    document.getElementById(this.mapId),
                     {
                         center: center,
                         zoom: this.zoomLevel,
@@ -200,11 +215,11 @@ export default {
             if(this.view){
                 this.getViewPoint()
             }
-            // if(this.geocoder){
+            if(this.geocoder){
                 qq.maps.event.addListener(this.mapView, 'dragend', (e)=> {
                     this.getCenterMsg()
                 });
-            // }
+            }
         },
         //显示最佳视野
         getViewPoint(){
@@ -335,11 +350,12 @@ export default {
 		// 重新加载圆
 		reloadCircles() {
             if (this.circleArray) {
-                for (i in this.circleArray) {
+                for (let i in this.circleArray) {
                    this.circleArray[i].setVisible(false);
                 }
                this.circleArray.length = 0;
             }
+            console.log(this.circles)
 			this.circles.forEach(i => {
                 var point = new qq.maps.LatLng(i.latitude,i.longitude);
                 var circle = new qq.maps.Circle({
@@ -392,7 +408,7 @@ export default {
           let center = new qq.maps.LatLng(nowcenter.lat, nowcenter.lng)
           
           this.geocoderChange(center,(result)=>{
-              console.log(result)
+              this.$emit("getAddress",result)
           })
           
 		  	// 	  var geoc = new BMap.Geocoder();
@@ -435,7 +451,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
- #container{
+ .map-content{
     width: 100%;
     height: 100%;
 }
