@@ -5,7 +5,7 @@
             <div class="enroll-manage-container" ref="container">
                 <div class="enroll-manage-container-handle" >
                     <div class="handleItem">
-                      <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
+                      <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw" @input="searchInput"></el-input>
                       <div class="selectItem">
                         <label for="" class="enroll-manage-container-handle-label">设备状态</label>
                         <el-select v-model="valueEqState" style="width: 10vw;" filterable placeholder="请选择" @change="changeData">
@@ -94,6 +94,7 @@
   import NavBar from '@/components/navBar/navBar.vue'
   import DialogEquipment from '@/components/dialogEquipment/dialogEquipment.vue'
   import {getEquipment,removeEquipment,getOrgList} from "@/api/api"
+  import {Throttle} from '@/utils/index.js'
   export default {
     name:'home',
     components:{
@@ -105,8 +106,12 @@
         listLoading:false,
         sels:[],
             inputValue:"",
-            page:1,
-            pageSize:10,
+            page:1,//当前页
+            pageSize:10,//页数大小
+			organizationId:'',//组织id
+			equipmentState:'',//设备状态
+			isUseful:'',//是否可用
+			parameter:'',//模糊搜索
 			count:0,
             tableTitle:[
                 { title : "设备编号", name : "code", type:"input",minwidth:'100'},
@@ -219,68 +224,68 @@
 		 
 		 	})
       },
+	  //
+	  searchInput: Throttle(function(e){
+		this.parameter = e
+		let param = {
+			currentPage:this.page,
+			pageSize:this.pageSize,
+			organizationId:this.organizationId,
+			isUseful:this.isUseful,
+			equipmentState:this.equipmentState,
+			parameter:this.parameter
+		}
+	  	this.getSearchData(param)
+	  },1000),
+	  //筛选接口
+	  getSearchData(param){
+		getEquipment(param).then(res=>{
+		    if(res.code==0)
+			  this.tableData = res.data.data
+			  this.tableAllData = this.tableData
+			  this.count = res.data.count
+			}).catch(err=>{
+		
+			}) 
+	  },
+	  //当前页
       handleSizeChange(val){
       	this.pageSize = val
 		let param = {
-			 currentPage:this.page,
-			 pageSize:this.pageSize
+			currentPage:this.page,
+			pageSize:this.pageSize,
+			organizationId:this.organizationId,
+			isUseful:this.isUseful,
+			equipmentState:this.equipmentState,
+			parameter:this.parameter
 		}
-		getEquipment(param).then(res=>{
-			// console.log(res)
-		    if(res.code==0)
-			  this.tableData = res.data.data
-			  this.tableAllData = this.tableData
-			  this.count = res.data.count
-			}).catch(err=>{
-		
-			})
+		this.getSearchData(param)
       },
 	  //设备状态
       changeData(val){
-          // this.tableData = this.tableAllData.filter(item=>{
-          //     return String(item.equipmentState).indexOf(this.valueEqState) > -1
-          //     &&String(item.organizationName).indexOf(this.valueOrg) > -1
-          //     &&String(item.isUseful).indexOf(this.valueUse) > -1
-          // })
+		  this.equipmentState = val
 		  let param = {
-		  	 equipmentState:val
+			 currentPage:this.page,
+			 pageSize:this.pageSize,
+			 organizationId:this.organizationId,
+			 isUseful:this.isUseful,
+			 equipmentState:this.equipmentState,
+			 parameter:this.parameter
 		  }
-		  getEquipment(param).then(res=>{
-		  	// console.log(res)
-		      if(res.code==0)
-		  	  this.tableData = res.data.data
-		  	  this.tableAllData = this.tableData
-		  	  this.count = res.data.count
-		  	}).catch(err=>{
-		  
-		  	})
+		  this.getSearchData(param)
       },
-      haveRelevanceW(val){
-        this.tableData = this.tableAllData.filter(item=>{
-            return String(item.haveRelevance).indexOf(val) > -1
-        })
-      },
+	  //是否可用
       isUseW(val){
-        // this.tableData = this.tableAllData.filter(item=>{
-        //     return String(item.isUseful).indexOf(val) > -1
-        // })
+		this.isUseful = val
 		let param = {
-			 isUseful:val
+			currentPage:this.page,
+			pageSize:this.pageSize,
+			organizationId:this.organizationId,
+			isUseful:this.isUseful,
+			equipmentState:this.equipmentState,
+			parameter:this.parameter
 		}
-		getEquipment(param).then(res=>{
-			// console.log(res)
-		    if(res.code==0)
-			  this.tableData = res.data.data
-			  this.tableAllData = this.tableData
-			  this.count = res.data.count
-			}).catch(err=>{
-		
-			})
-      },
-      changeResultW(val){
-        this.tableData = this.tableAllData.filter(item=>{
-            return String(item.organizationName).indexOf(val) > -1
-        })
+		this.getSearchData(param)
       },
       //修改
       handleEdit(index,row){
@@ -461,22 +466,16 @@
 	  },
 	  //级联下拉框选中
 	  handleChange(val){
-			console.log(val)
-			// this.tableData = this.tableAllData.filter(item=>{
-			//     return String(item.organizationId).indexOf(val) > -1
-			// })
+			this.organizationId = val
 			let param = {
-				 organizationId:val
+				currentPage:this.page,
+				pageSize:this.pageSize,
+				organizationId:this.organizationId,
+				isUseful:this.isUseful,
+				equipmentState:this.equipmentState,
+				parameter:this.parameter
 			}
-			getEquipment(param).then(res=>{
-				// console.log(res)
-			    if(res.code==0)
-				  this.tableData = res.data.data
-				  this.tableAllData = this.tableData
-				  this.count = res.data.count
-				}).catch(err=>{
-			
-				})
+			this.getSearchData(param)
 	  },
     },
     mounted(){

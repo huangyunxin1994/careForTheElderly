@@ -16,26 +16,7 @@
 		</el-cascader>
       </el-form-item>
       <el-form-item label="首页地图初始经纬度" >
-        <!-- <get-adress ref="getAdress" :map="map" @getItem="getItem" ></get-adress> -->
-		<el-autocomplete
-		  v-model="address"
-		  :fetch-suggestions="querySearchAsync"
-		  style="width:100%;min-width: 300px;"
-		  placeholder="请输入内容"
-		  @select="handleSelect"
-		>
-		  <template slot-scope="{ item }">
-		      <div  class="itemContent" >
-		        <i class="el-icon-search fl mgr10"></i>
-		        <div style="overflow:hidden;">
-		          <div class="title">{{ item.title }}</div>
-		          <el-tooltip :content="item.address" placement="top">
-		             <span class="address ellipsis">{{ item.address }}</span>
-		          </el-tooltip>
-		        </div>
-		      </div>
-		    </template>
-		</el-autocomplete>
+        <get-adress ref="getAdress" :map="map" @getItem="getItem" ></get-adress>
       </el-form-item>
     </el-form>
     <div class="map">
@@ -226,7 +207,7 @@
 		})
       },
       //新建组织
-	  async newOrganization(val){
+	  newOrganization(val){
 		this.dialogVisible = true
 		this.addBtn = true
 		this.removeBtn = false
@@ -241,7 +222,9 @@
 		this.mycenter={}
 		this.mycenter = para
 		
-		await this.$refs.myMap.getMap()
+		this.$nextTick(_=>{
+			this.$refs.myMap.getMap();
+		})
 	  },
       //编辑组织
       editOrganization(val){
@@ -319,34 +302,15 @@
 	  handleChange(val){
 		console.log(this.form.superiorOrganization)
 	  },
-	  querySearchAsync(str,cb){
-		  this.$refs.myMap.geocoderChange(str,(result)=>{
-              console.log(result)
-          })
-	  },
-	  //点击选中建议项时触发的方法
-	  handleSelect(item) {
-	    this.address = item.address + item.title; //记录详细地址，含建筑物名
-	    this.$emit('getItem',item)
-	  },
       //点击选中建议项时触发的方法
       getItem(val){
         this.mycenter = {
           longitude:val.latLng.lng,
           latitude:val.latLng.lat
         }
-		this.adressName = val.address + val.name;
-		this.markers=[]
-		let para = {
-		  longitude:val.latLng.lng,
-		  latitude:val.latLng.lat,
-		  icon:{
-		    name:adress,
-		    size:[48, 48],
-		    anchor:[24, 48]
-		  }
-		}
-		this.markers.push(para)
+		
+		
+		this.$refs.myMap.moveDeploy(val.latLng.lng,val.latLng.lat)
       }
     },
     mounted() {

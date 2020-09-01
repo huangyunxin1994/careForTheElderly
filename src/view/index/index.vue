@@ -320,7 +320,7 @@
       getLocation(x,y){
 		  console.log(x)
 		  console.log(y)
-        this.$refs.myMap.moveDeploy(x,y)
+        this.$refs.myMap.moveDeploy(y,x)
       },
       //播放音频
       play(){

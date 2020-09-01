@@ -7,7 +7,7 @@
                 <div class="enroll-manage-container" ref="container">
                     <div class="enroll-manage-container-handle" >
                         <div class="selectItem">
-                            <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw;"></el-input>
+                            <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw;" @input="searchInput"></el-input>
                         </div>
                         <div class="selectItem">
                             <label for="" class="enroll-manage-container-handle-label">处理状态</label>
@@ -95,7 +95,7 @@
 <script>
   import DialogHandleResult from '@/components/dialogHandleResult/dialogHandleResult.vue'
   import {getOtherAlertList} from '@/api/api.js'
-  import {parseTime} from '@/utils/index.js'
+  import {parseTime,Throttle} from '@/utils/index.js'
   export default{
     components:{
       DialogHandleResult
@@ -106,10 +106,15 @@
         listLoading:false,
         asels:"",//用来存放选中的值
         inputValue:"",
-        page:1,
+        page:1,//当前页
         sels:[],
         disableda:true,
-        pageSize:20,
+        pageSize:20,//页数大小
+		beginTime:'',//开始时间
+		endTime:'',//结束时间
+		parameter:'',//模糊搜索
+		processingResult:'',//处理结果
+		alertType:'',//预警类型
 		warnType:'',//用来存放预警类型筛选的值
         time:'',
         tableTitle:[
@@ -176,8 +181,6 @@
         ],
         valueW:"",
 		valueType:'',
-		beginTime:'',//开始时间
-		endTime:'',//结束时间
 		count:0,
       }
     },
@@ -207,72 +210,79 @@
            return value;
 
       },
+	  //筛选接口
+	  getSearchData(param){
+		  this.listLoading=true
+		  getOtherAlertList(param).then(res=>{
+		  			  console.log(res)
+		      if(res.code==0){
+		          this.listLoading=false
+		          this.tableAllData=res.data.data
+		          this.tableData=this.tableAllData
+		  				  this.count = res.data.count
+		      }else{
+		          this.listLoading=false
+		         this.$notify({
+		              title: '错误',
+		              message: res.msg,
+		              type: 'error'
+		          });
+		      }
+		  }).catch(err=>{
+		      this.listLoading=false
+		      this.$notify({
+		              title: '错误',
+		              message: err.msg,
+		              type: 'error'
+		          });
+		  })
+	  },
+	  //输入框模糊搜素
+	  searchInput:Throttle(function(e){
+		  let param = {
+			  currentPage:this.page,
+			  pageSize:this.pageSize,
+			  startTime:this.beginTime,
+			  endTime:this.endTime,
+			  parameter:this.parameter,
+			  processingResult:this.processingResult,
+			  alertType:this.alertType
+		  }
+		  this.getSearchData(param)
+	  },1000),
+	  //当前页
       handleCurrentChange(val){
          this.page = val;
 		 this.listLoading=true
 		 let param = {
 			 currentPage:this.page,
-			 pageSize:this.pageSize
+			 pageSize:this.pageSize,
+			 startTime:this.beginTime,
+			 endTime:this.endTime,
+			 parameter:this.parameter,
+			 processingResult:this.processingResult,
+			 alertType:this.alertType
 		 }
-		 getOtherAlertList(param).then(res=>{
-		 			  console.log(res)
-		     if(res.code==0){
-		         this.listLoading=false
-		         this.tableAllData=res.data.data
-		         this.tableData=this.tableAllData
-		 				  this.count = res.data.count
-		     }else{
-		         this.listLoading=false
-		        this.$notify({
-		             title: '错误',
-		             message: res.msg,
-		             type: 'error'
-		         });
-		     }
-		 }).catch(err=>{
-		     this.listLoading=false
-		     this.$notify({
-		             title: '错误',
-		             message: err.msg,
-		             type: 'error'
-		         });
-		 })
+		 this.getSearchData(param)
       },
+	  //页数大小
       handleSizeChange(val){
       	this.pageSize = val
 		this.listLoading=true
 		let param = {
 			 currentPage:this.page,
-			 pageSize:this.pageSize
+			 pageSize:this.pageSize,
+			 startTime:this.beginTime,
+			 endTime:this.endTime,
+			 parameter:this.parameter,
+			 processingResult:this.processingResult,
+			 alertType:this.alertType
 		}
-		getOtherAlertList(param).then(res=>{
-					  
-		    if(res.code==0){
-		        this.listLoading=false
-		        this.tableAllData=res.data.data
-		        this.tableData=this.tableAllData
-						  this.count = res.data.count
-		    }else{
-		        this.listLoading=false
-		       this.$notify({
-		            title: '错误',
-		            message: res.msg,
-		            type: 'error'
-		        });
-		    }
-		}).catch(err=>{
-		    this.listLoading=false
-		    this.$notify({
-		            title: '错误',
-		            message: err.msg,
-		            type: 'error'
-		        });
-		})
+		this.getSearchData(param)
       },
       getEnrollData(){
           this.listLoading=true
           getOtherAlertList().then(res=>{
-			  console.log(res)
               if(res.code==0){
                   this.listLoading=false
                   this.tableAllData=res.data.data
@@ -296,69 +306,35 @@
           })
       },
       changeResultType(val){
-          // this.tableData = this.tableAllData.filter(item=>{
-          //     return String(item.alertType).indexOf(val) > -1
-          // })
+		  this.alertType = val
 		  this.listLoading=true
 		  let param = {
 		  	 currentPage:this.page,
 		  	 pageSize:this.pageSize,
-			 alertType:val
+		  	 startTime:this.beginTime,
+		  	 endTime:this.endTime,
+		  	 parameter:this.parameter,
+		  	 processingResult:this.processingResult,
+		  	 alertType:this.alertType
 		  }
-		  getOtherAlertList(param).then(res=>{
-		  			  
-		      if(res.code==0){
-		          this.listLoading=false
-		          this.tableAllData=res.data.data
-		          this.tableData=this.tableAllData
-		  				  this.count = res.data.count
-		      }else{
-		          this.listLoading=false
-		         this.$notify({
-		              title: '错误',
-		              message: res.msg,
-		              type: 'error'
-		          });
-		      }
-		  }).catch(err=>{
-		      this.listLoading=false
-		      this.$notify({
-		              title: '错误',
-		              message: err.msg,
-		              type: 'error'
-		          });
-		  })
+		  this.getSearchData(param)
       },
       changeResult(val){
         // this.tableData = this.tableAllData.filter(item=>{
         //     return String(item.processingResult).indexOf(val) > -1
         // })
 		this.listLoading=true
+		this.processingResult = val
 		let param = {
-			processingResult:val
+			currentPage:this.page,
+			pageSize:this.pageSize,
+			startTime:this.beginTime,
+			endTime:this.endTime,
+			parameter:this.parameter,
+			processingResult:this.processingResult,
+			alertType:this.alertType
 		}
-		getOtherAlertList(param).then(res=>{
-		    if(res.code==0){
-		        this.listLoading=false
-		        this.tableAllData=res.data.data
-		        this.tableData=this.tableAllData
-			    this.count = res.data.count
-		    }else{
-		        this.listLoading=false
-		       this.$notify({
-		            title: '错误',
-		            message: res.msg,
-		            type: 'error'
-		        });
-		    }
-		}).catch(err=>{
-		    this.listLoading=false
-		    this.$notify({
-		            title: '错误',
-		            message: err.msg,
-		            type: 'error'
-		        });
-		})
+		this.getSearchData(param)
       },
       // 更新页面
       updateMess(val){
@@ -390,31 +366,16 @@
 	        this.beginTime = parseTime(val[0],`{y}-{m}-{d}`)+" 00:00:00"
 	        this.endTime = parseTime(val[1],`{y}-{m}-{d}`)+" 23:59:59"
 	      }
-	  		   let param = {
-	  			   startTime:this.beginTime,
-	  			   endTime:this.endTime
-	  		   }
-	  		   getOtherAlertList(param).then(res=>{
-	  		       if(res.code==0){
-	  		           this.listLoading=false
-	  		           this.tableAllData=res.data.data
-	  		           this.tableData=this.tableAllData
-	  		       }else{
-	  		           this.listLoading=false
-	  		          this.$notify({
-	  		               title: '错误',
-	  		               message: res.msg,
-	  		               type: 'error'
-	  		           });
-	  		       }
-	  		   }).catch(err=>{
-	  		       this.listLoading=false
-	  		       this.$notify({
-	  		               title: '错误',
-	  		               message: err.msg,
-	  		               type: 'error'
-	  		           });
-	  		   })
+		   let param = {
+			   currentPage:this.page,
+			   pageSize:this.pageSize,
+			   startTime:this.beginTime,
+			   endTime:this.endTime,
+			   parameter:this.parameter,
+			   processingResult:this.processingResult,
+			   alertType:this.alertType
+		   }
+		   this.getSearchData(param)
 	  },
     },
     mounted() {
