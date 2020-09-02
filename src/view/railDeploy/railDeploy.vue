@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import  mymap  from '@/components/map/map'
+import  mymap  from '@/components/map/qqmap'
 import  dialogMap  from '@/components/dialogRailDeploy/dialog-map.vue'
 import  dialogMapE  from '@/components/dialogRailDeploy/dialog-map-edit.vue'
 import railTree from '@/components/tree/tree_.vue'
@@ -147,10 +147,10 @@ export default {
 		  this.getRailList()
 	  },
 	  //获取电子围栏信息
-	  getRailList(){
+	  async getRailList(){
 		  
 		  let user = JSON.parse(sessionStorage.getItem('user'))
-		  getRailList().then((res)=>{
+		  await getRailList().then((res)=>{
 			  console.log(res)
 			  if(res.code == 0){
 				  this.filterArr = res.data.list
@@ -159,10 +159,12 @@ export default {
 				  
 			  }
 		  })
+		  await this.$refs.mymap.getMap()
 	  }
     },
     mounted(){
 	  this.getRailList()
+	  
     }
 }
 </script>

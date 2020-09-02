@@ -108,14 +108,14 @@
       handleOrg(val){
          this.markers = []
 		 let user = JSON.parse(sessionStorage.getItem('user'))
-		 console.log(user)
 		 let param = {
 			 organizationId:user.organizationId,
 			 oid:val.id
 		 }
         getElderList(param).then(res=>{
           if(res.code==0){
-           
+			console.log("点击组织")
+            console.log(res)
             if(res.data.data.length>0){
               res.data.data.forEach(i => {
                 if(i.fenceWarning == 1){
@@ -195,12 +195,14 @@
 	
         let para = JSON.parse(sessionStorage.getItem('user'))
        await getElderList({organizationId:para.organizationId}).then(res=>{
+			console.log("显示全部人员")
 			console.log(res)
           if(res.code==0){
 			  
             if(res.data.data.length>0){
               res.data.data.forEach(i => {
 				  if(i.fenceWarning == 1){
+					  console.log(i)
 					  // 1 正常
 					  let para =  {
 						isIndex:'1',
@@ -259,7 +261,7 @@
 					  }
 					  this.markers.push(para)
 				  }
-                
+                console.log(this.markers)
               });
               this.$refs.myMap.showAllPeople(0)
             }
@@ -316,7 +318,9 @@
       },
       //定位
       getLocation(x,y){
-        this.$refs.myMap.movePosBypoint(x,y)
+		  console.log(x)
+		  console.log(y)
+        this.$refs.myMap.moveDeploy(y,x)
       },
       //播放音频
       play(){

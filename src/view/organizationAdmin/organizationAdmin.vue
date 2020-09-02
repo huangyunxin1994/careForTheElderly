@@ -17,7 +17,7 @@
             <div class="enroll-manage-main">
                 <div class="enroll-manage-container" ref="container">
                     <div class="enroll-manage-container-handle" >
-                        <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw"></el-input>
+                        <el-input v-model="inputValue" placeholder="请输入要搜索内容" style="width: 20vw" @input="searchInput"></el-input>
                         <div class="btnWrap selectItem">
 						  <el-button type="primary"  class="btn" @click="selectAll">查看全部</el-button>
                           <el-button type="primary"  class="btn" @click="newUser">新建用户</el-button>
@@ -86,6 +86,7 @@
   import DialogChangePass from '@/components/dialogOrganizationAdmin/changePass.vue'
   import EditeditMess from '@/components/dialogOrganizationAdmin/editeditMess.vue'
   import {addUser,changeUser,getUserList} from '@/api/api.js'
+  import {Throttle} from '@/utils/index.js'
   export default{
     components:{
       NavBar,
@@ -101,10 +102,11 @@
         listLoading:false,
         asels:"",//用来存放选中的值
         inputValue:"",
-        page:1,
+        page:1,//当前页
         disableda:true,
 		count:0,
-        pageSize:10,
+        pageSize:10,//页数大小
+		parameter:'',//模糊搜索
         tableTitle:[
             { title : "账号", name : "account", type:"input",width:"200"},
             { title : "用户名", name : "name", type:"input",width:"200"},
@@ -173,72 +175,66 @@
            return value;
 
       },
+	  //模糊搜索
+	  searchInput: Throttle(function(e){
+		  this.parameter = e
+	  	  let param = {
+			  parameter:this.parameter,
+			  pageSize:this.pageSize,
+			  currentPage:this.currentPage
+		  }
+		  this.getSearchData(param)
+	  },1000),
+	  //筛选接口
+	  getSearchData(param){
+		  getUserList(param).then(res=>{
+		      if(res.code==0){
+		          this.listLoading=false
+		          this.tableAllData=res.data.data
+		          this.tableData=this.tableAllData
+		  				  this.count = res.data.count
+		      }else{
+		          this.listLoading=false
+		         this.$notify({
+		              title: '错误',
+		              message: res.msg,
+		              type: 'error'
+		          });
+		      }
+		  }).catch(err=>{
+		      this.listLoading=false
+		      this.$notify({
+		              title: '错误',
+		              message: err.msg,
+		              type: 'error'
+		          });
+		  })
+	  },
+	  //当前页
       handleCurrentChange(val){
          this.page = val;
 		 let param = {
+		 	parameter:this.parameter,
 		 	pageSize:this.pageSize,
 		 	currentPage:this.currentPage
 		 }
 		 this.listLoading=true
-		 getUserList().then(res=>{
-		 			  console.log(res)
-		     if(res.code==0){
-		         this.listLoading=false
-		         this.tableAllData=res.data.data
-		         this.tableData=this.tableAllData
-		 				  this.count = res.data.count
-		     }else{
-		         this.listLoading=false
-		        this.$notify({
-		             title: '错误',
-		             message: res.msg,
-		             type: 'error'
-		         });
-		     }
-		 }).catch(err=>{
-		     this.listLoading=false
-		     this.$notify({
-		             title: '错误',
-		             message: err.msg,
-		             type: 'error'
-		         });
-		 })
+		 this.getSearchData(param)
       },
+	  //页数大小
       handleSizeChange(val){
       	this.pageSize = val
 		let param = {
+			parameter:this.parameter,
 			pageSize:this.pageSize,
 			currentPage:this.currentPage
 		}
 		this.listLoading=true
-		getUserList().then(res=>{
-					  console.log(res)
-		    if(res.code==0){
-		        this.listLoading=false
-		        this.tableAllData=res.data.data
-		        this.tableData=this.tableAllData
-						  this.count = res.data.count
-		    }else{
-		        this.listLoading=false
-		       this.$notify({
-		            title: '错误',
-		            message: res.msg,
-		            type: 'error'
-		        });
-		    }
-		}).catch(err=>{
-		    this.listLoading=false
-		    this.$notify({
-		            title: '错误',
-		            message: err.msg,
-		            type: 'error'
-		        });
-		})
+		this.getSearchData(param)
       },
       getEnrollData(){
           this.listLoading=true
           getUserList().then(res=>{
-			  console.log(res)
               if(res.code==0){
                   this.listLoading=false
                   this.tableAllData=res.data.data
@@ -395,18 +391,7 @@
     computed:{
       tables:function(){
         var search=this.inputValue;
-        if(search){
-             let arr = []
-            this.tableTitle.forEach(e => {
-                if(e.name)
-                arr.push(e.name)
-            });
-          return  this.tableData.filter(function(dataNews){
-            return Object.keys(dataNews).some(function(key){
-                    return String(arr).indexOf(key)>-1&&String(dataNews[key]).toLowerCase().indexOf(search) > -1
-            })
-          })
-        }
+        
         return this.tableData
       }
     },

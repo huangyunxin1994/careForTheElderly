@@ -7,7 +7,7 @@
                  <div class="enroll-manage-container" ref="container">
                      <div class="enroll-manage-container-handle" >
                             <div class="handleItem">
-                              <el-input v-model="inputValue" placeholder="请输入要搜索内容" class="select" style="width: 20vw;" ></el-input>
+                              <el-input v-model="inputValue" placeholder="请输入要搜索内容" class="select" style="width: 20vw;" @input="searchInput"></el-input>
                               <div class="selectItem">
                                 <label for="" class="enroll-manage-container-handle-label">处理状态</label>
                                 <el-select v-model="valueW" style="width:10vw" filterable placeholder="请选择" @change="changeResult">
@@ -98,7 +98,7 @@
  <script>
    import DialogHandleResult from '@/components/dialogHandleResult/dialogHandleResult.vue'
    import FindHandleResult from '@/components/dialogHandleResult/findHandleResult.vue'
-   import {parseTime} from '@/utils/index.js'
+   import {parseTime,Throttle} from '@/utils/index.js'
    import {getAlertList,changeAlert} from '@/api/api.js'
    export default{
      components:{
@@ -112,10 +112,12 @@
          sels:[],
          asels:"",//用来存放选中的值
          inputValue:"",
-         page:1,
+         page:1,//当前页
          disableda:true,
-         pageSize:10,
-         time:'',
+         pageSize:10,//页数大小
+         time:'',//筛选时间
+		 parameter:'',//模糊搜索
+		 processingResult:'',//处理状态
          tableTitle:[
              { title : "姓名", name : "elderlyName", type:"link",width:"120"},
              { title : "预警类型", name : "alertType", type:"input",width:'150'},
@@ -144,8 +146,8 @@
              }
          ],
          valueW:"",
-         beginTime:'',
-         endTime:'',
+         beginTime:'',//筛选开始时间
+         endTime:'',//筛选结束时间
        }
      },
      methods:{
@@ -171,67 +173,70 @@
             return value;
 
        },
+	   //筛选接口函数
+	   getSearchData(param){
+		   this.listLoading=true
+		   getAlertList(param).then(res=>{
+		       if(res.code==0){
+		           this.listLoading=false
+		           this.tableAllData=res.data.data
+		           this.tableData=this.tableAllData
+		   		this.count = res.data.count
+		       }else{
+		           this.listLoading=false
+		          this.$notify({
+		               title: '错误',
+		               message: res.msg,
+		               type: 'error'
+		           });
+		       }
+		   }).catch(err=>{
+		       this.listLoading=false
+		       this.$notify({
+		               title: '错误',
+		               message: err.msg,
+		               type: 'error'
+		           });
+		   })
+	   },
+	   //输入框搜索数据
+	   searchInput:Throttle(function(e){
+		   this.parameter = e
+		   let param = {
+		   	 currentPage:this.page,
+		   	 pageSize:this.pageSize,
+		   	 startTime:this.beginTime,
+		   	 endTime:this.endTime,
+		   	 parameter:this.parameter,
+		   	 processingResult:this.processingResult
+		   }
+		   this.getSearchData(param)
+	   },1000),
 	   //当前页
        handleCurrentChange(val){
           this.page = val;
 		  let param = {
 		  	 currentPage:this.page,
-		  	 pageSize:this.pageSize
+		  	 pageSize:this.pageSize,
+		  	 startTime:this.beginTime,
+		  	 endTime:this.endTime,
+		  	 parameter:this.parameter,
+		  	 processingResult:this.processingResult
 		  }
-		  this.listLoading=true
-		  getAlertList(param).then(res=>{
-		      if(res.code==0){
-		          this.listLoading=false
-		          this.tableAllData=res.data.data
-		          this.tableData=this.tableAllData
-		  		this.count = res.data.count
-		      }else{
-		          this.listLoading=false
-		         this.$notify({
-		              title: '错误',
-		              message: res.msg,
-		              type: 'error'
-		          });
-		      }
-		  }).catch(err=>{
-		      this.listLoading=false
-		      this.$notify({
-		              title: '错误',
-		              message: err.msg,
-		              type: 'error'
-		          });
-		  })
+		  this.getSearchData(param)
        },
 	   //页数大小
        handleSizeChange(val){
        	this.pageSize = val
 		let param = {
 			 currentPage:this.page,
-			 pageSize:this.pageSize
+			 pageSize:this.pageSize,
+			 startTime:this.beginTime,
+			 endTime:this.endTime,
+			 parameter:this.parameter,
+			 processingResult:this.processingResult
 		}
-		this.listLoading=true
-		getAlertList(param).then(res=>{
-		    if(res.code==0){
-		        this.listLoading=false
-		        this.tableAllData=res.data.data
-		        this.tableData=this.tableAllData
-				this.count = res.data.count
-		    }else{
-		        this.listLoading=false
-		       this.$notify({
-		            title: '错误',
-		            message: res.msg,
-		            type: 'error'
-		        });
-		    }
-		}).catch(err=>{
-		    this.listLoading=false
-		    this.$notify({
-		            title: '错误',
-		            message: err.msg,
-		            type: 'error'
-		        });
-		})
+		this.getSearchData(param)
        },
 	   //获取到围栏预警数据
        getEnrollData(){
@@ -270,61 +275,27 @@
              this.endTime = parseTime(val[1],`{y}-{m}-{d}`)+" 23:59:59"
            }
 		   let param = {
+			   currentPage:this.page,
+			   pageSize:this.pageSize,
 			   startTime:this.beginTime,
-			   endTime:this.endTime
+			   endTime:this.endTime,
+			   parameter:this.parameter,
+			   processingResult:this.processingResult
 		   }
-		   getAlertList(param).then(res=>{
-		       if(res.code==0){
-		           this.listLoading=false
-		           this.tableAllData=res.data.data
-		           this.tableData=this.tableAllData
-		       }else{
-		           this.listLoading=false
-		          this.$notify({
-		               title: '错误',
-		               message: res.msg,
-		               type: 'error'
-		           });
-		       }
-		   }).catch(err=>{
-		       this.listLoading=false
-		       this.$notify({
-		               title: '错误',
-		               message: err.msg,
-		               type: 'error'
-		           });
-		   })
+		   this.getSearchData(param)
        },
 	   //通过处理状态来筛选数据
        changeResult(val){
-         // this.tableData = this.tableAllData.filter(item=>{
-         //     return String(item.processingResult).indexOf(val) > -1
-         // })
+		 this.processingResult = val
 		 let param = {
-		   processingResult:val
+		   currentPage:this.page,
+		   pageSize:this.pageSize,
+		   startTime:this.beginTime,
+		   endTime:this.endTime,
+		   parameter:this.parameter,
+		   processingResult:this.processingResult
 		 }
-		 getAlertList(param).then(res=>{
-			 console.log(res)
-		     if(res.code==0){
-		         this.listLoading=false
-		         this.tableAllData=res.data.data
-		         this.tableData=this.tableAllData
-		     }else{
-		         this.listLoading=false
-		        this.$notify({
-		             title: '错误',
-		             message: res.msg,
-		             type: 'error'
-		         });
-		     }
-		 }).catch(err=>{
-		     this.listLoading=false
-		     this.$notify({
-		             title: '错误',
-		             message: err.msg,
-		             type: 'error'
-		         });
-		 })
+		 this.getSearchData(param)
        },
        // 更新页面
        updateMess(val){
@@ -418,18 +389,6 @@
      computed:{
        tables:function(){
          var search=this.inputValue;
-         if(search){
-              let arr = []
-             this.tableTitle.forEach(e => {
-                 if(e.name)
-                 arr.push(e.name)
-             });
-           return  this.tableData.filter(function(dataNews){
-             return Object.keys(dataNews).some(function(key){
-                     return String(arr).indexOf(key)>-1&&String(dataNews[key]).toLowerCase().indexOf(search) > -1
-             })
-           })
-         }
          return this.tableData
        }
      },

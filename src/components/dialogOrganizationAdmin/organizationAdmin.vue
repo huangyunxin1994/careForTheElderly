@@ -34,7 +34,7 @@
 </template>
 
 <script>
-  import MyMap from '@/components/map/map.vue'
+  import MyMap from '@/components/map/qqmap.vue'
   import GetAdress from '@/components/getAdress/getAdress.vue'
   import {newOrg,changeOrg,deleteOrg} from '@/api/api.js'
   
@@ -76,6 +76,7 @@
 		addmitType:1,//用来判断是修改还是新增   1新增  2修改
 		nowMess:{},//编辑时,用来存放本条消息
 		adressName:'',
+		address:'',//
       }
     },
     methods:{
@@ -220,10 +221,13 @@
 		}
 		this.mycenter={}
 		this.mycenter = para
+		
+		this.$nextTick(_=>{
+			this.$refs.myMap.getMap();
+		})
 	  },
       //编辑组织
       editOrganization(val){
-		  console.log(val)
         this.dialogVisible = true
         this.addBtn = true
         this.removeBtn = true
@@ -252,7 +256,7 @@
 		})
 		this.isDisabled = true
 		
-		
+		// await this.$refs.myMap.getMap()
 		
 		
 		// this.markers=[]
@@ -304,22 +308,12 @@
           longitude:val.latLng.lng,
           latitude:val.latLng.lat
         }
-		this.adressName = val.address + val.name;
-		this.markers=[]
-		let para = {
-		  longitude:val.latLng.lng,
-		  latitude:val.latLng.lat,
-		  icon:{
-		    name:adress,
-		    size:[48, 48],
-		    anchor:[24, 48]
-		  }
-		}
-		this.markers.push(para)
+		
+		
+		this.$refs.myMap.moveDeploy(val.latLng.lng,val.latLng.lat)
       }
     },
     mounted() {
-		console.log(319)
     }
   }
 </script>

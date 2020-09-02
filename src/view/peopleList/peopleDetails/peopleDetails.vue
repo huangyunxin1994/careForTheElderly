@@ -146,6 +146,7 @@
   import home from '@/icons/png/jia.png'
   import dian from '@/icons/png/dian.png'
   import person from '@/icons/png/personw.png'
+  import normal from '@/icons/png/personn.png'
   import Battery from '@/components/battery/battery.vue'
   import { elderlyStatus,equipmentAlert,familymembers,locationTracking,BloodPressure,dealEquipmentAlert } from '@/api/api'
   import { parseTime } from "@/utils/index.js"
@@ -367,7 +368,7 @@
       getNowAdress(){
         locationTracking({eid:this.eid}).then(res=>{
         if(res.code == 0){
-            
+            console.log(res.data)
             let para = {
               longitude:res.data.coordinate.longitude,
               latitude:res.data.coordinate.latitude,
@@ -421,6 +422,7 @@
    async mounted() {
       this.eid = this.$route.query.id
       await elderlyStatus({eid:this.eid}).then(res=>{
+		  console.log("获取到总的数据")
 		  console.log(res)
           if(res.code == 0){
             this.eData = res.data.elderly
@@ -472,7 +474,6 @@
           console.log(err)
         })
       await locationTracking({eid:this.eid}).then(res=>{
-		  console.log(res)
         if(res.code == 0){
 			let param = {
 				longitude:res.data.coordinate.longitude,
@@ -480,17 +481,29 @@
 			}
             this.center = param
             this.pointDate = res.data.coordinate.createTime
-			console.log(this.center)
-            let para = {
-              longitude:res.data.coordinate.longitude,
-              latitude:res.data.coordinate.latitude,
-              icon:{
-                name:person,
-                size:[62, 48],
-                anchor:[24, 48]
-              }
-            }
-             this.markers.push(para)
+			if(this.eData.fence_warning == 2){
+				let para = {
+				  longitude:res.data.coordinate.longitude,
+				  latitude:res.data.coordinate.latitude,
+				  icon:{
+				    name:person,
+				    size:[62, 48],
+				    anchor:[24, 48]
+				  }
+				}
+				this.markers.push(para)
+			}else{
+				let para = {
+				  longitude:res.data.coordinate.longitude,
+				  latitude:res.data.coordinate.latitude,
+				  icon:{
+				    name:normal,
+				    size:[62, 48],
+				    anchor:[24, 48]
+				  }
+				}
+				this.markers.push(para)
+			}
           }
       }).catch(err=>{
           console.log(err)
