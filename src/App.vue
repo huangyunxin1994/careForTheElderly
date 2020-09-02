@@ -34,6 +34,8 @@ export default {
       },
       changPlaying(val){
         console.log(val)
+        if(this.isPlaying&&!val) 
+          this.play()
         this.isPlaying = val
       },
      initWebSocket(){ //初始化weosocket
@@ -58,6 +60,7 @@ export default {
       console.log(this.$route.name)
       if(e.data=="欢迎123加入连接！") return
       if(this.$route.name == 'Home'){
+        this.play()
         this.$refs.Childmain.reloadPeople()
         this.$refs.Childmain.getWarnList()
       }
