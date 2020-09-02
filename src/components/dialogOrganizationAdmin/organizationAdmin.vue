@@ -20,7 +20,7 @@
       </el-form-item>
     </el-form>
     <div class="map">
-      <my-map ref="myMap" @getAdressName="getAdressName" @getMap="getMap" @getcenter="getcenter" :zoomLevel="zoomLevel" :center="mycenter" :markers="markers" :geocoder="true"></my-map>
+      <my-map ref="myMap" @getAddress="getAddress" @getMap="getMap" @getcenter="getcenter" :zoomLevel="zoomLevel" :center="mycenter" :markers="markers" :geocoder="true"></my-map>
 	  <div class="mapIcon">
 		  <img class="iconImg" src="../../icons/png/dingwei.png" alt="">
 	  </div>
@@ -268,7 +268,7 @@
 		// this.markers.push(para2)
       },
 	  //获取到地址名称
-	  getAdressName(val){
+	  getAddress(val){
 		  this.adressName = val.detail.address
 		  this.$refs.getAdress.address = val.detail.address
 		  this.mycenter1 = {

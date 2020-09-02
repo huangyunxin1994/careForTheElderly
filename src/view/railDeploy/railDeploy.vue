@@ -37,12 +37,12 @@
             </div>
         </el-col>
         <el-col :span="21" class="electricfence-map">
-            <mymap ref="mymap" :circles="circles"></mymap>
+            <mymap ref="mymap" :circles="circles" :view="true"></mymap>
         </el-col>
       </el-row>
       <relevance-user ref='relevanceUser'></relevance-user>
        <dialog-map-e ref="dialogmape" @selectElec="selectElec"></dialog-map-e>
-       <dialog-map ref="dialogmap" @addselectElec="addselectElec"></dialog-map>
+       <dialog-map ref="dialogmap" @selectElec="selectElec"></dialog-map>
     </el-container>
   </div>
 </template>
@@ -141,11 +141,19 @@ export default {
 		this.$refs.mymap.moveDeploy(val.longitude,val.latitude)
 	  },
       selectElec(){
-		  this.getRailList()
+		    let user = JSON.parse(sessionStorage.getItem('user'))
+        getRailList().then((res)=>{
+          console.log(res)
+          if(res.code == 0){
+            this.filterArr = res.data.list
+            this.circles.length=0
+            this.filterArr.forEach( i => this.circles.push(i))
+            console.log(this.circles)
+            this.$refs.mymap.reloadCircles()
+            
+          }
+        })
       },
-	  addselectElec(){
-		  this.getRailList()
-	  },
 	  //获取电子围栏信息
 	  async getRailList(){
 		  
@@ -159,13 +167,12 @@ export default {
 				  this.filterArr.forEach( i => this.circles.push(i))
 				  
 			  }
-		  })
-		  await this.$refs.mymap.getMap()
+      })
+      await this.$refs.mymap.getMap()
 	  }
     },
     mounted(){
 	  this.getRailList()
-	  
     }
 }
 </script>

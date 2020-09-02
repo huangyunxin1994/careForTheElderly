@@ -16,7 +16,7 @@
               </div>
               <div class="clock">
                 <audio id="audio" loop ref="music" >
-                  <source src="../../assets/mp3/dididi.mp3" type="audio/mpeg" />
+                  <source :src="musicSrc" type="audio/mpeg" />
                 </audio>
                 <el-tooltip content="停止本次报警音效" placement="top">
                    <el-button  class="iconfont icon-zanting warnClock" size="mini" circle @click="stop"></el-button>
@@ -68,6 +68,7 @@
         dashboardContext:[
           
         ],
+        musicSrc:"/static/mp3/dididi.mp3",
         websock:null,
         warnList:false,
         isPlaying:true,//默认播放
@@ -195,8 +196,6 @@
 	
         let para = JSON.parse(sessionStorage.getItem('user'))
        await getElderList({organizationId:para.organizationId}).then(res=>{
-			console.log("显示全部人员")
-			console.log(res)
           if(res.code==0){
 			  
             if(res.data.data.length>0){
@@ -347,7 +346,7 @@
       },
       initWebSocket(){ //初始化weosocket
       console.log(251)
-        const wsuri = "wss://192.168.1.9:8085/webSocket/123";
+        const wsuri = "ws://192.168.1.9:8085/webSocket/123";
         this.websock = new WebSocket(wsuri);
         this.websock.onmessage = this.websocketonmessage;
         this.websock.onopen = this.websocketonopen;
@@ -364,7 +363,8 @@
         // this.initWebSocket();
       },
       websocketonmessage(e){ //数据接收
-        const redata = JSON.parse(e.data);
+      console.log(e.data)
+        // const redata = JSON.parse(e.data);
       },
       websocketsend(Data){//数据发送
        console.log('发送1');
