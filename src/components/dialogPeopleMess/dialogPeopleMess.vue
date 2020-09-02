@@ -29,7 +29,7 @@
       <div class="map" >
         <p class="title">家庭住址坐标</p>
         <div class="mapContent">
-          <my-map  :dragging="true" :zooming="true" :markers="markers" :center="center"></my-map>
+          <my-map ref='mymap'  :dragging="true" :zooming="true" :markers="markers" :center="center" ></my-map>
         </div>
       </div>
     </div>
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-  import MyMap from '@/components/map/map.vue'
+  import MyMap from '@/components/map/qqmap.vue'
   import home from '@/icons/png/jia.png'
   export default {
     components:{
@@ -97,8 +97,6 @@
         this.dialogVisible = false
       },
       initData(data,val){
-		  console.log(data)
-		  console.log(val)
 		this.dialogVisible = true
         this.form = data.elderly
         this.sosNumbers = data.phoneNumbers.filter(i=>i.type==2)
@@ -119,6 +117,11 @@
             }
           }
         this.markers.push(para)
+		this.$nextTick(_=>{
+			this.$refs.mymap.getMap()
+		})
+		
+		console.log(this.$refs.mymap)
       }
     },
     mounted() {

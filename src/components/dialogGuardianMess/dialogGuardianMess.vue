@@ -59,7 +59,7 @@
     data(){
       return{
         dialogVisible:false,
-        title:'李二的家属信息',
+        title:'',
         listLoading:false,
         page:1,
         disableda:true,
