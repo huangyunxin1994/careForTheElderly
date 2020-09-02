@@ -402,13 +402,14 @@ export default {
         },
         //获取中心点信息
          getCenterMsg(){
-		  // console.log(225)
+		  console.log(225)
           let nowcenter =  this.mapView.getCenter()
           console.log(nowcenter)
           let center = new qq.maps.LatLng(nowcenter.lat, nowcenter.lng)
           
           this.geocoderChange(center,(result)=>{
-              this.$emit("getAddress",result)
+			  console.log(center)
+              this.$emit("getAdressName",result)
           })
           
 		  	// 	  var geoc = new BMap.Geocoder();
@@ -430,6 +431,7 @@ export default {
             goec.setComplete(function(result) {
                 console.log(result)
                 callback(result) 
+				// this.$emit("getAddress",result.detail)
             });
             //若服务请求失败，则运行以下函数
             goec.setError(function(err) {

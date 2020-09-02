@@ -20,7 +20,7 @@
       </el-form-item>
     </el-form>
     <div class="map">
-      <my-map ref="myMap" @getAdressName="getAdressName" @getMap="getMap" @getcenter="getcenter" :zoomLevel="zoomLevel" :center="mycenter" :markers="markers"></my-map>
+      <my-map ref="myMap" @getAdressName="getAdressName" @getMap="getMap" @getcenter="getcenter" :zoomLevel="zoomLevel" :center="mycenter" :markers="markers" :geocoder="true"></my-map>
 	  <div class="mapIcon">
 		  <img class="iconImg" src="../../icons/png/dingwei.png" alt="">
 	  </div>
@@ -234,12 +234,7 @@
         this.form.organization = val.name
 		this.addmitType = 2
 		this.nowMess = val
-		
-		// if(val.hasOwnProperty('children')){
-		// 	this.isDisabled = true
-		// }else{
-		// 	this.isDisabled = false
-		// }
+		this.adressName = val.address
 		if(val.hasOwnProperty('parentId')){
 			this.form.superiorOrganization = val.parentId
 		}else{
@@ -253,6 +248,7 @@
 		this.$nextTick(_=>{
 			
 			this.$refs.myMap.getMap();
+			this.$refs.getAdress.address = val.address
 		})
 		this.isDisabled = true
 		
@@ -272,12 +268,12 @@
 		// this.markers.push(para2)
       },
 	  //获取到地址名称
-	  getAdressName(val,lng,lat){
-		  this.adressName = val
-		  this.$refs.getAdress.address = val
+	  getAdressName(val){
+		  this.adressName = val.detail.address
+		  this.$refs.getAdress.address = val.detail.address
 		  this.mycenter1 = {
-		  	latitude : lat,
-		  	longitude : lng
+		  	latitude : val.detail.location.lat,
+		  	longitude : val.detail.location.lng
 		  }
 	  },
 	  //编辑组织时，要获取到组织树结构

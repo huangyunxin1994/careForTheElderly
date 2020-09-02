@@ -296,6 +296,7 @@
         if(this.organizationName == ''){
           this.$message.error('请选择组织!');
         }else{
+			console.log(this.organizationName)
           this.$refs.organization.editOrganization(this.organizationName)
 		  this.$refs.organization.getOrgTree(val)
         }

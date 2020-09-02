@@ -110,6 +110,8 @@ export default {
 		}
 		if(user.account == "admin"){
 			getTopOrgList().then((res)=>{
+				console.log("组织列表")
+				console.log(res)
 				let arr=[]
 				if(res.code == 0){
 					let treeData = res.data.data
