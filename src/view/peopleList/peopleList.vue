@@ -187,9 +187,9 @@
           else if(name=='multiplexMark')
            return value == 1 ? '是' : value == 0 ? '否' : '';
           else if(name=='fenceWarning')
-           return value == '1' ? '<span style="color:rgb(112, 182, 3)">正常</span>' :'<span style="color:#e6a23c">异常</span>';
+		   return value == 1 ? '<span style="color:rgb(112, 182, 3)">正常</span>' : value == 2 ? '<span style="color:#e6a23c">异常</span>' : '';
           else if(name=='equipmentState')
-           return value == 0 ? '<span style="color:#909399">离线</span>' :( value == 1 ? '<span style="color:rgb(112, 182, 3)">在线</span>' : ( value == 2 ? '<span style="color:#e6a23c">低电量</span>' : '' ));
+           return value == 2 ? '<span style="color:#909399">离线</span>' :( value == 1 ? '<span style="color:rgb(112, 182, 3)">在线</span>' : ( value == 3 ? '<span style="color:#e6a23c">预警</span>' : '' ));
           else
            return value;
 
