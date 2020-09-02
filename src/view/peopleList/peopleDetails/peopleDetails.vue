@@ -110,7 +110,7 @@
                   <div class="warnContent" v-for="item in warnList" :key="item.id">
                     <div class="warnContent-top">
                       <span class="warnTime">{{item.alertTime}} </span>
-                      <div>
+                      <div  @click="movePos(item)">
                         <el-tooltip content="定位" placement="top">
                            <i class="iconfont icon-dingwei" style="color:"></i>
                         </el-tooltip>
@@ -380,13 +380,18 @@
             }
 			console.log(para)
             this.markers=[]
-             this.markers.push(para)
-            this.$refs.map.movePosBypoint(res.data.coordinate.longitude,res.data.coordinate.latitude)
+            this.markers.push(para)
+            this.$refs.map.moveDeploy(res.data.coordinate.longitude,res.data.coordinate.latitude)
+            this.$refs.map.reloadMarkers()
             this.pointDate = res.data.coordinate.createTime
           }
       }).catch(err=>{
           console.log(err)
         })
+      },
+      //定位到预警位置
+      movePos(item){
+        console.log(item)
       },
       getChartData(time){
         time = parseTime(time,'{y}-{m}-{d}')

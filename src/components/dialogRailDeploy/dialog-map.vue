@@ -253,7 +253,7 @@ export default {
 						            };
 						            this.formVisible=false
 						            this.loading=false
-						            this.$emit("addselectElec")
+						            this.$emit("selectElec")
 						        }else{
 						            this.$message({
 						                message: '添加失败',

@@ -124,6 +124,8 @@ export default {
             mapData: [],
             //
             markerArr:[],
+            lineArr:[],
+            circleArr:[]
            
         }
     },
@@ -188,7 +190,7 @@ export default {
                     i.forEach( n => {
                     let polyLinePoint =  new qq.maps.LatLng(n.latitude, n.longitude)
                         polyLineArr.push(polyLinePoint)
-                        this.lineArray.push(polyLinePoint)
+                        this.lineArr.push(polyLinePoint)
                     })
                     var polyline = new qq.maps.Polyline({
                         path: polyLineArr,
@@ -196,23 +198,26 @@ export default {
                         strokeWeight: 10,
                         map:this.mapView
                     });
+                     this.lineArray.push(polyline)
                 })
             }
             //创建圆
             if(this.circles.length>0){
                 this.circles.forEach(i => {
                     var point = new qq.maps.LatLng(i.latitude,i.longitude);
+                    this.circleArr.push(point)
                     var circle = new qq.maps.Circle({
                         map: this.mapView,
                         center: point,
                         radius: i.radius*1000,
-                        fillColor: "#00f",
-                        strokeWeight: 5
+                        fillColor: new qq.maps.Color(245, 108, 108,0.5),
+                        strokeWeight: 0
                     });
                     this.circleArray.push(circle)
                 })
             }
             if(this.view){
+                console.log(220)
                 this.getViewPoint()
             }
             if(this.geocoder){
@@ -226,9 +231,10 @@ export default {
                         //假设您有一组坐标点
             //创建LatLngBounds实例
             var latlngBounds = new qq.maps.LatLngBounds();
+            let arr = [...this.markerArr,...this.lineArr,...this.circleArr]
             //将坐标逐一做为参数传入extend方法，latlngBounds会根据传入坐标自动扩展生成
-            for(var i = 0;i<this.markerArr.length; i++){
-                latlngBounds.extend(this.markerArr[i]);  
+            for(var i = 0;i<arr.length; i++){
+                latlngBounds.extend(arr[i]);  
             }
             //调用fitBounds自动调整地图显示范围
             this.mapView.fitBounds(latlngBounds);
@@ -289,6 +295,7 @@ export default {
                 }
                this.markersArray.length = 0;
             }
+             this.markerArr.length = 0
 			if(this.markers.length>0){
                 this.markers.map(item => {
                 var anchor = new qq.maps.Point(item.icon.anchor[0], item.icon.anchor[1]),
@@ -332,11 +339,13 @@ export default {
                 }
                this.lineArray.length = 0;
             }
+            this.lineArr.length = 0;
 			this.polylines.forEach( i => {
                     let polyLineArr = []
                     i.forEach( n => {
                         let polyLinePoint =  new qq.maps.LatLng(n.latitude, n.longitude)
                         polyLineArr.push(polyLinePoint)
+                        this.lineArr.push(polyLinePoint)
                     })
                     var polyline = new qq.maps.Polyline({
                         path: polyLineArr,
@@ -349,21 +358,24 @@ export default {
         },
 		// 重新加载圆
 		reloadCircles() {
+            console.log(this.circleArray)
             if (this.circleArray) {
                 for (let i in this.circleArray) {
                    this.circleArray[i].setVisible(false);
                 }
                this.circleArray.length = 0;
             }
+            this.circleArr.length = 0;
             console.log(this.circles)
 			this.circles.forEach(i => {
                 var point = new qq.maps.LatLng(i.latitude,i.longitude);
+                this.circleArr.push(point)
                 var circle = new qq.maps.Circle({
                     map: this.mapView,
                     center: point,
                     radius: i.radius*1000,
-                    fillColor: "#00f",
-                    strokeWeight: 5
+                    fillColor: new qq.maps.Color(245, 108, 108,0.5),
+                    strokeWeight: 0
                 });
                 this.circleArray.push(circle)
             })
@@ -409,7 +421,7 @@ export default {
           
           this.geocoderChange(center,(result)=>{
 			  console.log(center)
-              this.$emit("getAdressName",result)
+              this.$emit("getAddress",result)
           })
           
 		  	// 	  var geoc = new BMap.Geocoder();
