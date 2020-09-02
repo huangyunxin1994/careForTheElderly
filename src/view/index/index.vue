@@ -10,14 +10,12 @@
       </div>
       <div class="mainRight">
         <transition name="el-zoom-in-center">
-            <div class="warnSwarp" v-show="dashboardContext.length!=0">
+            <div class="warnSwarp" v-show="warnList">
               <div class="newWarnTitle" >
                 <i class="iconfont icon-deng"></i>最新预警信息
               </div>
               <div class="clock">
-                <audio id="audio" loop ref="music" >
-                  <source :src="musicSrc" type="audio/mpeg" />
-                </audio>
+                
                 <el-tooltip content="停止本次报警音效" placement="top">
                    <el-button  class="iconfont icon-zanting warnClock" size="mini" circle @click="stop"></el-button>
                 </el-tooltip>
@@ -68,7 +66,7 @@
         dashboardContext:[
           
         ],
-        musicSrc:"/static/mp3/dididi.mp3",
+        
         websock:null,
         warnList:false,
         isPlaying:true,//默认播放
@@ -90,10 +88,16 @@
         }).catch(err=>{
 
         })
-        if(this.dashboardContext.length > 0){
-          this.warnList = true
+      },
+       getWarnList2(){
+         this.warnList = true
+        getEquipmentAlert({processingResult:1}).then(res=>{
+          this.dashboardContext = res.data.data
           
-        }
+        }).catch(err=>{
+
+        })
+        
       },
       goPeopleDetails(id){
         this.$router.push({
@@ -272,6 +276,84 @@
         // this.markers = myMarkers
         await this.$refs.myMap.getMap()
       },
+      //显示全部人员
+      reloadPeople(){
+        this.markers.length=0
+        let para = JSON.parse(sessionStorage.getItem('user'))
+        getElderList({organizationId:para.organizationId}).then(res=>{
+          if(res.code==0){
+            if(res.data.data.length>0){
+              res.data.data.forEach(i => {
+                if(i.fenceWarning == 1){
+                  console.log(i)
+                  // 1 正常
+                  let para =  {
+                  isIndex:'1',
+                    id:i.id,
+                    name:i.name,
+                    phone:i.sim,
+                    address:i.address,
+                    warning:i.fenceWarning,
+                    longitude:i.longitude,
+                    latitude:i.latitude,
+                    icon:{
+                      name:normal,
+                      size:[48, 48],
+                      anchor:[24, 48]
+                    },
+                    type:'1'
+                    // home:{
+                    //   longitude:i.homeLongitude,
+                    //   latitude:i.homeLatitude,
+                    //   icon:{
+                    //     name:home,
+                    //     size:[48, 48],
+                    //     anchor:[24, 48]
+                    //   },
+                    //   type:'2'
+                    // }
+                  }
+                  this.markers.push(para)
+                }else{
+                  // 2 是预警
+                  let para =  {
+                  isIndex:'1',
+                    id:i.id,
+                    name:i.name,
+                    phone:i.sim,
+                    address:i.address,
+                    warning:i.fenceWarning,
+                    longitude:i.longitude,
+                    latitude:i.latitude,
+                    icon:{
+                      name:warn,
+                      size:[48, 48],
+                      anchor:[24, 48]
+                    },
+                    type:'1'
+                    // home:{
+                    //   longitude:i.homeLongitude,
+                    //   latitude:i.homeLatitude,
+                    //   icon:{
+                    //     name:home,
+                    //     size:[48, 48],
+                    //     anchor:[24, 48]
+                    //   },
+                    //   type:'2'
+                    // }
+                  }
+                  this.markers.push(para)
+                }
+                console.log(this.markers)
+              });
+              this.$refs.myMap.reloadMarkers()
+            }
+          }
+        }).catch(err=>{
+
+        })
+        
+      },
       baseOrgPos(val){
         let params ={
           longitude:val.longitude,
@@ -321,64 +403,13 @@
 		  console.log(y)
         this.$refs.myMap.moveDeploy(y,x)
       },
-      //播放音频
-      play(){
-        let audio1 = document.getElementById('audio')
-        if(this.isPlaying == true){
-          audio1.play()
-        }else{
-          audio1.pause()
-        }
-      },
-      //停止音频
       stop(){
-       let audio1 = document.getElementById('audio')
-        audio1.pause()
+        this.$emit("stop") 
       },
       getSound(val){
-        if(val == false){
-          this.isPlaying = true
-          this.play()
-        }else{
-          this.isPlaying = false
-          this.play()
-        }
-      },
-      initWebSocket(){ //初始化weosocket
-      console.log(251)
-        const wsuri = "ws://192.168.1.9:8085/webSocket/123";
-        this.websock = new WebSocket(wsuri);
-        this.websock.onmessage = this.websocketonmessage;
-        this.websock.onopen = this.websocketonopen;
-        this.websock.onerror = this.websocketonerror;
-        this.websock.onclose = this.websocketclose;
-      },
-      websocketonopen(){ //连接建立之后执行send方法发送数据
-       console.log('发送');
-        let actions = {"test":"12345"};
-        // this.websocketsend(JSON.stringify(actions));
-      },
-      websocketonerror(){//连接建立失败重连
-      console.log('断开连接');
-        // this.initWebSocket();
-      },
-      websocketonmessage(e){ //数据接收
-      console.log(e.data)
-        // const redata = JSON.parse(e.data);
-      },
-      websocketsend(Data){//数据发送
-       console.log('发送1');
-        this.websock.send(Data);
-      },
-      websocketclose(e){  //关闭
-        console.log('断开连接',e);
-      },
-    },
-     created() {
-      this.initWebSocket();
-    },
-    destroyed() {
-      this.websock.close() //离开路由之后断开websocket连接
+        this.$emit("changPlaying",val) 
+      }
+     
     },
     mounted() {
       
