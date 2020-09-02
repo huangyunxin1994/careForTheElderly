@@ -59,7 +59,7 @@ export default {
       if(e.data=="欢迎123加入连接！") return
       if(this.$route.name == 'Home'){
         this.$refs.Childmain.reloadPeople()
-        this.$refs.Childmain.getWarnList2(true)
+        this.$refs.Childmain.getWarnList()
       }
         // const redata = JSON.parse(e.data);
       },

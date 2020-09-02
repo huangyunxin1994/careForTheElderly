@@ -10,7 +10,7 @@
       </div>
       <div class="mainRight">
         <transition name="el-zoom-in-center">
-            <div class="warnSwarp" v-show="warnList">
+            <div class="warnSwarp" v-show="dashboardContext.length!=0">
               <div class="newWarnTitle" >
                 <i class="iconfont icon-deng"></i>最新预警信息
               </div>
@@ -88,16 +88,6 @@
         }).catch(err=>{
 
         })
-      },
-       getWarnList2(){
-         this.warnList = true
-        getEquipmentAlert({processingResult:1}).then(res=>{
-          this.dashboardContext = res.data.data
-          
-        }).catch(err=>{
-
-        })
-        
       },
       goPeopleDetails(id){
         this.$router.push({
