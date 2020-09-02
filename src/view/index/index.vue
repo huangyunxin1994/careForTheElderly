@@ -347,7 +347,7 @@
       },
       initWebSocket(){ //初始化weosocket
       console.log(251)
-        const wsuri = "ws://192.168.9:8085/PersonnelStatus/";
+        const wsuri = "wss://192.168.1.9:8085/webSocket/123";
         this.websock = new WebSocket(wsuri);
         this.websock.onmessage = this.websocketonmessage;
         this.websock.onopen = this.websocketonopen;
@@ -375,10 +375,10 @@
       },
     },
      created() {
-      // this.initWebSocket();
+      this.initWebSocket();
     },
     destroyed() {
-      // this.websock.close() //离开路由之后断开websocket连接
+      this.websock.close() //离开路由之后断开websocket连接
     },
     mounted() {
       

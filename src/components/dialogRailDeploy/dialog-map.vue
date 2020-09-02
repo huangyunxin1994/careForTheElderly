@@ -12,7 +12,7 @@
             </el-form-item>
         </el-form>
         <div class="dialog-map">
-            <my-map ref="mymap1" mapId="container1" :dragging="true" :zooming="true" :circles="circles" :center="center" :zoomLevel="16" @getAddress="getAddress" :geocoder="geocoder"></my-map>
+            <my-map ref="mymap1" mapId="container1" :dragging="true" :zooming="true" :circles="circles" :center="center" :zoomLevel="16" @getAddress="getAddress" :geocoder="true"></my-map>
         </div>
     <div slot="footer" class="dialog-footer">
             <el-button type="primary" @click.native="handleClose">取消</el-button>
