@@ -79,6 +79,7 @@ export default {
         
       ],
       filterArr:[],
+	  zoomLevel:'',//缩放等级
     }
   },
     methods: {

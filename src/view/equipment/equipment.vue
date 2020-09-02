@@ -145,7 +145,7 @@
               },
               {
                 value: '3',
-                label: '低电量'
+                label: '预警'
               }
             ],
             //是否可用
@@ -200,7 +200,7 @@
            if(name=='sex')
            return value == 1 ? '男' : value == 0 ? '女' : '';
           else if(name=='equipmentState')
-           return value == 1 ? '在线' : value == 2 ? '离线' : '';
+           return value == 2 ? '<span style="color:#909399">离线</span>' :( value == 1 ? '<span style="color:rgb(112, 182, 3)">在线</span>' : ( value == 3 ? '<span style="color:#e6a23c">预警</span>' : '' ));
           else if(name=='haveRelevance')
            return value == 1 ? '<span style="color:rgb(112, 182, 3);font-weight:bold">是</span>' :( value == 2 ? '<span style="color:#909399;font-weight:bold">否</span>' : ( value == 3 ? '<span style="color:#67C23A;font-weight:bold">进行中</span>' : ( value == 4 ? '<span style="color:#909399;font-weight:bold">已结束</span>' : '')));
           else if(name == 'isUseful')
@@ -328,7 +328,6 @@
             return
           }
         }
-		console.log(this.isUseArr)
         this.$refs.equipment.relevance(this.isUseArr)
       },
       //删除
@@ -424,12 +423,13 @@
 	  		getOrgList().then((res)=>{
 	  			let arr=[]
 	  			if(res.code == 0){
+					console.log(res)
 	  				let treeData = res.data.data
 	  				const data = this.toTree(treeData)
+					console.log(data)
 	  				this.data = data
 	  				treeData.forEach((item)=>{
-	  					if(!item.hasOwnProperty('parentId')){
-							// this.options = item
+	  					if(!item.hasOwnProperty('parentId') || item.parentId == ''){
 							this.options.push(item)
 	  					}
 	  				})
