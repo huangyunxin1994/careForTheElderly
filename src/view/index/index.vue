@@ -363,7 +363,8 @@
         // this.initWebSocket();
       },
       websocketonmessage(e){ //数据接收
-      console.log(e.data)
+	  if(e.data !="欢迎123加入连接！")
+		this.getSound(false)
         // const redata = JSON.parse(e.data);
       },
       websocketsend(Data){//数据发送

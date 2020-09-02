@@ -328,7 +328,6 @@
             return
           }
         }
-		console.log(this.isUseArr)
         this.$refs.equipment.relevance(this.isUseArr)
       },
       //删除
@@ -424,12 +423,13 @@
 	  		getOrgList().then((res)=>{
 	  			let arr=[]
 	  			if(res.code == 0){
+					console.log(res)
 	  				let treeData = res.data.data
 	  				const data = this.toTree(treeData)
+					console.log(data)
 	  				this.data = data
 	  				treeData.forEach((item)=>{
-	  					if(!item.hasOwnProperty('parentId')){
-							// this.options = item
+	  					if(!item.hasOwnProperty('parentId') || item.parentId == ''){
 							this.options.push(item)
 	  					}
 	  				})
