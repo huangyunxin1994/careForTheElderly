@@ -150,6 +150,7 @@ export default {
 	  async getRailList(){
 		  
 		  let user = JSON.parse(sessionStorage.getItem('user'))
+		  console.log(user)
 		  await getRailList().then((res)=>{
 			  console.log(res)
 			  if(res.code == 0){
