@@ -18,7 +18,7 @@
         </el-tooltip>
       </span>
   		<span class="mess" @click="getSound">
-        <el-tooltip v-if="sound" effect="dark" content="静音">
+        <el-tooltip v-if="!sound" effect="dark" content="静音">
           <!-- <router-link tag="i" class="iconfont icon-lingsheng-jingyin"  ></router-link> -->
           <i class="iconfont icon-lingsheng-jingyin"></i>
         </el-tooltip>
@@ -59,7 +59,7 @@
     },
     data(){
       return{
-        sound:false,
+        sound:true,
 		isadmin:false,
 		user:'',
       }

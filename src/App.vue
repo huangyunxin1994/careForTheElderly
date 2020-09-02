@@ -13,7 +13,7 @@ export default {
   data(){
     return {
       musicSrc:"/static/mp3/dididi.mp3",
-      isPlaying:false
+      isPlaying:true
     }
     
   },
@@ -34,9 +34,10 @@ export default {
       },
       changPlaying(val){
         console.log(val)
-        if(this.isPlaying&&!val) 
+		 this.isPlaying = val
+        if(!this.isPlaying&&!val) 
           this.play()
-        this.isPlaying = val
+       
       },
      initWebSocket(){ //初始化weosocket
       console.log(251)
@@ -58,12 +59,15 @@ export default {
       websocketonmessage(e){ //数据接收
       console.log(e.data)
       console.log(this.$route.name)
-      if(e.data=="欢迎123加入连接！") return
-      if(this.$route.name == 'Home'){
-        this.play()
-        this.$refs.Childmain.reloadPeople()
-        this.$refs.Childmain.getWarnList()
-      }
+      if(e.data){
+		  this.play()
+			if(this.$route.name == 'Home'){
+			  
+			  this.$refs.Childmain.reloadPeople()
+			  this.$refs.Childmain.getWarnList()
+			}
+	  }
+      
         // const redata = JSON.parse(e.data);
       },
       websocketsend(Data){//数据发送
