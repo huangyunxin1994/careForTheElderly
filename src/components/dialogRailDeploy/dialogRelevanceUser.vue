@@ -92,7 +92,6 @@ import {getRailDeploy,getOrgList,getTopOrgList,updateElectronicFence} from '@/ap
       getOrganization(val){
 		this.nowOrg = val
 		this.getRailDeploy()
-		// console.log("organizationId:"+this.nowOrg.id)
       },
 	  //获取到跟组织
 	  baseOrgPos(val){

@@ -83,12 +83,7 @@ export default {
 	  		  return val;
 	  },
       handleNodeClick(data) {
-		let children = this.children
-		children.forEach((item)=>{
-			if(item.id == data.id){
-				this.$emit("getOrganization",data)
-			}
-		})
+		this.$emit("getOrganization",data)
       },
        filterNode(value, data) {
         if (!value) return true;

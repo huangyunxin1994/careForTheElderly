@@ -99,10 +99,10 @@
         		{ required: true,validator: validatePassword, trigger: 'blur' }
         	],
         	username:[
-        		{ required: false,validator: validateUsername, trigger: 'blur' }
+        		{ required: true,validator: validateUsername, trigger: 'blur' }
         	],
         	phone:[
-        		{ required: false,validator: validatePhone, trigger: 'blur' },
+        		{ required: true,validator: validatePhone, trigger: 'blur' },
         		{ message: "请输入正确的号码", trigger: "blur" },
         		{
         			pattern:/^([1]\d{10}|([\(（]?0[0-9]{2,3}[）\)]?[-]?)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?)$/,

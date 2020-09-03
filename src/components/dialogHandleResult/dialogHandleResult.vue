@@ -60,6 +60,7 @@ import {parseTime} from '@/utils/index.js'
 		  			 obj.handleUsername = user.name
 		  			 obj.handleUserid = user.userId
 		  			 obj.handleTime = time
+					 obj.code = arr[i].code
 		  			 array.push(obj)
 		  }
           this.$confirm('确认提交处理结果?', '提示', {
@@ -71,12 +72,13 @@ import {parseTime} from '@/utils/index.js'
 						 console.log(res)
 						 if(res.code == 0){
 							this.$message({
-							  message: '忽略成功',
+							  message: '填写成功',
 							  type: 'success'
 							});
-							this.$emit('getData')
+							this.$emit('getData',1)
+							this.dialogHandleResult=false
 						 }else{
-							this.$message.error('忽略失败');
+							this.$message.error('填写失败');
 						 }
 					 })
 		  }).catch(() => {

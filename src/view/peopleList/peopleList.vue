@@ -89,7 +89,7 @@
 
 <script>
   import NavBar from '@/components/navBar/navBar.vue'
-  import Tree from '@/components/tree/peopleListTree.vue'
+  import Tree from '@/components/tree/tree_.vue'
   import GuardianMess from '@/components/dialogGuardianMess/dialogGuardianMess.vue'
   import DialogPeopleMess from '@/components/dialogPeopleMess/dialogPeopleMess.vue'
   import { PersonnelStatus,familymembers,elderlyStatus, getElderList } from '@/api/api'

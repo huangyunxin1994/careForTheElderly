@@ -364,6 +364,9 @@
        },
        //填写处理结果
        peopleAndEquiment(index,val){
+		   console.log(index)
+		   console.log(val)
+		   console.log(this.sels)
          this.$refs.DialogHandleResult.getData(this.sels)
        },
        //查看处理结果
