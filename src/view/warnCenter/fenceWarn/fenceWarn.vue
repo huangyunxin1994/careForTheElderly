@@ -323,8 +323,10 @@
        //忽略
        handleSearch(index,val){
 		 let user = JSON.parse(sessionStorage.getItem('user'))
+		 console.log(user)
 		 let time = parseTime(new Date(),`{y}-{m}-{d} {h}:{i}:{s}`)
 		 let arr = this.sels
+		 console.log(arr)
 		 let array = []
 		 for(let i in arr){
 			 let obj = {}
@@ -334,6 +336,7 @@
 			 obj.handleUsername = user.name
 			 obj.handleUserid = user.userId
 			 obj.handleTime = time
+			 obj.code = arr[i].code
 			 array.push(obj)
 		 }
          this.$confirm('是否忽略预警?', '提示', {
@@ -342,7 +345,6 @@
                    type: 'warning'
                  }).then(() => {
 					 changeAlert(array).then((res)=>{
-						 console.log(res)
 						 if(res.code == 0){
 						 	this.$message({
 						 	  message: '忽略成功',

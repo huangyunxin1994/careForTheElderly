@@ -1,13 +1,13 @@
 <template>
     <el-dialog title="编辑电子围栏" :visible.sync="formVisible" center :before-close="handleClose" :close-on-click-modal="false" top="5vh" width="70vw">
         <el-form :inline="true" :model="form" :rules="formRule" ref="form" class="demo-form-inline">
-            <el-form-item label="电子围栏名称" prop="name" required>
+            <el-form-item label="电子围栏名称" prop="name" >
                 <el-input v-model="form.name" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item label="围栏中心位置"  required>
                 <get-adress ref="getAdress" :map="map" @getItem="getItem"></get-adress>
             </el-form-item>
-            <el-form-item label="电子围栏范围" prop="radius" required class="deployRange">
+            <el-form-item label="电子围栏范围" prop="radius"  class="deployRange">
                 <el-input v-model="form.radius"  @change="changeRound" placeholder="请输入"></el-input>km
             </el-form-item>
         </el-form>

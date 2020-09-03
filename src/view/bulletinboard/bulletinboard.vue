@@ -51,6 +51,7 @@ import MyMap from '@/components/map/map.vue'
   import warn from '@/icons/png/personw.png'
   // import home from '@/icons/png/jiating.png'
   import home from '@/icons/png/jia.png'
+  import {getBulletinboard} from '@/api/api.js'
 export default {
   name: 'Login',
   components:{
@@ -64,33 +65,13 @@ export default {
       equipWatch:[],
       equipSleep:[],
       equipActive:[],
+	  userArr:[],
+	  latelyAlert:'',//近六个月预警
+	  latelyNormal:'',//近6个月正常值
+	  lateyMonth:'',//近6个月月份
+	  monthEarly:'',//当月预警
       alert1:[],alert2:[],alert3:[],alert4:[],alert5:[],alert6:[],alert7:[],
-      warnData:[
-        {
-          alertTime:'2020-06-02 13:00:00',
-          name:'张三',
-        },
-        {
-          alertTime:'2020-06-02 13:00:00',
-          name:'张三',
-        },
-        {
-          alertTime:'2020-06-02 13:00:00',
-          name:'张三',
-        },
-        {
-          alertTime:'2020-06-02 13:00:00',
-          name:'张三',
-        },
-        {
-          alertTime:'2020-06-02 13:00:00',
-          name:'张三',
-        },
-        {
-          alertTime:'2020-06-02 13:00:00',
-          name:'张三',
-        }
-      ],
+      warnData:[],
       warnDoneData:[],
       warnDoneDataA:[],
       bulletArr:[],
@@ -139,15 +120,124 @@ export default {
     }
   },
   mounted(){
-    // this.getDrawData()
-    // this.getOrganData()
-    this.drawChart()
+	this.getBulletinboardData()
   },
   methods: {
     enterSys(){
       this.$router.push({ path: '/home' })
     },
-
+	getBulletinboardData(){
+		console.log("获取到看板数据……………………………………………………………………")
+		this.userArr = []
+		getBulletinboard().then((res)=>{
+			console.log(res)
+			let arr=[]
+			//监护人
+			let para1 = {
+				value:res.data.familyCount,
+				name:'监护人'
+			}
+			arr.push(para1)
+			//老年人数量
+			let para2 = {
+				value:res.data.elderlyCount,
+				name:'老年人'
+			}
+			arr.push(para2)
+			this.userArr = arr
+			
+			//当月预警
+			this.monthEarly = []
+			let monthEarlyArr = res.data.monthEarly
+			let monthArr = []
+			monthEarlyArr.forEach((item)=>{
+				let para = {}
+				if(item.alert_type == 1){
+					para.name = '低电'
+					para.value = item.count
+				}else if(item.alert_type == 2){
+					para.name = '离线'
+					para.value = item.count
+				}else if(item.alert_type == 3){
+					para.name = '围栏预警'
+					para.value = item.count
+				}else if(item.alert_type == 4){
+					para.name = 'SOS报警'
+					para.value = item.count
+				}else if(item.alert_type == 5){
+					para.name = '离家异常'
+					para.value = item.count
+				}else if(item.alert_type == 6){
+					para.name = '心率异常'
+					para.value = item.count
+				}else{
+					para.name = '血压异常'
+					para.value = item.count
+				}
+				monthArr.push(para)
+			})
+			this.monthEarly = monthArr
+			//预警列表
+			this.warnData = res.data.equipmentAlertList
+			
+			//近6个月预警
+			let sixMonthData = res.data.latelyAlert
+			let sixMonth = []
+			let alertData = []
+			let normalData = []
+			sixMonthData.forEach((item)=>{
+				let month = ''
+				if(item.alertMonth == 1){
+					month = 'Jan'
+					sixMonth.push(month)
+				}else if(item.alertMonth == 2){
+					month = 'Mar'
+					sixMonth.push(month)
+				}else if(item.alertMonth == 3){
+					month = 'Apr'
+					sixMonth.push(month)
+				}else if(item.alertMonth == 4){
+					month = 'May'
+					sixMonth.push(month)
+				}else if(item.alertMonth == 5){
+					month = 'Jun'
+					sixMonth.push(month)
+				}else if(item.alertMonth == 6){
+					month = 'Jan'
+					sixMonth.push(month)
+				}else if(item.alertMonth == 7){
+					month = 'Jul'
+					sixMonth.push(month)
+				}else if(item.alertMonth == 8){
+					month = 'Aug'
+					sixMonth.push(month)
+				}else if(item.alertMonth == 9){
+					month = 'Sep'
+					sixMonth.push(month)
+				}else if(item.alertMonth == 10){
+					month = 'Oct'
+					sixMonth.push(month)
+				}else if(item.alertMonth == 11){
+					month = 'Nov'
+					sixMonth.push(month)
+				}else if(item.alertMonth == 12){
+					month = 'Dec'
+					sixMonth.push(month)
+				}
+				alertData.push(item.countNum)
+				
+			})
+		
+			// latelyAlert:'',//近六个月预警
+			// latelyNormal:'',//近6个月正常值
+			// lateyMonth:'',//近6个月月份
+			this.lateyMonth = sixMonth
+			console.log(this.lateyMonth)
+			this.latelyAlert = alertData
+			
+			this.drawChart()
+		})
+	},
     drawChart() {
       let chartKeyPerson = echarts.init(document.getElementById('chartKeyPerson'));//用户统计
       let chartManPerson = echarts.init(document.getElementById('chartManPerson'));//老年人数量统计
@@ -175,10 +265,7 @@ export default {
                      type: 'pie',
                      radius: '55%',
                      center: ['35%', '60%'],
-                     data: [
-                         {value: 335, name: '监护人'},
-                         {value: 310, name: '老年人'},
-                     ],
+                     data: this.userArr,
                      emphasis: {
                          itemStyle: {
                              shadowBlur: 10,
@@ -237,6 +324,8 @@ export default {
 			        }
 			    },
 			    legend: {
+					orient: 'vertical',
+					right: 'right',
 			        data: ['正常', '异常']
 			    },
 			    grid: {
@@ -278,7 +367,7 @@ export default {
           legend: {
               orient: 'vertical',
               right: 'right',
-              data: ['SOS报警', '围栏预警','心率异常','血压异常','离家异常']
+              data: ['SOS报警', '围栏预警','心率异常','血压异常','离家异常','低电','离线']
           },
           series: [
               {
@@ -286,13 +375,7 @@ export default {
                   type: 'pie',
                   radius: '55%',
                   center: ['35%', '60%'],
-                  data: [
-                      {value: 335, name: 'SOS报警'},
-                      {value: 100, name: '围栏预警'},
-                      {value: 220, name: '心率异常'},
-                      {value: 900, name: '血压异常'},
-                      {value: 313, name: '离家异常'},
-                  ],
+                  data: this.monthEarly,
                   emphasis: {
                       itemStyle: {
                           shadowBlur: 10,
@@ -316,9 +399,9 @@ export default {
             legend: {
 				orient: 'vertical',
 				right: 'right',
-                data: ['正常', '异常']
+                data: ['已处理', '预警数']
             },
-            grid: {
+            grid: {	
                 left: '3%',
                 right: '4%',
                 bottom: '3%',
@@ -326,23 +409,23 @@ export default {
             },
             xAxis: {
         		type: 'category',
-        		data: ['Jan', 'Feb', 'Mar', 'Apr', 'May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+        		data: this.lateyMonth
             },
             yAxis: {
                 type: 'value',
                 boundaryGap: [0, 0.01]
             },
             series: [
-                {
-                    name: '正常',
-                    type: 'bar',
-                    data: [30, 50, 85, 26, 33, 44,99,56,105,13,88,56]
-                },
-                {
-                    name: '异常',
-                    type: 'bar',
-                    data: [54, 68, 45, 86, 54, 77,63,78,99,12,99,20]
-                }
+				{
+				    name: '预警数',
+				    type: 'bar',
+				    data: this.latelyAlert
+				}
+                // {
+                //     name: '已处理',
+                //     type: 'bar',
+                //     data: [30, 50, 85, 26]
+                // }
             ]
       })
       window.onresize =function(){

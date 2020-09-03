@@ -472,8 +472,8 @@
       /* 停止图标 */
       .clock{
       	position: absolute;
-      	top: 13px;
-      	right: 13px;
+      	top: 7px;
+      	right: 7px;
       }
       .clock .iconfont{
       	font-size: 1.5vw;

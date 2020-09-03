@@ -60,3 +60,6 @@ export const getElderList = params => { return get(`${base}/home/coordinate`, pa
 
 export const getEquipmentAlert = params => { return get(`${base}/equipmentAlert/`, params); }//查询最新预警信息
 
+//看板
+export const getBulletinboard = params => { return get(`${base}/home/`, params); }//看板统计
+

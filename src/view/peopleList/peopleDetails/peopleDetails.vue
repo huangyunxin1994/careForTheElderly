@@ -3,7 +3,7 @@
     <nav-bar></nav-bar>
     <div class="content">
       <el-container class="contain">
-        <el-header height="90px" style="margin-top: 5px; width: 100%;" class="contain-head">
+        <el-header height="90px" style="margin-top: 5px;width: 100%;" class="contain-head">
 
           <div class="mainleft">
             <!-- <el-avatar :size="70" :src="circleUrl"></el-avatar> -->
@@ -560,6 +560,7 @@
   }
   .wrap{
     background-color: rgb(244, 244, 245);
+	min-width: 1160px;
   }
   .content{
     padding: 20px;
@@ -572,6 +573,7 @@
 
     &-head{
       display: flex;
+	  // flex-direction: column;
       justify-content: space-between;
       align-items: center;
       // border-bottom: 1px solid #DCDFE6;
@@ -582,6 +584,8 @@
         border-radius: 10px;
         height: 74px;
         border: 1px solid #ccc;
+		width: 45%;
+		min-width: 600px;
       }
       &-mes{
         display: flex;
@@ -652,7 +656,7 @@
          height: 74px;
          border-radius: 10px;
          border: 1px solid #ccc;
-         width: 45%;
+         width: 50%;
          &-detais{
            display: flex;
            align-items: center;
