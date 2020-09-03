@@ -42,6 +42,8 @@ export const locationTracking = params => { return getResultful(`${base}/Personn
 
 export const BloodPressure = params => { return getResultful(`${base}/PersonnelStatus/BloodPressure`, params); }//心率血压
 
+export const selectCoordinate = params => { return getResultful(`${base}/PersonnelStatus/selectPersonnelCoordinate`, params); }//轨迹查询
+
 //预警中心
 export const getAlertList = params => { return get(`${base}/equipmentAlert/`, params); }//获取预警中心列表信息
 export const changeAlert = params => { return myput(`${base}/equipmentAlert/`, params); }//批量修改预警信息

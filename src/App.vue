@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <audio id="audio" loop ref="music" >
-        <source :src="musicSrc" type="audio/mpeg" />
+        <source src="./assets/mp3/dididi.mp3" type="audio/mpeg" />
     </audio>
     <router-view ref="Childmain" @changPlaying="changPlaying" @stop="stop" />
   </div>
@@ -12,7 +12,6 @@ export default {
   name: 'App',
   data(){
     return {
-      musicSrc:"/static/mp3/dididi.mp3",
       isPlaying:true
     }
     
@@ -21,7 +20,9 @@ export default {
     //播放音频
       play(){
         let audio1 = document.getElementById('audio')
+        console.log(audio1)
         if(this.isPlaying == true){
+           console.log(2626)
           audio1.play()
         }else{
           audio1.pause()
@@ -36,12 +37,16 @@ export default {
         console.log(val)
 		 this.isPlaying = val
         if(!this.isPlaying&&!val) 
+       
           this.play()
+        
+          
        
       },
      initWebSocket(){ //初始化weosocket
       console.log(251)
-        const wsuri = "ws://192.168.1.9:8085/webSocket/123";
+        const wsuri = "ws://47.115.89.236:8085/elderly/webSocket/123";
+        // const wsuri = "ws://192.168.1.9:8085/webSocket/123";
         this.websock = new WebSocket(wsuri);
         this.websock.onmessage = this.websocketonmessage;
         this.websock.onopen = this.websocketonopen;
@@ -59,14 +64,13 @@ export default {
       websocketonmessage(e){ //数据接收
       console.log(e.data)
       console.log(this.$route.name)
-      if(e.data){
-		  this.play()
-			if(this.$route.name == 'Home'){
-			  
-			  this.$refs.Childmain.reloadPeople()
-			  this.$refs.Childmain.getWarnList()
-			}
-	  }
+      if(e.data&&this.$route.name != 'Login'){
+          this.play()
+          if(this.$route.name == 'Home'){
+            this.$refs.Childmain.reloadPeople()
+            this.$refs.Childmain.getWarnList()
+          }
+	    }
       
         // const redata = JSON.parse(e.data);
       },
@@ -79,6 +83,9 @@ export default {
       },
   },
   created(){
+    
+  },
+  mounted(){
     this.initWebSocket()
   },
   destroyed(){
@@ -86,4 +93,8 @@ export default {
   }
 }
 </script>
-
+<style lang="scss">
+		.audio-class {
+		    height: 0;  // * 重要
+		}
+	</style>

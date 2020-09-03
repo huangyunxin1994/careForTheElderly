@@ -8,5 +8,12 @@ module.exports = {
       ? config.build.productionSourceMap
       : config.dev.cssSourceMap,
     extract: isProduction
-  })
+  }),
+  transformToRequire: {
+    video: ['src', 'poster'],
+    audio:'src',  // 该属性
+    source: 'src',
+    img: 'src',
+    image: 'xlink:href'
+  }
 }

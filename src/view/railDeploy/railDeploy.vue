@@ -179,9 +179,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  /deep/.el-button--mini.is-circle{
-    // padding: 0.3vw;
-  }
   /deep/.electricfence-container .el-row .electricfence-tree .electricfence-collapse-item .el-link[data-v-31116bfe]{
     word-wrap: break-word;
     word-break: break-all;
@@ -217,10 +214,6 @@ export default {
         top: 0px;
         z-index: 1000;
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-
-        .el-input{
-            // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
-        }
         .el-collapse{
            height: calc(99% - 88px) ;
             box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);

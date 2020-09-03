@@ -87,7 +87,8 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   value-format="yyyy-MM-dd hh:mm:ss"
-                  end-placeholder="结束日期"  size="small">
+                  end-placeholder="结束日期"  size="small"
+                  @change="selectCoordinate">
                 </el-date-picker>
               </div>
               <div class="mapPictrue">
@@ -148,7 +149,7 @@
   import person from '@/icons/png/personw.png'
   import normal from '@/icons/png/personn.png'
   import Battery from '@/components/battery/battery.vue'
-  import { elderlyStatus,equipmentAlert,familymembers,locationTracking,BloodPressure,dealEquipmentAlert } from '@/api/api'
+  import { elderlyStatus,equipmentAlert,familymembers,locationTracking,BloodPressure,dealEquipmentAlert,selectCoordinate } from '@/api/api'
   import { parseTime } from "@/utils/index.js"
   export default {
     components:{
@@ -373,19 +374,52 @@
               longitude:res.data.coordinate.longitude,
               latitude:res.data.coordinate.latitude,
               icon:{
-                name:person,
+                name:normal,
                 size:[62, 48],
                 anchor:[24, 48]
               }
             }
 			console.log(para)
-            this.markers=[]
+            this.markers.length=0
             this.markers.push(para)
             this.$refs.map.moveDeploy(res.data.coordinate.longitude,res.data.coordinate.latitude)
             this.$refs.map.reloadMarkers()
             this.pointDate = res.data.coordinate.createTime
           }
       }).catch(err=>{
+          console.log(err)
+        })
+      },
+      selectCoordinate(e){
+        console.log(e)
+        selectCoordinate({eid:this.eid,startTime:e[0],endTime:e[1]}).then(res=>{
+          if(res.code ==0){
+            if(res.data.data.length>0){
+               console.log(res)
+              this.markers.length=0
+              this.polylines.length=0
+              this.polylines[0]=[]
+              res.data.data.forEach(i => {
+                 let para = {
+                    longitude:i.longitude,
+                    latitude:i.latitude,
+                    icon:{
+                      name:dian,
+                      size:[32, 32],
+                      anchor:[16, 16]
+                    }
+                }
+                this.markers.push(para)
+                 this.polylines[0].push(i)
+              })
+              this.$refs.map.reloadMarkers()
+              this.$refs.map.reloadPolylines()
+            }else{
+              console.log("暂无数据")
+            }
+           
+          }
+        }).catch(err=>{
           console.log(err)
         })
       },

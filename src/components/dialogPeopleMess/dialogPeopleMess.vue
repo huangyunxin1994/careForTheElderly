@@ -95,6 +95,7 @@
       },
       handleClose(){
         this.dialogVisible = false
+        this.isBaseMess = true
       },
       initData(data,val){
 		this.dialogVisible = true
