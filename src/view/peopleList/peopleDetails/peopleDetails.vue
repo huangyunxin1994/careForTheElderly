@@ -86,7 +86,7 @@
                   type="datetimerange"
                   range-separator="至"
                   start-placeholder="开始日期"
-                  value-format="yyyy-MM-dd hh:mm:ss"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                   end-placeholder="结束日期"  size="small"
                   @change="selectCoordinate">
                 </el-date-picker>
@@ -146,6 +146,8 @@
   import WriteResult from '@/components/dialogHandleResult/dialogHandleResult'
   import home from '@/icons/png/jia.png'
   import dian from '@/icons/png/dian.png'
+  import qidian from '@/icons/png/qidian.png'
+  import zhongdian from '@/icons/png/zhongdian.png'
   import person from '@/icons/png/personw.png'
   import normal from '@/icons/png/personn.png'
   import Battery from '@/components/battery/battery.vue'
@@ -175,7 +177,7 @@
         circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
         state:1,
         time:'',
-        time1:'',//选择时间段
+        time1:[],//选择时间段
         heartrate:'0',
         bloodpress:'0',
         heart:[],
@@ -370,20 +372,25 @@
         locationTracking({eid:this.eid}).then(res=>{
         if(res.code == 0){
             console.log(res.data)
+            let name = normal
+            if(res.data.coordinate.status == 2)
+                name =person
             let para = {
               longitude:res.data.coordinate.longitude,
               latitude:res.data.coordinate.latitude,
               icon:{
-                name:normal,
+                name:name,
                 size:[62, 48],
                 anchor:[24, 48]
               }
             }
 			console.log(para)
             this.markers.length=0
+            this.polylines.length=0
             this.markers.push(para)
             this.$refs.map.moveDeploy(res.data.coordinate.longitude,res.data.coordinate.latitude)
             this.$refs.map.reloadMarkers()
+            this.$refs.map.reloadPolylines()
             this.pointDate = res.data.coordinate.createTime
           }
       }).catch(err=>{
@@ -399,16 +406,35 @@
               this.markers.length=0
               this.polylines.length=0
               this.polylines[0]=[]
-              res.data.data.forEach(i => {
-                 let para = {
-                    longitude:i.longitude,
-                    latitude:i.latitude,
-                    icon:{
-                      name:dian,
-                      size:[32, 32],
-                      anchor:[16, 16]
-                    }
+              res.data.data.forEach((i,k) => {
+                let icon ={}
+                if(k==0){
+                  icon ={
+                        name:qidian,
+                        size:[48, 48],
+                        anchor:[24, 48]
+                      }
                 }
+                else if(k==res.data.data.length-1){
+                  icon ={
+                        name:zhongdian,
+                        size:[48, 48],
+                        anchor:[24, 48]
+                      }
+                }else{
+                  icon ={
+                        name:dian,
+                        size:[32, 32],
+                        anchor:[16, 16]
+                      }
+                }
+                 let para = {
+                      isIndex:1,
+                      content:`<div style='overflow-x: hidden;width: 250px;padding:10px;'>${i.createTime}</div>`,
+                      longitude:i.longitude,
+                      latitude:i.latitude,
+                      icon:icon
+                  }
                 this.markers.push(para)
                  this.polylines[0].push(i)
               })
@@ -425,7 +451,23 @@
       },
       //定位到预警位置
       movePos(item){
-        console.log(item)
+          console.log(item)
+          let para = {
+            longitude:item.triggeres,
+            latitude:item.actual,
+            alertTime:item.alertTime,
+            icon:{
+              name:person,
+              size:[62, 48],
+              anchor:[24, 48]
+            }
+          }
+          console.log(para)
+          this.markers.length=0
+          this.polylines.length=0
+          this.markers.push(para)
+          this.$refs.map.reloadMarkers()
+          this.$refs.map.reloadPolylines()
       },
       getChartData(time){
         time = parseTime(time,'{y}-{m}-{d}')
@@ -461,8 +503,6 @@
    async mounted() {
       this.eid = this.$route.query.id
       await elderlyStatus({eid:this.eid}).then(res=>{
-		  console.log("获取到总的数据")
-		  console.log(res)
           if(res.code == 0){
             this.eData = res.data.elderly
             this.mData = res.data.isMain
@@ -482,7 +522,6 @@
         })
       let date = new Date()
       let time = parseTime(date,'{y}-{m}-{d}')
-      console.log(time)
       await BloodPressure({eid:this.eid,time:time }).then(res=>{
         if(res.code == 0){
             if(res.data.data&&res.data.data.length>0){

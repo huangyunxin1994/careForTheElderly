@@ -19,7 +19,7 @@
       	</el-form-item>
       </el-form>
     <div class="btnWrap">
-      <el-button type="primary"  class="btn" @click="cancelBtn">取消</el-button>
+      <el-button type="primary"  class="btn" @click="handleClose">取消</el-button>
       <el-button type="primary"  class="btn" @click="sureBtn">确定</el-button>
       <el-button type="primary" v-if="removeBtn"  class="btn" @click="removeUser">删除</el-button>
     </div>
@@ -228,12 +228,6 @@
 		            message: '已取消删除'
 		          });          
 		        });
-      },
-      cancelBtn(){
-        this.dialogVisible = false
-		this.$nextTick(()=>{
-                    this.$refs.ruleForm2.clearValidate();
-                })
       },
       handleClose(){
         this.dialogVisible = false

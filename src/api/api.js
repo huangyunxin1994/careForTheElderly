@@ -55,6 +55,8 @@ export const relatvieEquipment = params => { return put(`${base}/equipment/`, pa
 
 export const removeEquipment = params => { return deleteR(`${base}/equipment/`, params); }//删除设备
 
+export const getOrgEquipment = params => { return get(`${base}/equipment/g`, params); }//查询某个组织下所有设备
+
 //首页
 export const getElderList = params => { return get(`${base}/home/coordinate`, params); }//查询某个组织及其下组织的人信息  ===========
 

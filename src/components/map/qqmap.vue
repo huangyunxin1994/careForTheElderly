@@ -194,8 +194,8 @@ export default {
                     })
                     var polyline = new qq.maps.Polyline({
                         path: polyLineArr,
-                        strokeColor: '#000000',
-                        strokeWeight: 10,
+                        strokeColor: new qq.maps.Color(230, 162, 60,0.6),
+                        strokeWeight: 8,
                         map:this.mapView
                     });
                      this.lineArray.push(polyline)
@@ -216,10 +216,9 @@ export default {
                     this.circleArray.push(circle)
                 })
             }
-            if(this.view){
-                console.log(220)
+            
                 this.getViewPoint()
-            }
+            
             if(this.geocoder){
                 qq.maps.event.addListener(this.mapView, 'dragend', (e)=> {
                     this.getCenterMsg()
@@ -228,35 +227,37 @@ export default {
         },
         //显示最佳视野
         getViewPoint(){
-                        //假设您有一组坐标点
-            //创建LatLngBounds实例
-            var latlngBounds = new qq.maps.LatLngBounds();
-            let arr = [...this.markerArr,...this.lineArr,...this.circleArr]
-            //将坐标逐一做为参数传入extend方法，latlngBounds会根据传入坐标自动扩展生成
-            for(var i = 0;i<arr.length; i++){
-                latlngBounds.extend(arr[i]);  
+            if(this.view){
+                //创建LatLngBounds实例
+                var latlngBounds = new qq.maps.LatLngBounds();
+                let arr = [...this.markerArr,...this.lineArr,...this.circleArr]
+                //将坐标逐一做为参数传入extend方法，latlngBounds会根据传入坐标自动扩展生成
+                for(var i = 0;i<arr.length; i++){
+                    latlngBounds.extend(arr[i]);  
+                }
+                //调用fitBounds自动调整地图显示范围
+                this.mapView.fitBounds(latlngBounds);
             }
-            //调用fitBounds自动调整地图显示范围
-            this.mapView.fitBounds(latlngBounds);
         },
         // 创建地图标记弹出框信息
         createInfoWindowContent (item) {    
                 // + '&orderType=' + item.orderType  (拼接其他参数)
              
-            return `<div style='overflow-x: hidden;width: 250px;padding:10px;'>
-						<p class='mymap-item'>
-						  <span">家庭地址：${item.address}</span>
-						<p/>
-						<p>联系方式: ${item.phone}</p>
-						<div style='display: flex;justify-content: space-between;align-items: center;'>
-							<div>姓名:${item.name}</div>
-						    <input class='mymap-button'
-						           style='background:rgba(29,164,255,1);
-						           color:#fff; border:1px solid rgba(29,164,255,1);
-						           border-radius:2px; font-size:14px; padding:5px;'
-						           type='button' value='查看详情' id='gotDetail'>
-						</div>	
-					  </div>`
+             return `${item.content}`
+            // return `<div style='overflow-x: hidden;width: 250px;padding:10px;'>
+			// 			<p class='mymap-item'>
+			// 			  <span">家庭地址：${item.address}</span>
+			// 			<p/>
+			// 			<p>联系方式: ${item.phone}</p>
+			// 			<div style='display: flex;justify-content: space-between;align-items: center;'>
+			// 				<div>姓名:${item.name}</div>
+			// 			    <input class='mymap-button'
+			// 			           style='background:rgba(29,164,255,1);
+			// 			           color:#fff; border:1px solid rgba(29,164,255,1);
+			// 			           border-radius:2px; font-size:14px; padding:5px;'
+			// 			           type='button' value='查看详情' id='gotDetail'>
+			// 			</div>	
+			// 		  </div>`
         }, 
         //显示所有的预警人员
         showWarnPeople(val){
@@ -324,17 +325,16 @@ export default {
                }
                 // 存放所有marker
                 this.markersArray.push(marker)
-                
-                
             })
-                    
+               this.getViewPoint()     
             }
 			
 		},
         // 重新加载线
         reloadPolylines() {
             if (this.lineArray) {
-                for (i in this.lineArray) {
+                console.log(337)
+                for (let i in this.lineArray) {
                    this.lineArray[i].setVisible(false);
                 }
                this.lineArray.length = 0;
@@ -349,12 +349,14 @@ export default {
                     })
                     var polyline = new qq.maps.Polyline({
                         path: polyLineArr,
-                        strokeColor: '#000000',
-                        strokeWeight: 10,
+                        strokeColor: new qq.maps.Color(230, 162, 60,0.6),
+                        strokeWeight: 8,
                         map:this.mapView
                     });
                      this.lineArray.push(polyline)
+                     
                 })
+                 this.getViewPoint()
         },
 		// 重新加载圆
 		reloadCircles() {
@@ -378,7 +380,9 @@ export default {
                     strokeWeight: 0
                 });
                 this.circleArray.push(circle)
+                 
             })
+            this.getViewPoint()
         },
        // 创建信息提示窗
         showInfeWindow(marker,item){
@@ -395,12 +399,15 @@ export default {
                 qq.maps.event.addListener(this.mapInfoWindow , 'domready', ()=> {
                 var btn = document.getElementById("gotDetail")
                     console.log(btn)
-                    setTimeout(() => {
-                    btn.onclick = (e) =>{
-                        console.log(item.id)
-                        this.getPersonData(item.id)
+                    if(btn){
+                        setTimeout(() => {
+                        btn.onclick = (e) =>{
+                            console.log(item.id)
+                            this.getPersonData(item.id)
+                        }
+                    
+                        },500)
                     }
-                },500)
             })
         },
         //点击查看跳转详情

@@ -83,7 +83,8 @@
     },
     methods:{
       getWarnList(){
-        getEquipmentAlert({processingResult:1}).then(res=>{
+        let user = JSON.parse(sessionStorage.getItem('user'))
+        getEquipmentAlert({organizationId:user.organizationId,processingResult:1}).then(res=>{
           this.dashboardContext = res.data.data
         }).catch(err=>{
 
@@ -113,14 +114,26 @@
             console.log(res)
             if(res.data.data.length>0){
               res.data.data.forEach(i => {
+                let content =  `<div style='overflow-x: hidden;width: 250px;padding:10px;'>
+						<p class='mymap-item'>
+						  <span">家庭地址：${i.address}</span>
+						<p/>
+						<p>联系方式: ${i.sim}</p>
+						<div style='display: flex;justify-content: space-between;align-items: center;'>
+							<div>姓名:${i.name}</div>
+						    <input class='mymap-button'
+						           style='background:rgba(29,164,255,1);
+						           color:#fff; border:1px solid rgba(29,164,255,1);
+						           border-radius:2px; font-size:14px; padding:5px;'
+						           type='button' value='查看详情' id='gotDetail'>
+						</div>	
+					  </div>`
                 if(i.fenceWarning == 1){
 				  // 1 正常
 				  let para =  {
 					isIndex:'1',
 					id:i.id,
-					name:i.name,
-					phone:i.sim,
-					address:i.address,
+				content:content,
 					warning:i.fenceWarning,
 					longitude:i.longitude,
 					latitude:i.latitude,
@@ -147,9 +160,7 @@
 				  let para =  {
 					isIndex:'1',
 					id:i.id,
-					name:i.name,
-					phone:i.sim,
-					address:i.address,
+					content:content,
 					warning:i.fenceWarning,
 					longitude:i.longitude,
 					latitude:i.latitude,
@@ -194,15 +205,28 @@
 			  
             if(res.data.data.length>0){
               res.data.data.forEach(i => {
+                let content =  `<div style='overflow-x: hidden;width: 250px;padding:10px;'>
+						<p class='mymap-item'>
+						  <span">家庭地址：${i.address}</span>
+						<p/>
+						<p>联系方式: ${i.sim}</p>
+						<div style='display: flex;justify-content: space-between;align-items: center;'>
+							<div>姓名:${i.name}</div>
+						    <input class='mymap-button'
+						           style='background:rgba(29,164,255,1);
+						           color:#fff; border:1px solid rgba(29,164,255,1);
+						           border-radius:2px; font-size:14px; padding:5px;'
+						           type='button' value='查看详情' id='gotDetail'>
+						</div>	
+					  </div>`
 				  if(i.fenceWarning == 1){
 					  console.log(i)
-					  // 1 正常
+            // 1 正常
+           
 					  let para =  {
 						isIndex:'1',
-					    id:i.id,
-					    name:i.name,
-					    phone:i.sim,
-					    address:i.address,
+              id:i.id,
+              content:content,
 					    warning:i.fenceWarning,
 					    longitude:i.longitude,
 					    latitude:i.latitude,
@@ -229,9 +253,7 @@
 					  let para =  {
 						isIndex:'1',
 					    id:i.id,
-					    name:i.name,
-					    phone:i.sim,
-					    address:i.address,
+					    content:content,
 					    warning:i.fenceWarning,
 					    longitude:i.longitude,
 					    latitude:i.latitude,
@@ -274,15 +296,27 @@
           if(res.code==0){
             if(res.data.data.length>0){
               res.data.data.forEach(i => {
+                let content =  `<div style='overflow-x: hidden;width: 250px;padding:10px;'>
+						<p class='mymap-item'>
+						  <span">家庭地址：${i.address}</span>
+						<p/>
+						<p>联系方式: ${i.sim}</p>
+						<div style='display: flex;justify-content: space-between;align-items: center;'>
+							<div>姓名:${i.name}</div>
+						    <input class='mymap-button'
+						           style='background:rgba(29,164,255,1);
+						           color:#fff; border:1px solid rgba(29,164,255,1);
+						           border-radius:2px; font-size:14px; padding:5px;'
+						           type='button' value='查看详情' id='gotDetail'>
+						</div>	
+					  </div>`
                 if(i.fenceWarning == 1){
                   console.log(i)
                   // 1 正常
                   let para =  {
                   isIndex:'1',
                     id:i.id,
-                    name:i.name,
-                    phone:i.sim,
-                    address:i.address,
+                   content:content,
                     warning:i.fenceWarning,
                     longitude:i.longitude,
                     latitude:i.latitude,
@@ -309,9 +343,7 @@
                   let para =  {
                   isIndex:'1',
                     id:i.id,
-                    name:i.name,
-                    phone:i.sim,
-                    address:i.address,
+                   content:content,
                     warning:i.fenceWarning,
                     longitude:i.longitude,
                     latitude:i.latitude,
@@ -368,7 +400,7 @@
 							  isIndex:'1',
 							  id:i.id,
 							  name:i.name,
-							  phone:i.phone,
+							  phone:i.sim,
 							  address:i.address,
 							  warning:i.fenceWarning,
 							  longitude:i.longitude,
