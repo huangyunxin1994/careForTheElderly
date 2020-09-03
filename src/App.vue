@@ -8,11 +8,14 @@
 </template>
 
 <script>
+import {getOrgEquipment} from "@/api/api"
 export default {
   name: 'App',
   data(){
     return {
-      isPlaying:true
+      isPlaying:true,
+      first:true,
+      equipArr:[]
     }
     
   },
@@ -62,14 +65,63 @@ export default {
         // this.initWebSocket();
       },
       websocketonmessage(e){ //数据接收
-      console.log(e.data)
-      console.log(this.$route.name)
       if(e.data&&this.$route.name != 'Login'){
+        let user = JSON.parse(sessionStorage.getItem('user'))
+        if(user.account !== "admin"){
+          if(this.first){
+            console.log(user.organizationId)
+            getOrgEquipment({id:user.organizationId}).then(res=>{
+              if(res.code==0){
+                this.first = false
+                res.data.data.forEach(i => {
+                  this.equipArr.push(i.code)
+                });
+                let data = JSON.parse(e.data)
+                let bool = false
+                data.forEach(i=>{
+                  if(this.equipArr.includes(i.code)){
+                    bool = true
+                    return;
+                  }
+                })
+                console.log("是否存在管理设备？ "+ bool)
+                if(bool){
+                  this.play()
+                  if(this.$route.name == 'Home'){
+                    this.$refs.Childmain.reloadPeople()
+                    this.$refs.Childmain.getWarnList()
+                  }
+                }
+              }
+
+            }).catch(err=>{
+              console.log(err)
+            })
+          }else{
+            let data = JSON.parse(e.data)
+                let bool = false
+                data.forEach(i=>{
+                  if(this.equipArr.includes(i.code)){
+                    bool = true
+                    return;
+                  }
+                })
+                console.log("是否存在管理设备？ "+ bool)
+                if(bool){
+                  this.play()
+                  if(this.$route.name == 'Home'){
+                    this.$refs.Childmain.reloadPeople()
+                    this.$refs.Childmain.getWarnList()
+                  }
+                }
+          }
+        }else{
           this.play()
           if(this.$route.name == 'Home'){
             this.$refs.Childmain.reloadPeople()
             this.$refs.Childmain.getWarnList()
           }
+        }
 	    }
       
         // const redata = JSON.parse(e.data);
