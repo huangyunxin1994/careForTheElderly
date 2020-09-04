@@ -30,7 +30,7 @@ import {parseTime} from '@/utils/index.js'
         changeDataResult:'',
         textarea: '',
         id:"",
-		sels:[]
+		    sels:[]
       }
     },
     methods:{
@@ -73,13 +73,13 @@ import {parseTime} from '@/utils/index.js'
 						 console.log(res)
 						 if(res.code == 0){
 							this.$message({
-							  message: '填写成功',
+							  message: '处理成功',
 							  type: 'success'
 							});
 							this.$emit('getData',1)
 							this.dialogHandleResult=false
 						 }else{
-							this.$message.error('填写失败');
+							this.$message.error('处理失败');
 						 }
 					 })
 		  }).catch(() => {

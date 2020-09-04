@@ -62,7 +62,7 @@
         <el-main class="main">
           <div class="picWrap">
           <div class="selectTime">
-              <my-date @getChartData="getChartData" :size="'small'"></my-date>
+              <my-date @getChartData="getChartData" :size="'small'" :alertTimeList="alertTimeList"></my-date>
           </div>
             <!-- <div id="" class="echartNoData"  style="margin-bottom:20px" v-show="heart.length==0">
               <div class="echartNoData-title">心率</div>
@@ -120,7 +120,7 @@
                     <p class="warnName">{{item.fenceName}}</p>
                     <div class="warnBtn">
                       <el-button type="danger" size="mini" @click="ignoreResult(item.id)">忽略</el-button>
-                      <el-button type="danger" size="mini" @click="writeResult(item.id)">填写处理结果</el-button>
+                      <el-button type="danger" size="mini" @click="writeResult(item)">填写处理结果</el-button>
                     </div>
                   </div>
                   
@@ -132,7 +132,7 @@
         </el-main>
       </el-container>
     </div>
-    <write-result ref="WriteResult" @removeWarn="removeWarn"></write-result>
+    <write-result ref="WriteResult" @getData="removeWarn" ></write-result>
     <guardian-mess ref="guardianMess" :fData="fData"></guardian-mess>
   </div>
 </template>
@@ -185,6 +185,7 @@
         booldL:[],
         time:[],
         pointDate:"",
+        alertTimeList:[]
       }
     },
     methods:{
@@ -231,10 +232,10 @@
                 },
                 markLine : {
                   symbol:"none",               //去掉警戒线最后面的箭头
-                  label:{
-                      position:"end",         //将警示值放在哪个位置，三个值“start”,"middle","end"  开始  中点 结束
-                      formatter: "警戒线"
-                  },
+                  // label:{
+                  //     position:"end",         //将警示值放在哪个位置，三个值“start”,"middle","end"  开始  中点 结束
+                  //     formatter: "警戒线"
+                  // },
                   data : [{
                       silent:false,             //鼠标悬停事件  true没有，false有
                       lineStyle:{               //警戒线的样式  ，虚实  颜色
@@ -242,8 +243,25 @@
                           color:"rgba(238, 99, 99)",
                           width:2,
                       },
-                      name: '警戒线',
-                      yAxis: 35
+                      label:{
+                          position:'end',
+                          formatter:"低心率(50)"
+                      },
+                      name: '低心率',
+                      yAxis: 50
+                  },{
+                      silent:false,             //鼠标悬停事件  true没有，false有
+                      lineStyle:{               //警戒线的样式  ，虚实  颜色
+                          type:"solid",
+                          color:"rgba(238, 99, 99)",
+                          width:2,
+                      },
+                      label:{
+                          position:'end',
+                          formatter:"高心率(100)"
+                      },
+                      name: '高心率',
+                      yAxis: 100
                   }]
                 }
             }]
@@ -285,15 +303,34 @@
                       position:"end",         //将警示值放在哪个位置，三个值“start”,"middle","end"  开始  中点 结束
                       formatter: "警戒线"
                   },
-                  data : [{
+                  data : [
+                  {
                       silent:false,             //鼠标悬停事件  true没有，false有
                       lineStyle:{               //警戒线的样式  ，虚实  颜色
                           type:"solid",
                           color:"rgba(238, 99, 99)",
                           width:2,
                       },
-                      name: '警戒线',
-                      yAxis: 35
+                      name: '低血压',
+                      yAxis: 60
+                  },{
+                      silent:false,             //鼠标悬停事件  true没有，false有
+                      lineStyle:{               //警戒线的样式  ，虚实  颜色
+                          type:"solid",
+                          color:"rgba(238, 99, 99)",
+                          width:2,
+                      },
+                      name: '高血压',
+                      yAxis: 140
+                  },{
+                      silent:false,             //鼠标悬停事件  true没有，false有
+                      lineStyle:{               //警戒线的样式  ，虚实  颜色
+                          type:"solid",
+                          color:"rgba(238, 99, 99)",
+                          width:2,
+                      },
+                      name: '高血压',
+                      yAxis: 90
                   }]
                 }
             },
@@ -348,11 +385,11 @@
          
       },
       //填写处理结果
-      writeResult(id){
-		  console.log(id)
-        if(id&&id!=""){
-          this.$refs.WriteResult.id = id
-          this.$refs.WriteResult.dialogHandleResult = true
+      writeResult(item){
+        if(item){
+          let sels =[]
+          sels.push(item)
+         this.$refs.WriteResult.getData(sels)
         }else{
           this.$message({
             message: '请先选择一条预警记录',
@@ -362,7 +399,13 @@
         
       },
       removeWarn(id){
-         this.warnList.splice(this.warnList.findIndex(i=>i.id==id),1)
+         equipmentAlert({code:this.eData.equipmentCode}).then(res=>{
+        if(res.code == 0){
+            this.warnList = res.data.list
+          }
+      }).catch(err=>{
+          console.log(err)
+        })
       },
       //查看所有监护人
       searchRuardian(){
@@ -517,6 +560,7 @@
                 anchor:[24, 48]
               }
             }
+            this.alertTimeList = res.data.alertTimeList
             this.markers.push(para)
           }
         }).catch(err=>{

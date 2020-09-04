@@ -123,7 +123,7 @@
              { title : "预警类型", name : "alertType", type:"input",width:'150'},
              { title : "围栏名称", name : "fenceName", type:"input",minwidth:'120'},
              { title : "所属组织", name : "organizationName", type:"input",minwidth:'120'},
-             { title : "预警时间", name : "alertTime", type:"input",width:'150'},
+             { title : "预警时间", name : "alertTime", type:"input",width:'120'},
              { title : "处理状态", name : "processingResult", type:"input",width:'120'},
              { title : "处理结果", type : "handle",button:[],width:'170'}
          ],
@@ -238,18 +238,6 @@
 		}
 		this.getSearchData(param)
        },
-	   //修改过后，重新请求
-	   handleSizeChange(val){
-	   		let param = {
-	   			 currentPage:this.page,
-	   			 pageSize:this.pageSize,
-	   			 startTime:this.beginTime,
-	   			 endTime:this.endTime,
-	   			 parameter:this.parameter,
-	   			 processingResult:this.processingResult
-	   		}
-	   		this.getSearchData(param)
-	   },
 	   //获取到围栏预警数据
        getEnrollData(){
            this.listLoading=true
@@ -314,15 +302,7 @@
        	this.getEnrollData()
        },
 	   getData(){
-		   let param = {
-			   currentPage:this.page,
-			   pageSize:this.pageSize,
-			   startTime:this.beginTime,
-			   endTime:this.endTime,
-			   parameter:this.parameter,
-			   processingResult:this.processingResult
-		   }
-		   this.getSearchData(param)
+		   this.getEnrollData()
 	   },
        // 批量选中
        selsChange(sels){
@@ -358,7 +338,7 @@
 			 obj.handleTime = time
 			 obj.code = arr[i].code
 			 array.push(obj)
-		 }
+		 }      
          this.$confirm('是否忽略预警?', '提示', {
                    confirmButtonText: '确定',
                    cancelButtonText: '取消',
@@ -370,7 +350,7 @@
 						 	  message: '忽略成功',
 						 	  type: 'success'
 						 	});
-						 	this.getData()
+						 	this.getEnrollData()
 						 }else{
 						 	this.$message.error('忽略失败');
 						 }
@@ -384,6 +364,9 @@
        },
        //填写处理结果
        peopleAndEquiment(index,val){
+		   console.log(index)
+		   console.log(val)
+		   console.log(this.sels)
          this.$refs.DialogHandleResult.getData(this.sels)
        },
        //查看处理结果

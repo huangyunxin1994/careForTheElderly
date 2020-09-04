@@ -18,7 +18,8 @@
 export default {
   name: "dome",
   props:{
-    size:String
+    size:String,
+    alertTimeList:Array
   },
   data() {
     return {
@@ -89,9 +90,9 @@ export default {
     queryDateOfMonth(params) {
       let data =[]
       this.currentDayList = []
-      for(let i in this.warnTableData){
-        var date = this.warnTableData[i].alertTime
-        date = date.substring(0,19);    
+      for(let i in this.alertTimeList){
+        var date = this.alertTimeList[i].hours
+        date = date.substring(0,11);    
         date = date.replace(/-/g,'/'); 
         var timestamp = new Date(date).getTime();
         data.push(timestamp)
