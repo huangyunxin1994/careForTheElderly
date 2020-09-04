@@ -57,6 +57,8 @@ export const removeEquipment = params => { return deleteR(`${base}/equipment/`, 
 
 export const getOrgEquipment = params => { return get(`${base}/equipment/g`, params); }//查询某个组织下所有设备
 
+export const getEqtime = params => { return get(`${base}/equipment/time`, params); }//获取同步时间
+
 //首页
 export const getElderList = params => { return get(`${base}/home/coordinate`, params); }//查询某个组织及其下组织的人信息  ===========
 

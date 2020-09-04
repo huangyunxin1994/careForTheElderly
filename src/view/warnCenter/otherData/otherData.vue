@@ -282,7 +282,18 @@
       },
       getEnrollData(){
           this.listLoading=true
-          getOtherAlertList().then(res=>{
+		  let user = JSON.parse(sessionStorage.getItem('user'))
+		  let param = {}
+		  if(user.hasOwnProperty('organizationId')){
+			if(user.organizationId == ''){
+				param.organizationId = ''
+			}else{
+				param.organizationId = user.organizationId
+			}
+		  }else{
+		  	param.organizationId = ''
+		  }
+          getOtherAlertList(param).then(res=>{
               if(res.code==0){
                   this.listLoading=false
                   this.tableAllData=res.data.data

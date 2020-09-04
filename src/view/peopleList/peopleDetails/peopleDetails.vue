@@ -198,7 +198,6 @@
       },
       //绘制图
       drawChart(){
-        console.log(this.booldL)
         let heartrate = echarts.init(document.getElementById('heartrate'));
         let option3={
             title: {text: '心率'},
@@ -345,8 +344,10 @@
             }
             ]
         }
-        bloodpress.setOption(option4);
-        heartrate.setOption(option3);
+		bloodpress.clear();
+		heartrate.clear();
+        bloodpress.setOption(option4,true);
+        heartrate.setOption(option3,true);
         window.onresize =function(){
             heartrate.resize()
              bloodpress.resize()
@@ -495,7 +496,6 @@
       },
       //定位到预警位置
       movePos(item){
-          console.log(item)
           let para = {
             longitude:item.triggeres,
             latitude:item.actual,
@@ -506,7 +506,6 @@
               anchor:[24, 48]
             }
           }
-          console.log(para)
           this.markers.length=0
           this.polylines.length=0
           this.markers.push(para)
@@ -517,7 +516,6 @@
         time = parseTime(time,'{y}-{m}-{d}')
           BloodPressure({eid:this.eid,time:time }).then(res=>{
           if(res.code == 0){
-			  console.log(res)
               if(res.data.data&&res.data.data.length>0){
                 let heart=[],booldH=[],booldL=[],time=[]
                 res.data.data.forEach(i => {
@@ -537,6 +535,7 @@
                 this.booldL= []
                 this.booldH= []
                 this.time= []
+				this.drawChart()
               }
             }
           }).catch(err=>{

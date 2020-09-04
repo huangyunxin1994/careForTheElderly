@@ -44,7 +44,7 @@
                       <el-button type="danger" @click="deletePlatform" :disabled="this.noUseArr.length===0">批量删除</el-button>
                     </div>
                 </div>
-                <div class="newTime">数据最新同步时间： XX年XX月XX日 XX时XX分XX秒</div>
+                <div class="newTime">数据最新同步时间: {{updateTime}}</div>
                 <el-table
                     :data="tables"
                     border stripe highlight-current-row
@@ -93,7 +93,7 @@
   // import WtInput from '../../components/input.vue'
   import NavBar from '@/components/navBar/navBar.vue'
   import DialogEquipment from '@/components/dialogEquipment/dialogEquipment.vue'
-  import {getEquipment,removeEquipment,getOrgList} from "@/api/api"
+  import {getEquipment,removeEquipment,getOrgList,getEqtime} from "@/api/api"
   import {Throttle} from '@/utils/index.js'
   export default {
     name:'home',
@@ -185,6 +185,7 @@
             isUseArr:[],
             noUseArr:[],
 			baseOrg:'',
+			updateTime:'',//最新同步时间
       }
     },
     methods:{
@@ -451,10 +452,19 @@
 			}
 			this.getSearchData(param)
 	  },
+	  //
+	  getEqtime(){
+		  getEqtime().then((res)=>{
+			  console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+			  console.log(res)
+			  this.updateTime = res.data.data.updateTime
+		  })
+	  }
     },
     mounted(){
       this.getTableAllData()
 	  this.getOrgList()
+	  this.getEqtime()
     },
     computed:{
       tables:function(){

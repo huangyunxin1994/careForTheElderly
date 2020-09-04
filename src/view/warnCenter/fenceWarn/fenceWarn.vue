@@ -241,8 +241,18 @@
 	   //获取到围栏预警数据
        getEnrollData(){
            this.listLoading=true
-           getAlertList().then(res=>{
-			   console.log(res)
+		   let user = JSON.parse(sessionStorage.getItem('user'))
+		   let param = {}
+		   if(user.hasOwnProperty('organizationId')){
+			   if(user.organizationId == ''){
+				   param.organizationId = ''
+			   }else{
+				   param.organizationId = user.organizationId
+			   }
+		   }else{
+			   param.organizationId = ''
+		   }
+           getAlertList(param).then(res=>{
                if(res.code==0){
                    this.listLoading=false
                    this.tableAllData=res.data.data
