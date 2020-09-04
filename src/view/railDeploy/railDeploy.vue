@@ -93,7 +93,6 @@ export default {
          console.log(id)
       },
       collapseChange(activeNames){
-          console.log(activeNames)
           this.enterShowIndex=-1
           this.leaveShowIndex=-1
       },
@@ -107,8 +106,6 @@ export default {
         // this.$refs.map.movePosBypoint(this.filterArr[i].longitude,this.filterArr[i].latitude)
       },
       setUserIn(i,item){
-		  console.log("item")
-		  console.log(item)
 		this.$refs.relevanceUser.handleShow(item)
       },
       //编辑围栏
@@ -144,12 +141,11 @@ export default {
       selectElec(){
 		    let user = JSON.parse(sessionStorage.getItem('user'))
         getRailList().then((res)=>{
-          console.log(res)
           if(res.code == 0){
             this.filterArr = res.data.list
+			
             this.circles.length=0
             this.filterArr.forEach( i => this.circles.push(i))
-            console.log(this.circles)
             this.$refs.mymap.reloadCircles()
             
           }
@@ -159,11 +155,10 @@ export default {
 	  async getRailList(){
 		  
 		  let user = JSON.parse(sessionStorage.getItem('user'))
-		  console.log(user)
 		  await getRailList().then((res)=>{
-			  console.log(res)
 			  if(res.code == 0){
 				  this.filterArr = res.data.list
+				  this.enterElecArr = res.data.list
 				  this.circles=[]
 				  this.filterArr.forEach( i => this.circles.push(i))
 				  
