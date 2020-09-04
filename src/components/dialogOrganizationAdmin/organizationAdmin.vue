@@ -2,10 +2,10 @@
   <el-dialog title="组织管理"  :visible.sync="dialogVisible" center :append-to-body='true' :before-close="handleClose" :lock-scroll="false" :close-on-click-modal="false" width="600px">
     <el-form ref="form" :model="form" :rules="formRule"  class="form" label-width="150px" >
 
-      <el-form-item label="组织名称" prop="organization" required>
+      <el-form-item label="组织名称" prop="organization" >
         <el-input v-model="form.organization" placeholder="请输入组织名称"></el-input>
       </el-form-item>
-      <el-form-item label="上级组织" prop="superiorOrganization" required>
+      <el-form-item label="上级组织" prop="superiorOrganization" >
 		<el-cascader 
 			v-model="form.superiorOrganization" 
 			:props="{ label: 'name',value:'id',checkStrictly:'true',emitPath:false }" 

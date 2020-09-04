@@ -331,34 +331,6 @@
         this.$refs.equipment.relevance(this.isUseArr)
       },
       //删除
-      handleCheck(index,row){
-      	let param = {
-      		id : row.id
-      	}
-      	//console.log(param)
-      	this.$confirm('此操作将永久删除该平台, 是否继续?', '提示', {
-      	  confirmButtonText: '确定',
-      	  cancelButtonText: '取消',
-      	  type: 'warning'
-      	}).then(() => {
-      	  deleteUser(param).then((res)=>{
-      		  if(res.code == 0){
-      			  this.$message({
-      				type: 'success',
-      				message: '删除成功!'
-      			  });
-      			  this.getEnrollData()
-				  this.noUseArr = []
-      		  }else{
-      			  this.$message.error('删除失败');
-      		  }
-      	  }).catch((res)=>{
-      		  this.$message.error('删除失败');
-      	  })
-
-      	}).catch(() => {
-      	});
-      },
       deletePlatform(){
         let arr = this.sels
         for(let i in arr){
@@ -367,41 +339,43 @@
             return
           }
         }
-         this.$confirm('确认删除所选设备吗?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-              let str = ""
-              arr.forEach(i => {
-                str+= i.code+","
-              });
-              str = str.substring(0,str.lastIndexOf(","))
-              console.log(str)
-              removeEquipment({equipmentCode:str}).then(res=>{
-                if(res.code == 0){
-                  this.$message({
-                    message: '删除成功',
-                    type: 'success'
-                  });
-                  this.updateMess()
-                }else{
-                  this.$message({
-                    message: '删除失败',
-                    type: 'error'
-                  });
-                }
-              }).catch(err=>{
-                  this.$message({
-                    message: '删除失败',
-                    type: 'error'
-                  })
-               })
-              
-          }).catch(() => {
-                  
-          });
-        
+		if(this.noUseArr.length == 0){
+			this.$message.error('请选择不可用的设备');
+		}else{
+			this.$confirm('确认删除所选设备吗?', '提示', {
+			   confirmButtonText: '确定',
+			   cancelButtonText: '取消',
+			   type: 'warning'
+			 }).then(() => {
+			     let str = ""
+			     arr.forEach(i => {
+			       str+= i.code+","
+			     });
+			     str = str.substring(0,str.lastIndexOf(","))
+			     removeEquipment({equipmentCode:str}).then(res=>{
+			       if(res.code == 0){
+			         this.$message({
+			           message: '删除成功',
+			           type: 'success'
+			         });
+			         this.updateMess()
+			       }else{
+			         this.$message({
+			           message: '删除失败',
+			           type: 'error'
+			         });
+			       }
+			     }).catch(err=>{
+			         this.$message({
+			           message: '删除失败',
+			           type: 'error'
+			         })
+			      })
+			     
+			 }).catch(() => {
+			         
+			 });
+		}
       },
       // 更新页面
       updateMess(){
