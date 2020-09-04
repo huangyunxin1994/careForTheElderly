@@ -12,6 +12,11 @@
   		<router-link to='/equipment' v-if="isadmin">设备管理</router-link>
   	</div>
   	<div class="userSwarp">
+		<span class="map">
+		  <el-tooltip effect="dark" content="查看二维码">
+			<i class="iconfont icon-erweima" @click="getQRCode"></i>
+		  </el-tooltip>	
+		</span>
   		<span class="map">
         <el-tooltip effect="dark" content="前往看板">
           <router-link tag="i" class="iconfont icon-ditu" to="/bulletinboard"></router-link>
@@ -48,14 +53,17 @@
       </span>
   	</div>
     <change-pass ref="changePass"></change-pass>
+	<get-code ref="getCode"></get-code>
   </nav>
 </template>
 
 <script>
   import ChangePass from '@/components/changePass/index.vue'
+  import GetCode from '@/components/dialogCode/dialogCode.vue'
   export default{
     components:{
-      ChangePass
+      ChangePass,
+	  GetCode
     },
     data(){
       return{
@@ -69,6 +77,10 @@
         this.sound = !this.sound
         this.$emit('getSound',this.sound)
       },
+	  //显示二维码
+	  getQRCode(){
+		  this.$refs.getCode.getData()
+	  },
       //退出登录
       logout(){
 		var _this = this;

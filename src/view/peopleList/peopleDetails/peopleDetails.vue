@@ -25,7 +25,7 @@
             <div class="contain-head-detais">
               <div class="top-detais">
                   <div class="baseMess">
-                  <i class="iconfont icon-shoubiao" style="color: #f8b62e;"></i><span>{{eData.equipmentCode}}</span>
+                  <i class="iconfont icon-plus-gridview" style="color: #f8b62e; font-size: 0.8vw; margin-right: 2px;"></i><span>{{eData.fname}}</span>
                 </div>
                 <div class="baseMess">
                   <i class="iconfont icon-shenfenzhenghao" style="color: #f8b62e;"></i><span>{{eData.idCard}}</span>
@@ -503,6 +503,7 @@
    async mounted() {
       this.eid = this.$route.query.id
       await elderlyStatus({eid:this.eid}).then(res=>{
+		  console.log(res)
           if(res.code == 0){
             this.eData = res.data.elderly
             this.mData = res.data.isMain
