@@ -143,9 +143,11 @@ import {getRailDeploy,getOrgList,getTopOrgList,updateElectronicFence} from '@/ap
 				  let userList = res.data.electronicFenceNotRelationList
 				  let userArr = []
 				  for(let i=0;i<userList.length;i++){
+					  console.log(userList[i])
 					  userArr.push({
 						  key:userList[i].id,
-						  label:userList[i].name
+						  label:userList[i].name,
+						  disabled:userList[i].state==1
 					  })
 				  }
 				  
@@ -177,7 +179,8 @@ import {getRailDeploy,getOrgList,getTopOrgList,updateElectronicFence} from '@/ap
 				  for(let i=0;i<userList.length;i++){
 					  userArr.push({
 						  key:userList[i].id,
-						  label:userList[i].name
+						  label:userList[i].name,
+						  disabled:userList[i].state==1
 					  })
 				  }
 				  
