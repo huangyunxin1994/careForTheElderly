@@ -349,6 +349,7 @@
       },
       //填写处理结果
       writeResult(id){
+		  console.log(id)
         if(id&&id!=""){
           this.$refs.WriteResult.id = id
           this.$refs.WriteResult.dialogHandleResult = true

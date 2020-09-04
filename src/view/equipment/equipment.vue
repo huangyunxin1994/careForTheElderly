@@ -215,7 +215,6 @@
 			 pageSize:this.pageSize
 		 }
 		 getEquipment(param).then(res=>{
-		 	// console.log(res)
 		     if(res.code==0)
 		 	  this.tableData = res.data.data
 		 	  this.tableAllData = this.tableData

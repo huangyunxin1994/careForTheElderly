@@ -105,6 +105,7 @@ export default {
         // this.enterShowIndex=i
         // this.$refs.map.movePosBypoint(this.filterArr[i].longitude,this.filterArr[i].latitude)
       },
+	  //点击关联人员
       setUserIn(i,item){
 		this.$refs.relevanceUser.handleShow(item)
       },

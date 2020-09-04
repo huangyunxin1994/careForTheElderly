@@ -53,16 +53,17 @@ import {parseTime} from '@/utils/index.js'
 		  let arr = this.sels
 		  let array = []
 		  for(let i in arr){
-		  			 let obj = {}
-		  			 obj.processingResult = 2
-		  			 obj.id = arr[i].id
-		  			 obj.handleRecord = this.textarea
-		  			 obj.handleUsername = user.name
-		  			 obj.handleUserid = user.userId
-		  			 obj.handleTime = time
-					 obj.code = arr[i].code
-		  			 array.push(obj)
+				 let obj = {}
+				 obj.processingResult = 2
+				 obj.id = arr[i].id
+				 obj.handleRecord = this.textarea
+				 obj.handleUsername = user.name
+				 obj.handleUserid = user.userId
+				 obj.handleTime = time
+				 obj.code = arr[i].code
+				 array.push(obj)
 		  }
+		  console.log(array)
           this.$confirm('确认提交处理结果?', '提示', {
 			confirmButtonText: '确定',
 			cancelButtonText: '取消',
