@@ -398,9 +398,6 @@ export default {
         },
        // 创建信息提示窗
         showInfeWindow(marker,item){
-			console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-			console.log(marker)
-			console.log(item)
             this.mapInfoWindow = new qq.maps.InfoWindow({
                 map: this.mapView
             })
@@ -412,7 +409,6 @@ export default {
                 this.mapInfoWindow.setPosition(e.latLng)  //提示窗位置
 				qq.maps.event.addListener(this.mapInfoWindow , 'domready', ()=> {
 				    var btn = document.getElementById("gotDetail")
-						console.log(item)
 				        if(btn){
 				            setTimeout(() => {
 				            btn.onclick = (e) =>{
