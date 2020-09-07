@@ -8,7 +8,9 @@
                 <get-adress ref="getAdress" :map="map" @getItem="getItem"></get-adress>
             </el-form-item>
             <el-form-item label="电子围栏范围" prop="radius"  class="deployRange">
-                <el-input v-model="form.radius"  @change="changeRound" placeholder="请输入"></el-input>km
+                <el-input v-model="form.radius"  @change="changeRound" placeholder="请输入">
+                     <span slot="suffix" >KM</span>
+                </el-input>
             </el-form-item>
         </el-form>
         <div class="dialog-map">
