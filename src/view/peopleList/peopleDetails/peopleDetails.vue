@@ -168,7 +168,7 @@
         fData:[],//老人家属信息
         eData:{},//老人与设备信息
         mData:{},//主监护人信息
-        warnList:"",//老人预警列表
+        warnList:[],//老人预警列表
         center:{},
         markers:[],
         polylines:[
@@ -416,18 +416,21 @@
       getNowAdress(){
         locationTracking({eid:this.eid}).then(res=>{
         if(res.code == 0){
+          this.time1=[]
             console.log(res.data)
             let name = normal
-            if(res.data.coordinate.status == 2)
-                name =person
-				let para = {
-				  longitude:res.data.coordinate.longitude,
-				  latitude:res.data.coordinate.latitude,
-				  icon:{
-					name:name,
-					size:[62, 48],
-					anchor:[24, 48]
-				  }
+            if(this.warnList.length > 0){
+              name =person
+            }
+                
+            let para = {
+              longitude:res.data.coordinate.longitude,
+              latitude:res.data.coordinate.latitude,
+              icon:{
+                name:name,
+                size:[62, 48],
+                anchor:[24, 48]
+              }
             }
             this.markers.length=0
             this.polylines.length=0
@@ -452,14 +455,14 @@
                 let icon ={}
                 if(k==0){
                   icon ={
-                        name:qidian,
+                        name:zhongdian,
                         size:[48, 48],
                         anchor:[24, 48]
                       }
                 }
                 else if(k==res.data.data.length-1){
                   icon ={
-                        name:zhongdian,
+                        name:qidian,
                         size:[48, 48],
                         anchor:[24, 48]
                       }
@@ -472,7 +475,7 @@
                 }
                  let para = {
                       isIndex:1,
-                      content:`<div style='overflow-x: hidden;width: 250px;padding:10px;'>${i.createTime}</div>`,
+                      content:`<div style='overflow-x: hidden;padding:10px;'>${i.createTime}</div>`,
                       longitude:i.longitude,
                       latitude:i.latitude,
                       icon:icon
@@ -493,6 +496,7 @@
       },
       //定位到预警位置
       movePos(item){
+        this.time1=[]
           let para = {
             longitude:item.triggeres,
             latitude:item.actual,

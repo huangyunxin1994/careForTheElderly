@@ -290,6 +290,9 @@ export default {
         },
         //重新加载标注
 		reloadMarkers() {
+            if(this.mapInfoWindow){
+                 this.mapInfoWindow.close()
+            }
 			if (this.markersArray) {
                 for (let i in this.markersArray) {
                    this.markersArray[i].setMap(null);
@@ -334,6 +337,9 @@ export default {
 		},
         // 重新加载线
         reloadPolylines() {
+           if(this.mapInfoWindow){
+                 this.mapInfoWindow.close()
+            }
             if (this.lineArray) {
                 console.log(337)
                 for (let i in this.lineArray) {
@@ -363,6 +369,10 @@ export default {
 		// 重新加载圆
 		reloadCircles() {
             console.log(this.circleArray)
+            if(this.mapInfoWindow){
+                 this.mapInfoWindow.close()
+            }
+           
             if (this.circleArray) {
                 for (let i in this.circleArray) {
                    this.circleArray[i].setVisible(false);

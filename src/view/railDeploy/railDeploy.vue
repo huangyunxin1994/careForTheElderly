@@ -160,9 +160,8 @@ export default {
 			  if(res.code == 0){
 				  this.filterArr = res.data.list
 				  this.enterElecArr = res.data.list
-				  this.circles=[]
+				  this.circles.length=0
 				  this.filterArr.forEach( i => this.circles.push(i))
-				  
 			  }
       })
       await this.$refs.mymap.getMap()

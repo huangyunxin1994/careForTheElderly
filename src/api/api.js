@@ -25,7 +25,7 @@ export const getUserList = params => { return get(`${base}/user/user`, params); 
 export const deleteUser = params => { return deleteR(`${base}/user/`, params); }//删除组织
 export const verifyAccount = params => { return get(`${base}/user/distinct`, params); }//判断账号有没有重复
 
-export const getTopOrgList = params => { return get(`${base}/organization/tree`, params); }//获取组织列表
+export const getTopOrgList = params => { return get(`${base}/organization/tree`, params); }//根据登录人获取所属组织列表
 
 //人员列表
 export const PersonnelStatus = params => { return get(`${base}/PersonnelStatus/`, params); }//获取人员状态列表信息

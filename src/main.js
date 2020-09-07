@@ -5,6 +5,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import routes from './router'
 import echarts from 'echarts'
 import VueRouter from 'vue-router'
+import 'babel-polyfill'
 import  '@/assets/iconfonts/iconfont.css'
 import '@/assets/css/normalize.scss'
 import { Message } from 'element-ui'
