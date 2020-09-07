@@ -28,6 +28,7 @@
                                   class="seclectTime"
                                   style="width:10vw"
                                   @change="changeResultW"
+								  :picker-options="getTimeOptions"
                                   range-separator="至"
                                   start-placeholder="开始日期"
                                   end-placeholder="结束日期">
@@ -51,7 +52,7 @@
                           </el-table-column>
                           <el-table-column type="index" width="60" label="序号">
                           </el-table-column>
-                          <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" :sortable="item.type!='button'&&item.type!='handle'?true:false" show-overflow-tooltip>
+                          <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth"  show-overflow-tooltip>
                               <template slot-scope="scope">
                                   <el-link type="primary" v-if="item.type=='link'" @click="userDetails(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
                                   <div v-else-if="item.type=='handle' &&scope.row['processingResult'] ==2" align="center">
@@ -123,7 +124,7 @@
              { title : "预警类型", name : "alertType", type:"input",width:'150'},
              { title : "围栏名称", name : "fenceName", type:"input",minwidth:'120'},
              { title : "所属组织", name : "organizationName", type:"input",minwidth:'120'},
-             { title : "预警时间", name : "alertTime", type:"input",width:'120'},
+             { title : "预警时间", name : "alertTime", type:"input",width:'150'},
              { title : "处理状态", name : "processingResult", type:"input",width:'120'},
              { title : "处理结果", type : "handle",button:[],width:'170'}
          ],
@@ -202,6 +203,7 @@
 	   //输入框搜索数据
 	   searchInput:Throttle(function(e){
 		   this.parameter = e
+		   this.page=1
 		   let param = {
 		   	 currentPage:this.page,
 		   	 pageSize:this.pageSize,
@@ -284,6 +286,7 @@
              this.beginTime = parseTime(val[0],`{y}-{m}-{d}`)+" 00:00:00"
              this.endTime = parseTime(val[1],`{y}-{m}-{d}`)+" 23:59:59"
            }
+		   this.page=1
 		   let param = {
 			   currentPage:this.page,
 			   pageSize:this.pageSize,
@@ -297,6 +300,7 @@
 	   //通过处理状态来筛选数据
        changeResult(val){
 		 this.processingResult = val
+		 this.page=1
 		 let param = {
 		   currentPage:this.page,
 		   pageSize:this.pageSize,
@@ -405,7 +409,17 @@
        tables:function(){
          var search=this.inputValue;
          return this.tableData
-       }
+       },
+	   getTimeOptions(){
+		 return{
+			disabledDate:(time)=>{
+				let disabledDate;
+				let nowDate = new Date();
+				nowDate.setDate(nowDate.getDate());
+				return time.getTime() > nowDate.getTime()
+			}
+		 }  
+	   }
      },
    }
  </script>

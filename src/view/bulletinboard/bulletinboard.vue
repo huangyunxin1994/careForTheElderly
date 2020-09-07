@@ -26,7 +26,7 @@
 
         <el-col :span="12">
             <div style="width:100%;height:87vh;">
-              <my-map ref="mymap" :markers="markers"></my-map>
+              <my-map ref="myMap" mapId="mymap" :view="true" :markers="markers"  :dragging="true"  :center="center"></my-map>
             </div>
         </el-col>
         <el-col :span="6">
@@ -44,14 +44,14 @@
 
 <script>
 import echarts from 'echarts'
-import MyMap from '@/components/map/map.vue'
+import MyMap from '@/components/map/qqmap.vue'
 
 // 图标
   import normal from '@/icons/png/personn.png'
   import warn from '@/icons/png/personw.png'
   // import home from '@/icons/png/jiating.png'
   import home from '@/icons/png/jia.png'
-  import {getBulletinboard} from '@/api/api.js'
+  import {getBulletinboard,getElderList} from '@/api/api.js'
 export default {
   name: 'Login',
   components:{
@@ -61,7 +61,10 @@ export default {
     return {
       loading: false,
       redirect: undefined,
-
+		center:{longitude:116.399,
+			latitude:39.910},
+			
+		
       equipWatch:[],
       equipSleep:[],
       equipActive:[],
@@ -75,58 +78,20 @@ export default {
       warnDoneData:[],
       warnDoneDataA:[],
       bulletArr:[],
-      markers:[
-        {
-          longitude:"115.304",
-          latitude:"39.945",
-          icon:{
-            name:normal,
-            size:[62, 48],
-            anchor:[24, 40]
-          },
-          type:'0'
-        },
-        {
-          longitude:"116.300",
-          latitude:"39.955",
-          icon:{
-            name:normal,
-            size:[62, 48],
-            anchor:[24, 40]
-          },
-          type:'0'
-        },
-        {
-          longitude:"116.310",
-          latitude:"39.90",
-          icon:{
-            name:warn,
-            size:[62, 48],
-            anchor:[24, 40]
-          },
-          type:'1'
-        },
-        {
-          longitude:"116.360",
-          latitude:"39.922",
-          icon:{
-            name:warn,
-            size:[62, 48],
-            anchor:[24, 40]
-          },
-          type:'1'
-        }
-      ]
+      markers:[],
     }
   },
   mounted(){
 	this.getBulletinboardData()
+	this.getAllPeople()
   },
   methods: {
     enterSys(){
       this.$router.push({ path: '/home' })
     },
 	getBulletinboardData(){
+		let myuser = JSON.parse(sessionStorage.getItem('user'))
+		console.log(myuser)
 		console.log("获取到看板数据……………………………………………………………………")
 		this.userArr = []
 		getBulletinboard().then((res)=>{
@@ -232,10 +197,67 @@ export default {
 			// latelyNormal:'',//近6个月正常值
 			// lateyMonth:'',//近6个月月份
 			this.lateyMonth = sixMonth
-			console.log(this.lateyMonth)
 			this.latelyAlert = alertData
 			
 			this.drawChart()
+		})
+	},
+	//获取全部人员图标
+	getAllPeople(){
+		getElderList().then((res)=>{
+			if(res.code==0){
+			  if(res.data.data.length>0){
+			    res.data.data.forEach(i => {
+			      let content =  `<div style='overflow-x: hidden;width: 250px;padding:10px;'>
+									<p class='mymap-item'>
+									  <span">家庭地址：${i.address}</span>
+									<p/>
+									<p>联系方式: ${i.sim}</p>
+									<div style='display: flex;justify-content: space-between;align-items: center;'>
+										<div>姓名:${i.name}</div>
+									    <input class='mymap-button'
+									           style='background:rgba(29,164,255,1);
+									           color:#fff; border:1px solid rgba(29,164,255,1);
+									           border-radius:2px; font-size:14px; padding:5px;'
+									           type='button' value='查看详情' id='gotDetail'>
+									</div>	
+								  </div>`
+				  if(i.fenceWarning == 1){
+					// 1 正常
+					  let para =  {
+						id:i.id,
+						warning:i.fenceWarning,
+						longitude:i.longitude,
+						latitude:i.latitude,
+						icon:{
+						  name:normal,
+						  size:[48, 48],
+						  anchor:[24, 48]
+						},
+						type:'1'
+					  }
+					  this.markers.push(para)
+				  }else{
+					  // 2 是预警
+					  let para =  {
+						id:i.id,
+						warning:i.fenceWarning,
+						longitude:i.longitude,
+						latitude:i.latitude,
+						icon:{
+						  name:warn,
+						  size:[48, 48],
+						  anchor:[24, 48]
+						},
+						type:'1'
+					  }
+					  this.markers.push(para)
+				  }
+			    });
+				this.$refs.myMap.getMap()
+			    this.$refs.myMap.showAllPeople(0)
+			  }
+			}
 		})
 	},
     drawChart() {

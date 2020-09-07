@@ -180,7 +180,7 @@
 							  username:'',
 							  removeBtn:false,//删除按钮是否存在
 							},
-							this.$emit('getUser',1)
+							this.$emit('getUser',2)
 							this.$nextTick(()=>{
 			                    this.$refs.ruleForm2.clearValidate();
 			                })

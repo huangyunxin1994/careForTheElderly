@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="addressList" v-show="!isBaseMess">
-      <el-form ref="form" :model="form" label-position="right" class="form" label-width="130px" >
+      <el-form ref="form" :model="form" label-position="right" class="form" label-width="130px" v-if="sosNumbers.length>0">
         <div v-for="(item,index) in sosNumbers" :key="item.id">
           <el-form-item :label="'紧急联系人号码'+parseInt(index+1)">
             <el-input v-model="item.number" readonly></el-input>
@@ -49,6 +49,9 @@
           </el-form-item>
         </div>
       </el-form>
+	  <div class="ophoneNot" v-else>
+		  <p>抱歉,该老人通讯录为空!</p>
+	  </div>
     </div>
     <div class="btnWrap">
       <el-button type="primary" v-show="!isBaseMess" class="btn" @click="getBaseMess">上一页</el-button>
@@ -121,14 +124,9 @@
 		this.$nextTick(_=>{
 			this.$refs.mymap.getMap()
 		})
-		
-		console.log(this.$refs.mymap)
       }
     },
-    mounted() {
-      
-      console.log(this.center)
-    }
+    mounted() {}
   }
 </script>
 
@@ -175,6 +173,9 @@
       height: 25vh;
       margin: 0px auto;
     }
+  }
+  .ophoneNot{
+	  text-align: center;
   }
   .btnWrap{
     margin-top: 20px;

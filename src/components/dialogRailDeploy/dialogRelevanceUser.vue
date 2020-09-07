@@ -138,18 +138,27 @@ import {getRailDeploy,getOrgList,getTopOrgList,updateElectronicFence} from '@/ap
 		  this.data = []
 		  this.value = []
 		  getRailDeploy(param).then((res)=>{
-			  console.log(res)
 			  if(res.code == 0){
 				  let userList = res.data.electronicFenceNotRelationList
 				  let userArr = []
+				  let arr = []
 				  for(let i=0;i<userList.length;i++){
-					  console.log(userList[i])
-					  userArr.push({
-						  key:userList[i].id,
-						  label:userList[i].name,
-						  disabled:userList[i].state==1
-					  })
+					  if(userList[i].state != 1){
+						  userArr.push({
+							  key:userList[i].id,
+							  label:userList[i].name,
+							  disabled:userList[i].state==1
+						  })
+					  }else{
+						arr.push({
+							key:userList[i].id,
+							label:userList[i].name,
+							disabled:userList[i].state==1
+						})
+					  }
 				  }
+				  let myArr = userArr.concat(arr)
+				  userArr = myArr
 				  
 				  let myValue = []
 				  let haveUserList = res.data.electronicFenceRelationList
@@ -171,18 +180,28 @@ import {getRailDeploy,getOrgList,getTopOrgList,updateElectronicFence} from '@/ap
 		  let param = {}
 		  param.fenceId = this.fenceId
 		  param.organizationId = this.baseOrg.id
-		  console.log(param)
 		   getRailDeploy(param).then((res)=>{
 			   if(res.code == 0){
 				  let userList = res.data.electronicFenceNotRelationList
 				  let userArr = []
+				  let arr = []
 				  for(let i=0;i<userList.length;i++){
-					  userArr.push({
-						  key:userList[i].id,
-						  label:userList[i].name,
-						  disabled:userList[i].state==1
-					  })
+					  if(userList[i].state != 1){
+						  userArr.push({
+							  key:userList[i].id,
+							  label:userList[i].name,
+							  disabled:userList[i].state==1
+						  })
+					  }else{
+						  arr.push({
+							  key:userList[i].id,
+							  label:userList[i].name,
+							  disabled:userList[i].state==1
+						  })
+					  }
 				  }
+				  let myArr = userArr.concat(arr)
+				  userArr = myArr
 				  
 				  let myValue = []
 				  let haveUserList = res.data.electronicFenceRelationList
@@ -209,7 +228,7 @@ import {getRailDeploy,getOrgList,getTopOrgList,updateElectronicFence} from '@/ap
 <style lang="scss">
   .el-transfer-panel{
       width: 20vw;
-      height:50vh;
+      height:49vh;
   }
   .el-transfer-panel__item{
       width:100%;
@@ -260,7 +279,7 @@ import {getRailDeploy,getOrgList,getTopOrgList,updateElectronicFence} from '@/ap
       padding: 10px;
       border-radius: 5px;
       min-height: 280px;
-      height: 48vh;
+      height: 46.7vh;
       margin-right: 1vw;
     }
     .shuttle{

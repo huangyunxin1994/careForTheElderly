@@ -420,16 +420,15 @@
             let name = normal
             if(res.data.coordinate.status == 2)
                 name =person
-            let para = {
-              longitude:res.data.coordinate.longitude,
-              latitude:res.data.coordinate.latitude,
-              icon:{
-                name:name,
-                size:[62, 48],
-                anchor:[24, 48]
-              }
+				let para = {
+				  longitude:res.data.coordinate.longitude,
+				  latitude:res.data.coordinate.latitude,
+				  icon:{
+					name:name,
+					size:[62, 48],
+					anchor:[24, 48]
+				  }
             }
-			console.log(para)
             this.markers.length=0
             this.polylines.length=0
             this.markers.push(para)
@@ -443,11 +442,9 @@
         })
       },
       selectCoordinate(e){
-        console.log(e)
         selectCoordinate({eid:this.eid,startTime:e[0],endTime:e[1]}).then(res=>{
           if(res.code ==0){
             if(res.data.data.length>0){
-               console.log(res)
               this.markers.length=0
               this.polylines.length=0
               this.polylines[0]=[]
@@ -522,7 +519,6 @@
                  heart.push(i.heartRate)
                   booldH.push(i.systolicPressure)
                   booldL.push(i.diastolicPressure)
-                  console.log(i.hours.substring(0,i.hours.lastIndexOf(':')))
                   time.push(i.hours.substring(0,i.hours.lastIndexOf(':')))
                 });
                 this.heart= heart

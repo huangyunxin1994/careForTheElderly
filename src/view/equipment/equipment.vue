@@ -57,7 +57,7 @@
                      </el-table-column>
                      <el-table-column type="index" width="60" label="序号">
                      </el-table-column>
-                     <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" :sortable="item.type!='button'&&item.type!='handle'?true:false">
+                     <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" >
                          <template slot-scope="scope">
                              <div v-if="item.type=='handle'" align="center">
                                <el-button  type="primary" icon="el-icon-edit" size="small" round @click="changeSMI(scope.$index, scope.row)">修改</el-button>
@@ -227,6 +227,7 @@
 	  //
 	  searchInput: Throttle(function(e){
 		this.parameter = e
+		this.page = 1
 		let param = {
 			currentPage:this.page,
 			pageSize:this.pageSize,
@@ -264,6 +265,7 @@
 	  //设备状态
       changeData(val){
 		  this.equipmentState = val
+		  this.page = 1
 		  let param = {
 			 currentPage:this.page,
 			 pageSize:this.pageSize,
@@ -277,6 +279,7 @@
 	  //是否可用
       isUseW(val){
 		this.isUseful = val
+		this.page = 1
 		let param = {
 			currentPage:this.page,
 			pageSize:this.pageSize,
@@ -442,6 +445,7 @@
 	  //级联下拉框选中
 	  handleChange(val){
 			this.organizationId = val
+			this.page = 1
 			let param = {
 				currentPage:this.page,
 				pageSize:this.pageSize,
@@ -455,8 +459,6 @@
 	  //
 	  getEqtime(){
 		  getEqtime().then((res)=>{
-			  console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-			  console.log(res)
 			  this.updateTime = res.data.data.updateTime
 		  })
 	  }

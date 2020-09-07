@@ -32,7 +32,7 @@
                         :row-key="getRowKeys">
                          <el-table-column type="index" width="60" label="序号">
                          </el-table-column>
-                         <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" :sortable="item.type!='button'&&item.type!='handle'?true:false">
+                         <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" >
                              <template slot-scope="scope">
                                  <el-link type="primary" v-if="item.type=='link'" @click="userDetails(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
                                  <div v-else-if="item.type=='handle' && scope.row['account'] == 'admin'" align="center">
@@ -178,10 +178,11 @@
 	  //模糊搜索
 	  searchInput: Throttle(function(e){
 		  this.parameter = e
+		  this.page = 1
 	  	  let param = {
 			  parameter:this.parameter,
 			  pageSize:this.pageSize,
-			  currentPage:this.currentPage
+			  currentPage:this.page
 		  }
 		  this.getSearchData(param)
 	  },1000),
@@ -216,7 +217,7 @@
 		 let param = {
 		 	parameter:this.parameter,
 		 	pageSize:this.pageSize,
-		 	currentPage:this.currentPage
+		 	currentPage:this.page
 		 }
 		 this.listLoading=true
 		 this.getSearchData(param)
@@ -227,13 +228,14 @@
 		let param = {
 			parameter:this.parameter,
 			pageSize:this.pageSize,
-			currentPage:this.currentPage
+			currentPage:this.page
 		}
 		this.listLoading=true
 		this.getSearchData(param)
       },
       getEnrollData(){
           this.listLoading=true
+		  this.page = 1
           getUserList().then(res=>{
               if(res.code==0){
                   this.listLoading=false
@@ -325,12 +327,28 @@
       },
       //编辑用户
       adminMess(index,item){
-		  console.log(item)
         this.$refs.editeditMess.getOrganization(item)
       },
 	  //对用户进行操作后，重新请求数据
-	  getUser(){
-		  this.getEnrollData()
+	  getUser(val){
+		  // 1是添加  2是修改
+		  if(val == 1){
+			  let param = {
+				  organizationId:this.organizationName.id
+			  }
+			  this.getUserListData(param)
+		  }else{
+			  if(this.organizationName == ''){
+				  //说明没有点击组织,查全部
+				  this.getEnrollData() //请求全部数据
+			  }else{
+				  let param = {
+				  	organizationId:this.organizationName.id
+				  }
+				  this.getUserListData(param)
+			  }
+		  }
+		  
 	  },
       //修改密码
       changePass(index,item){
@@ -348,29 +366,33 @@
 		let param = {
 			organizationId:val.id
 		}
-		getUserList(param).then(res=>{
-		    if(res.code==0){
-		        this.listLoading=false
-		        this.tableAllData=res.data.data
-		        this.tableData=this.tableAllData
-				this.count = res.data.count
-		    }else{
-		        this.listLoading=false
-		       this.$notify({
-		            title: '错误',
-		            message: res.msg,
-		            type: 'error'
-		        });
-		    }
-		}).catch(err=>{
-		    this.listLoading=false
-		    this.$notify({
-		            title: '错误',
-		            message: err.msg,
-		            type: 'error'
-		        });
-		})
+		this.getUserListData(param)
       },
+	  //点击组织时请求
+	  getUserListData(param){
+		  getUserList(param).then(res=>{
+		      if(res.code==0){
+		          this.listLoading=false
+		          this.tableAllData=res.data.data
+		          this.tableData=this.tableAllData
+		  		this.count = res.data.count
+		      }else{
+		          this.listLoading=false
+		          this.$notify({
+		              title: '错误',
+		              message: res.msg,
+		              type: 'error'
+		          });
+		      }
+		  }).catch(err=>{
+		      this.listLoading=false
+		      this.$notify({
+		              title: '错误',
+		              message: err.msg,
+		              type: 'error'
+		          });
+		  })
+	  },
     },
     mounted() {
 	  this.getEnrollData()

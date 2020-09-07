@@ -29,6 +29,7 @@
                             class="seclectTime"
                             style="width:10vw"
 							@change="changeResultW"
+							:picker-options="getTimeOptions"
                             range-separator="至"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期">
@@ -55,7 +56,7 @@
                         :row-key="getRowKeys">
                          <el-table-column type="index" width="60" label="序号">
                          </el-table-column>
-                         <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" :sortable="item.type!='button'&&item.type!='handle'?true:false" show-overflow-tooltip>
+                         <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth"  show-overflow-tooltip>
                              <template slot-scope="scope">
                                  <el-link type="primary" v-if="item.type=='link'" @click="userDetails(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
                                  <div v-else-if="item.type=='handle'" align="center">
@@ -239,6 +240,7 @@
 	  },
 	  //输入框模糊搜素
 	  searchInput:Throttle(function(e){
+		  this.page=1
 		  let param = {
 			  currentPage:this.page,
 			  pageSize:this.pageSize,
@@ -319,6 +321,7 @@
       changeResultType(val){
 		  this.alertType = val
 		  this.listLoading=true
+		  this.page=1
 		  let param = {
 		  	 currentPage:this.page,
 		  	 pageSize:this.pageSize,
@@ -334,6 +337,7 @@
         // this.tableData = this.tableAllData.filter(item=>{
         //     return String(item.processingResult).indexOf(val) > -1
         // })
+		this.page=1
 		this.listLoading=true
 		this.processingResult = val
 		let param = {
@@ -377,6 +381,7 @@
 	        this.beginTime = parseTime(val[0],`{y}-{m}-{d}`)+" 00:00:00"
 	        this.endTime = parseTime(val[1],`{y}-{m}-{d}`)+" 23:59:59"
 	      }
+		  this.page=1
 		   let param = {
 			   currentPage:this.page,
 			   pageSize:this.pageSize,
@@ -408,7 +413,17 @@
           })
         }
         return this.tableData
-      }
+      },
+	  getTimeOptions(){
+	  		 return{
+	  			disabledDate:(time)=>{
+	  				let disabledDate;
+	  				let nowDate = new Date();
+	  				nowDate.setDate(nowDate.getDate());
+	  				return time.getTime() > nowDate.getTime()
+	  			}
+	  		 }  
+	  }
     },
   }
 </script>

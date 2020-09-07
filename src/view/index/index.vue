@@ -91,6 +91,7 @@
         })
       },
       goPeopleDetails(id){
+		  console.log(id)
         this.$router.push({
             path:'/peopleDetails',
             query: {
@@ -110,8 +111,6 @@
 		 }
         getElderList(param).then(res=>{
           if(res.code==0){
-			console.log("点击组织")
-            console.log(res)
             if(res.data.data.length>0){
               res.data.data.forEach(i => {
                 let content =  `<div style='overflow-x: hidden;width: 250px;padding:10px;'>
@@ -133,7 +132,7 @@
 				  let para =  {
 					isIndex:'1',
 					id:i.id,
-				content:content,
+					content:content,
 					warning:i.fenceWarning,
 					longitude:i.longitude,
 					latitude:i.latitude,

@@ -299,6 +299,8 @@ export default {
              this.markerArr.length = 0
 			if(this.markers.length>0){
                 this.markers.map(item => {
+					console.log("哈哈哈哈哈哈")
+					console.log(item)
                 var anchor = new qq.maps.Point(item.icon.anchor[0], item.icon.anchor[1]),
                     size = new qq.maps.Size(item.icon.size[0], item.icon.size[1]),
                     origin = new qq.maps.Point(0, 0),
@@ -386,6 +388,9 @@ export default {
         },
        // 创建信息提示窗
         showInfeWindow(marker,item){
+			console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+			console.log(marker)
+			console.log(item)
             this.mapInfoWindow = new qq.maps.InfoWindow({
                 map: this.mapView
             })
@@ -395,20 +400,21 @@ export default {
                 this.mapInfoWindow.open()
                 this.mapInfoWindow.setContent(this.createInfoWindowContent(e.target.data))
                 this.mapInfoWindow.setPosition(e.latLng)  //提示窗位置
+				qq.maps.event.addListener(this.mapInfoWindow , 'domready', ()=> {
+				    var btn = document.getElementById("gotDetail")
+						console.log(item)
+				        if(btn){
+				            setTimeout(() => {
+				            btn.onclick = (e) =>{
+				                console.log(item.id)
+				                this.getPersonData(item.id)
+				            }
+				        
+				            },500)
+				        }
+				})
             })
-                qq.maps.event.addListener(this.mapInfoWindow , 'domready', ()=> {
-                var btn = document.getElementById("gotDetail")
-                    console.log(btn)
-                    if(btn){
-                        setTimeout(() => {
-                        btn.onclick = (e) =>{
-                            console.log(item.id)
-                            this.getPersonData(item.id)
-                        }
-                    
-                        },500)
-                    }
-            })
+            
         },
         //点击查看跳转详情
         getPersonData(id){

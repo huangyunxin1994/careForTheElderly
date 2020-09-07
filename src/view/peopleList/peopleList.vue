@@ -48,7 +48,7 @@
                          </el-table-column> -->
                          <el-table-column type="index" width="60" label="序号">
                          </el-table-column>
-                         <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" :sortable="item.type!='button'&&item.type!='handle'?true:false">
+                         <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" >
                              <template slot-scope="scope">
                                  <el-link type="primary" v-if="item.type=='link'" @click="userDetails(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
                                  <div v-else-if="item.type=='handle'">
@@ -146,7 +146,7 @@
             },
             {
               value: '2',
-              label: '预警'
+              label: '异常'
             },
         ],
         equipmentOptions:[
@@ -198,6 +198,7 @@
 	  searchInput: Throttle(function(e){
 		  this.name = e
 		  let param = {}
+		  this.page = 1
 		  if(this.isAllSelect == true){
 			 //是选择全部  不传type
 			 param = {
@@ -342,6 +343,7 @@
           // })
 		  let param = {}
 		  this.state = val
+		  this.page=1
 		  if(this.isAllSelect == true){
 		  	 //是选择全部  不传type
 		  	 param = {
@@ -379,6 +381,7 @@
       changeResult(val){
 		let param = {}
 		this.warning = val
+		this.page=1
 		if(this.isAllSelect == true){
 			 //是选择全部  不传type
 			 param = {
