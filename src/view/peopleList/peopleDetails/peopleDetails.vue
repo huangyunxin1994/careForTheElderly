@@ -84,6 +84,7 @@
                 <el-date-picker
                   v-model="time1"
                   type="datetimerange"
+				  :picker-options="getTimeOptions"
                   range-separator="至"
                   start-placeholder="开始日期"
                   value-format="yyyy-MM-dd HH:mm:ss"
@@ -635,6 +636,18 @@
       await this.drawChart()
       await this.$refs.map.getMap()
     },
+	computed:{
+	  getTimeOptions(){
+			 return{
+				disabledDate:(time)=>{
+					let disabledDate;
+					let nowDate = new Date();
+					nowDate.setDate(nowDate.getDate());
+					return time.getTime() > nowDate.getTime()
+				}
+			 }  
+	  }
+	},
   }
 </script>
 
@@ -710,7 +723,7 @@
          flex-direction: column;
           justify-content: space-around;
           align-items: flex-start;
-          font-size: 0.8vw;
+          font-size: 12px;
           color:#909399 ;
           padding: 0px 20px;
           .top-detais{
