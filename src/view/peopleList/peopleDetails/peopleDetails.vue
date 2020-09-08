@@ -209,6 +209,12 @@
               bottom:'bottom',
               data:['今日'],
             },
+             grid: {
+                        left: '3%',
+                    right: '15%',
+                    bottom: '5%',
+                    containLabel: true
+                    },
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
@@ -222,7 +228,7 @@
                 name:"单位:bpm",
             },
             series: [{
-                name:"今日",
+                name:"心率",
                 // data: this.heartRateT,
                 data:this.heart,
                 type: 'line',
@@ -276,6 +282,12 @@
               bottom:'bottom',
               data:['高压','低压'],
             },
+             grid: {
+                        left: '3%',
+                    right: '15%',
+                    bottom: '8%',
+                    containLabel: true
+                    },
             xAxis: {
               type: 'category',
               boundaryGap: false,
