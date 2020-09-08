@@ -42,7 +42,7 @@
 
           <div class="contain-head-phone">
             <div class="contain-head-mes">
-              <div style="width: 100%; text-align: center;"><span style="font-size: 1vw; color: #606266; font-weight: 600; ">监护人信息</span></div>
+              <div style="width: 100%; text-align: center;"><span style="font-size: 1.2vw; color: #606266; font-weight: 600; ">监护人信息</span></div>
             </div>
             <div class="contain-head-phone-detais">
               <div>
@@ -55,7 +55,7 @@
                 </div>
               </div>
 
-              <el-button type="primary" size="small" @click="searchRuardian">所有监护人信息</el-button>
+              <el-button type="primary" size="small" @click="searchRuardian" style="font-size: 0.8vw;">所有监护人信息</el-button>
             </div>
          </div>
         </el-header>
@@ -412,6 +412,7 @@
       //查看所有监护人
       searchRuardian(){
         this.$refs.guardianMess.dialogVisible = true
+		this.$refs.guardianMess.title = this.eData.name + "的家属信息"
       },
       //定位到当前位置
       getNowAdress(){
@@ -670,10 +671,8 @@
 
     &-head{
       display: flex;
-	  // flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      // border-bottom: 1px solid #DCDFE6;
       .mainleft{
         display: flex;
         align-items: center;
@@ -723,7 +722,7 @@
          flex-direction: column;
           justify-content: space-around;
           align-items: flex-start;
-          font-size: 12px;
+          font-size: 0.8vw;
           color:#909399 ;
           padding: 0px 20px;
           .top-detais{
@@ -740,7 +739,7 @@
             align-items: center;
             }
           .iconfont{
-            font-size: 1.2vw;
+            font-size: 1vw;
           }
       }
       &-phone{
@@ -748,16 +747,18 @@
          justify-content: flex-start;
          align-items: center;
          // min-width: 326px;
-         font-size: 0.8vw;
+         font-size:0.8vw;
          color: #909399;
          height: 74px;
          border-radius: 10px;
          border: 1px solid #ccc;
          width: 50%;
          &-detais{
+		    box-sizing: border-box;
+			padding: 0px 20px;
            display: flex;
            align-items: center;
-           justify-content: space-around;
+           justify-content: space-between;
            // padding: 0px 20px;
            width: calc(100% - 136px);
 
@@ -765,20 +766,24 @@
              display: flex;
              align-items: center;
              margin-bottom: 10px;
-             justify-content: space-between;
+             justify-content: flex-start;
              // min-width: 200px;
 
              .familyName{
                margin-right: 1vw;
              }
+			 
            }
+		   .iconfont{
+		     font-size: 1vw;
+		   }
          }
          .top-phone{
           display: flex;
           align-items: center;
           justify-content: space-around;
           .iconfont{
-            font-size: 1.2vw;
+            font-size: 1vw;
           }
           .phone{
             display: flex;

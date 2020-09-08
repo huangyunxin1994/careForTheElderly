@@ -27,7 +27,6 @@
                             v-model="time"
                             type="daterange"
                             class="seclectTime"
-                            style="width:10vw"
 							@change="changeResultW"
 							:picker-options="getTimeOptions"
                             range-separator="至"
@@ -374,10 +373,10 @@
       },
 	  //时间框筛选
 	  changeResultW(val){
-	      if(val.length == 0){
-	       this.beginTime = ""
-	       this.endTime = ""
-	      }else{
+	      if(!val){
+			  this.beginTime = ""
+			  this.endTime = ""
+		  }else{
 	        this.beginTime = parseTime(val[0],`{y}-{m}-{d}`)+" 00:00:00"
 	        this.endTime = parseTime(val[1],`{y}-{m}-{d}`)+" 23:59:59"
 	      }

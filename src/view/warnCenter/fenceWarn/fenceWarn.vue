@@ -26,7 +26,6 @@
                                   v-model="time"
                                   type="daterange"
                                   class="seclectTime"
-                                  style="width:10vw"
                                   @change="changeResultW"
 								  :picker-options="getTimeOptions"
                                   range-separator="至"
@@ -230,6 +229,7 @@
 	   //页数大小
        handleSizeChange(val){
        	this.pageSize = val
+		this.page = 1
 		let param = {
 			 currentPage:this.page,
 			 pageSize:this.pageSize,
@@ -262,7 +262,7 @@
 				   this.count = res.data.count
                }else{
                    this.listLoading=false
-                  this.$notify({
+                   this.$notify({
                        title: '错误',
                        message: res.msg,
                        type: 'error'
@@ -279,7 +279,7 @@
        },
 	   //通过时间筛选数据
        changeResultW(val){
-           if(val.length == 0){
+           if(!val){
             this.beginTime = ""
             this.endTime = ""
            }else{
@@ -315,8 +315,17 @@
        updateMess(val){
        	this.getEnrollData()
        },
-	   getData(){
-		   this.getEnrollData()
+	   getData(){//填写处理结果成功后刷新页面
+			this.page = 1
+		   let param = {
+		     currentPage:this.page,
+		     pageSize:this.pageSize,
+		     startTime:this.beginTime,
+		     endTime:this.endTime,
+		     parameter:this.parameter,
+		     processingResult:this.processingResult
+		   }
+		   this.getSearchData(param)
 	   },
        // 批量选中
        selsChange(sels){
@@ -337,10 +346,8 @@
        //忽略
        handleSearch(index,val){
 		 let user = JSON.parse(sessionStorage.getItem('user'))
-		 console.log(user)
 		 let time = parseTime(new Date(),`{y}-{m}-{d} {h}:{i}:{s}`)
 		 let arr = this.sels
-		 console.log(arr)
 		 let array = []
 		 for(let i in arr){
 			 let obj = {}
@@ -364,7 +371,16 @@
 						 	  message: '忽略成功',
 						 	  type: 'success'
 						 	});
-						 	this.getEnrollData()
+							this.page = 1
+						 	let param = {
+						 	  currentPage:this.page,
+						 	  pageSize:this.pageSize,
+						 	  startTime:this.beginTime,
+						 	  endTime:this.endTime,
+						 	  parameter:this.parameter,
+						 	  processingResult:this.processingResult
+						 	}
+						 	this.getSearchData(param)
 						 }else{
 						 	this.$message.error('忽略失败');
 						 }
@@ -378,9 +394,6 @@
        },
        //填写处理结果
        peopleAndEquiment(index,val){
-		   console.log(index)
-		   console.log(val)
-		   console.log(this.sels)
          this.$refs.DialogHandleResult.getData(this.sels)
        },
        //查看处理结果

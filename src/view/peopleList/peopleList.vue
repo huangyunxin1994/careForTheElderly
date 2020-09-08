@@ -261,6 +261,7 @@
 			  })
 	      //this.tableData = JSON.parse(JSON.stringify(this.tableAllData))
 	  },
+	  //当前页
       handleCurrentChange(val){
          this.page = val;
 		 let param = {}
@@ -298,9 +299,11 @@
 		 
 		 })
       },
+	  //页数大小
       handleSizeChange(val){
       	this.pageSize = val
 		let param = {}
+		this.page = 1
 		if(this.isAllSelect == true){
 			 //是选择全部  不传type
 			 param = {

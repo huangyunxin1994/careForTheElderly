@@ -43,8 +43,8 @@
 </template>
 
 <script>
-import echarts from 'echarts'
-import MyMap from '@/components/map/qqmap.vue'
+  import echarts from 'echarts'
+  import MyMap from '@/components/map/qqmap.vue'
 
 // 图标
   import normal from '@/icons/png/personn.png'
@@ -91,8 +91,6 @@ export default {
     },
 	getBulletinboardData(){
 		let myuser = JSON.parse(sessionStorage.getItem('user'))
-		console.log(myuser)
-		console.log("获取到看板数据……………………………………………………………………")
 		this.userArr = []
 		getBulletinboard().then((res)=>{
 			console.log(res)
@@ -337,7 +335,7 @@ export default {
       });
       chartPersonActive.setOption({
 			title: {
-			        text: '老人状态统计'
+			        text: '老人重点数据统计'
 			    },
 			    tooltip: {
 			        trigger: 'axis',
@@ -526,20 +524,20 @@ $light_gray:rgba(51, 51, 51, 1);
       padding:20px;
       background: #fff;
       .unusual-census{
-      display:flex;
-      justify-content: space-between;
-      align-items: center;
-      &-item{
-       width: 45%;
-        padding:10px 0;
-          border:1px solid #909399;
-          border-radius: 4px;
-          display:flex;
-          flex-direction: column;
-          justify-content: space-between;
-          align-items: center;
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+        &-item{
+          width: 45%;
+          padding:10px 0;
+            border:1px solid #909399;
+            border-radius: 4px;
+            display:flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
       }
-    }
     }
 
   }

@@ -225,6 +225,7 @@
 	  //页数大小
       handleSizeChange(val){
       	this.pageSize = val
+		this.page = 1
 		let param = {
 			parameter:this.parameter,
 			pageSize:this.pageSize,

@@ -213,7 +213,11 @@
          this.page = val;
 		 let param = {
 			 currentPage:this.page,
-			 pageSize:this.pageSize
+			 pageSize:this.pageSize,
+			 organizationId:this.organizationId,
+			 isUseful:this.isUseful,
+			 equipmentState:this.equipmentState,
+			 parameter:this.parameter
 		 }
 		 getEquipment(param).then(res=>{
 		     if(res.code==0)
@@ -224,7 +228,7 @@
 		 
 		 	})
       },
-	  //
+	  //模糊搜索
 	  searchInput: Throttle(function(e){
 		this.parameter = e
 		this.page = 1
@@ -249,9 +253,10 @@
 		
 			}) 
 	  },
-	  //当前页
+	  //页数大小
       handleSizeChange(val){
       	this.pageSize = val
+		this.page = 1
 		let param = {
 			currentPage:this.page,
 			pageSize:this.pageSize,
