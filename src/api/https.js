@@ -31,7 +31,7 @@ service.interceptors.response.use(
           Message({
             message: '登录过期，请重新登录',
             type: 'error',
-            duration: 5 * 1000
+            duration: 1000
           })
         break
       default:

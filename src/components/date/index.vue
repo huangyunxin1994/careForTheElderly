@@ -33,14 +33,7 @@ export default {
       currentYear: new Date().getFullYear(), // 初始化当前选中的年
       showMonth: new Date().getMonth() + 1, // 初始化月
       showYear: new Date().getFullYear(), // 初始化年
-      warnTableData:[
-          {alertTime:"2020-07-19 15:48:14"},
-          {alertTime:"2020-06-19 15:48:14"},
-          {alertTime:"2020-07-21 15:48:14"},
-          {alertTime:"2020-07-14 15:48:14"},
-          {alertTime:"2020-07-4 15:48:14"},
-          {alertTime:"2020-06-23 15:48:14"},
-      ]
+      warnTableData:[]
     };
   },
   directives: {
@@ -62,11 +55,16 @@ export default {
     }
   },
   created() {
-
+    let time = new Date()
+    let year = time.getFullYear();
+    let month = parseInt(time.getMonth() + 1) < 10 ? "0"+parseInt(time.getMonth() + 1) : parseInt(time.getMonth() + 1);
+    let day = time.getDate() < 10 ? "0"+time.getDate() : time.getDate()
+    this.dateVale = `${year}-${month}-${day}`
   },
   methods: {
      // 父组件获取数据
     handleChange (val) {
+      if(val&&val!="")
       this.$emit("getChartData",val);
     },
     // 请求接口

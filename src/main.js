@@ -32,7 +32,7 @@ router.beforeEach((to, from, next) => {
 	Message({
 	  message: '抱歉,没有权限!',
 	  type: 'error',
-	  duration: 5 * 1000
+	  duration: 1000
 	})
 	// next()
   }else {

@@ -133,6 +133,10 @@ export default {
         getMap(){
             console.log(89)
             console.log(this.center.latitude, this.center.longitude)
+            qq.maps.Marker.prototype.name = "";
+            qq.maps.Marker.prototype.setName = function(name){
+                this.name = name;
+            }
              let center = new qq.maps.LatLng(this.center.latitude, this.center.longitude)
             if (this.mapView) {
                 console.log(this.mapView)
@@ -168,9 +172,9 @@ export default {
                         })
                         if(item.warning){
                             if(item.warning==1)
-                            marker.setTitle("1")
+                            marker.setName("1")
                             else
-                            marker.setTitle("2")
+                            marker.setName("2")
                         }
                        console.log( marker.getTitle())
                         // 获取标记的点击事件
@@ -263,7 +267,7 @@ export default {
         showWarnPeople(val){
             if (this.markersArray) {
                 for (let i in this.markersArray) {
-                if(this.markersArray[i].getTitle()=="1")
+                if(this.markersArray[i].name=="1")
                    this.markersArray[i].setMap(null);
                 }
             }

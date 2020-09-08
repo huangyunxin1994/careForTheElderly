@@ -397,13 +397,13 @@
 						if(item.fenceWarning == 2){
 							let para =  {
 							  isIndex:'1',
-							  id:i.id,
-							  name:i.name,
-							  phone:i.sim,
-							  address:i.address,
-							  warning:i.fenceWarning,
-							  longitude:i.longitude,
-							  latitude:i.latitude,
+							  id:item.id,
+							  name:item.name,
+							  phone:item.sim,
+							  address:item.address,
+							  warning:item.fenceWarning,
+							  longitude:item.longitude,
+							  latitude:item.latitude,
 							  icon:{
 							    name:warn,
 							    size:[48, 48],

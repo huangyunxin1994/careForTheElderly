@@ -23,7 +23,7 @@
 <script>
 import {getRailDeploy,getOrgList,getTopOrgList,updateElectronicFence} from '@/api/api.js'
   import Tree from '@/components/tree/relevanseUserTree.vue'
-  export default{
+  export default {
     components:{
       Tree
     },
@@ -227,12 +227,10 @@ import {getRailDeploy,getOrgList,getTopOrgList,updateElectronicFence} from '@/ap
 
 <style lang="scss">
   .el-transfer-panel{
-      width: 20vw;
+	  width: 20vw;
       height:49vh;
   }
-  .el-transfer-panel__item{
-      width:100%;
-  }
+  
    .el-transfer-panel__list.is-filterable{
       height: 40vh;
    }
