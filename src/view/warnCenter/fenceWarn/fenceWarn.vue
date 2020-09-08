@@ -38,7 +38,6 @@
                       v-model="time"
                       type="daterange"
                       class="seclectTime"
-                      style="width:10vw"
                       @change="changeResultW"
                       :picker-options="getTimeOptions"
                       range-separator="至"
@@ -160,6 +159,7 @@ export default {
   },
   data() {
     return {
+	  user:'',
       equipmentSearch: "",
       listLoading: false,
       sels: [],
@@ -216,6 +216,7 @@ export default {
       valueW: "",
       beginTime: "", //筛选开始时间
       endTime: "", //筛选结束时间
+	  organizationId:'',//登录这所在的组织id
     };
   },
   methods: {
@@ -290,6 +291,7 @@ export default {
         endTime: this.endTime,
         parameter: this.parameter,
         processingResult: this.processingResult,
+		organizationId:this.organizationId
       };
       this.getSearchData(param);
     }, 1000),
@@ -303,6 +305,7 @@ export default {
         endTime: this.endTime,
         parameter: this.parameter,
         processingResult: this.processingResult,
+		organizationId:this.organizationId
       };
       this.getSearchData(param);
     },
@@ -316,6 +319,7 @@ export default {
         endTime: this.endTime,
         parameter: this.parameter,
         processingResult: this.processingResult,
+		organizationId:this.organizationId
       };
       this.getSearchData(param);
     },
@@ -327,8 +331,10 @@ export default {
       if (user.hasOwnProperty("organizationId")) {
         if (user.organizationId == "") {
           param.organizationId = "";
+		  this.organizationId = ""
         } else {
           param.organizationId = user.organizationId;
+		  this.organizationId = user.organizationId
         }
       } else {
         param.organizationId = "";
@@ -376,6 +382,7 @@ export default {
         endTime: this.endTime,
         parameter: this.parameter,
         processingResult: this.processingResult,
+		organizationId:this.organizationId
       };
       this.getSearchData(param);
     },
@@ -390,6 +397,7 @@ export default {
         endTime: this.endTime,
         parameter: this.parameter,
         processingResult: this.processingResult,
+		organizationId:this.organizationId
       };
       this.getSearchData(param);
     },
@@ -462,9 +470,6 @@ export default {
     },
     //填写处理结果
     peopleAndEquiment(index, val) {
-      console.log(index);
-      console.log(val);
-      console.log(this.sels);
       this.$refs.DialogHandleResult.getData(this.sels);
     },
     //查看处理结果

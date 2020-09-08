@@ -182,6 +182,7 @@
         valueW:"",
 		valueType:'',
 		count:0,
+		organizationId:'',//当前登录者的组织id
       }
     },
     methods:{
@@ -247,7 +248,8 @@
 			  endTime:this.endTime,
 			  parameter:this.parameter,
 			  processingResult:this.processingResult,
-			  alertType:this.alertType
+			  alertType:this.alertType,
+			  organizationId:this.organizationId
 		  }
 		  this.getSearchData(param)
 	  },1000),
@@ -262,7 +264,8 @@
 			 endTime:this.endTime,
 			 parameter:this.parameter,
 			 processingResult:this.processingResult,
-			 alertType:this.alertType
+			 alertType:this.alertType,
+			 organizationId:this.organizationId
 		 }
 		 this.getSearchData(param)
       },
@@ -277,7 +280,8 @@
 			 endTime:this.endTime,
 			 parameter:this.parameter,
 			 processingResult:this.processingResult,
-			 alertType:this.alertType
+			 alertType:this.alertType,
+			 organizationId:this.organizationId
 		}
 		this.getSearchData(param)
       },
@@ -288,8 +292,10 @@
 		  if(user.hasOwnProperty('organizationId')){
 			if(user.organizationId == ''){
 				param.organizationId = ''
+				this.organizationId = ''
 			}else{
 				param.organizationId = user.organizationId
+				this.organizationId = user.organizationId
 			}
 		  }else{
 		  	param.organizationId = ''
@@ -328,7 +334,8 @@
 		  	 endTime:this.endTime,
 		  	 parameter:this.parameter,
 		  	 processingResult:this.processingResult,
-		  	 alertType:this.alertType
+		  	 alertType:this.alertType,
+			 organizationId:this.organizationId
 		  }
 		  this.getSearchData(param)
       },
@@ -346,7 +353,8 @@
 			endTime:this.endTime,
 			parameter:this.parameter,
 			processingResult:this.processingResult,
-			alertType:this.alertType
+			alertType:this.alertType,
+			organizationId:this.organizationId
 		}
 		this.getSearchData(param)
       },
@@ -388,7 +396,8 @@
 			   endTime:this.endTime,
 			   parameter:this.parameter,
 			   processingResult:this.processingResult,
-			   alertType:this.alertType
+			   alertType:this.alertType,
+			   organizationId:this.organizationId
 		   }
 		   this.getSearchData(param)
 	  },
