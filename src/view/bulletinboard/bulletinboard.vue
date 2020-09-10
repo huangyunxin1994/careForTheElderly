@@ -79,6 +79,16 @@ export default {
       warnDoneDataA:[],
       bulletArr:[],
       markers:[],
+	  
+	  
+	  //最多的五个组织
+	  orgName:[],
+	  orgData:[],
+	  
+	  //预警数和未处理
+	  alertNum:[],
+	  noHandle:[],
+	  weekData:[],
     }
   },
   mounted(){
@@ -93,110 +103,24 @@ export default {
 		let myuser = JSON.parse(sessionStorage.getItem('user'))
 		this.userArr = []
 		getBulletinboard().then((res)=>{
-			console.log(res)
-			let arr=[]
-			//监护人
-			let para1 = {
-				value:res.data.familyCount,
-				name:'监护人'
-			}
-			arr.push(para1)
-			//老年人数量
-			let para2 = {
-				value:res.data.elderlyCount,
-				name:'老年人'
-			}
-			arr.push(para2)
-			this.userArr = arr
-			
-			//当月预警
-			this.monthEarly = []
-			let monthEarlyArr = res.data.monthEarly
-			let monthArr = []
-			monthEarlyArr.forEach((item)=>{
-				let para = {}
-				if(item.alert_type == 1){
-					para.name = '低电'
-					para.value = item.count
-				}else if(item.alert_type == 2){
-					para.name = '离线'
-					para.value = item.count
-				}else if(item.alert_type == 3){
-					para.name = '围栏预警'
-					para.value = item.count
-				}else if(item.alert_type == 4){
-					para.name = 'SOS报警'
-					para.value = item.count
-				}else if(item.alert_type == 5){
-					para.name = '离家异常'
-					para.value = item.count
-				}else if(item.alert_type == 6){
-					para.name = '心率异常'
-					para.value = item.count
-				}else{
-					para.name = '血压异常'
-					para.value = item.count
-				}
-				monthArr.push(para)
+			//最多人数的五个组织
+			let orgPeople = res.data.userDistribution
+			orgPeople.forEach((item)=>{
+				this.orgName.push(item.name)
+				this.orgData.push(item.count)
 			})
-			this.monthEarly = monthArr
-			//预警列表
-			this.warnData = res.data.equipmentAlertList
 			
-			//近6个月预警
-			let sixMonthData = res.data.latelyAlert
-			let sixMonth = []
-			let alertData = []
-			let normalData = []
-			sixMonthData.forEach((item)=>{
-				let month = ''
-				if(item.alertMonth == 1){
-					month = 'Jan'
-					sixMonth.push(month)
-				}else if(item.alertMonth == 2){
-					month = 'Mar'
-					sixMonth.push(month)
-				}else if(item.alertMonth == 3){
-					month = 'Apr'
-					sixMonth.push(month)
-				}else if(item.alertMonth == 4){
-					month = 'May'
-					sixMonth.push(month)
-				}else if(item.alertMonth == 5){
-					month = 'Jun'
-					sixMonth.push(month)
-				}else if(item.alertMonth == 6){
-					month = 'Jan'
-					sixMonth.push(month)
-				}else if(item.alertMonth == 7){
-					month = 'Jul'
-					sixMonth.push(month)
-				}else if(item.alertMonth == 8){
-					month = 'Aug'
-					sixMonth.push(month)
-				}else if(item.alertMonth == 9){
-					month = 'Sep'
-					sixMonth.push(month)
-				}else if(item.alertMonth == 10){
-					month = 'Oct'
-					sixMonth.push(month)
-				}else if(item.alertMonth == 11){
-					month = 'Nov'
-					sixMonth.push(month)
-				}else if(item.alertMonth == 12){
-					month = 'Dec'
-					sixMonth.push(month)
-				}
-				alertData.push(item.countNum)
-				
+			//预警数和未处理数
+			let weekAlert = res.data.weekAlert
+			let untreatedWeekAlert = res.data.untreatedWeekAlert
+			weekAlert.forEach((item)=>{
+				this.alertNum.push(item.count)
+				this.weekData.push(item.alertWeek)
 			})
-		
-			// latelyAlert:'',//近六个月预警
-			// latelyNormal:'',//近6个月正常值
-			// lateyMonth:'',//近6个月月份
-			this.lateyMonth = sixMonth
-			this.latelyAlert = alertData
-			
+			untreatedWeekAlert
+			for(let i in untreatedWeekAlert){
+				this.noHandle[i] = untreatedWeekAlert[i].count
+			}
 			this.drawChart()
 		})
 	},
@@ -264,117 +188,128 @@ export default {
       let chartPersonActive = echarts.init(document.getElementById('chartPersonActive'));//老人状态统计
       let chartMonthWarn = echarts.init(document.getElementById('chartMonthWarn'));//当月预警分布
       let chartWarnNum = echarts.init(document.getElementById('chartWarnNum'));//近6个月预警处理统计
-      chartKeyPerson.setOption({
-              title: {
-                 text: '用户统计',
-                 // subtext: '纯属虚构',
-                 left: 'left'
-             },
-             tooltip: {
-                 trigger: 'item',
-                 formatter: '{a} <br/>{b} : {c} ({d}%)'
-             },
-             legend: {
-                 orient: 'vertical',
-                 right: 'right',
-                 data: ['监护人', '老年人']
-             },
-             series: [
-                 {
-                     name: '访问来源',
-                     type: 'pie',
-                     radius: '55%',
-                     center: ['35%', '60%'],
-                     data: this.userArr,
-                     emphasis: {
-                         itemStyle: {
-                             shadowBlur: 10,
-                             shadowOffsetX: 0,
-                             shadowColor: 'rgba(0, 0, 0, 0.5)'
-                         }
-                     }
-                 }
-             ]
-      });
-      chartManPerson.setOption({
-              title: {
-                  text: '老年人数量统计',
-                  left: 'left'
-              },
-              tooltip: {
-                  trigger: 'item',
-                  formatter: '{a} <br/>{b} : {c} ({d}%)'
-              },
-              legend: {
-                  orient: 'vertical',
-                  right: 'right',
-                  data: ['组织1', '组织2','组织3','组织4','组织5']
-              },
-              series: [
-                  {
-                      name: '访问来源',
-                      type: 'pie',
-                      radius: '55%',
-                      center: ['35%', '60%'],
-                      data: [
-                          {value: 335, name: '组织1'},
-                          {value: 310, name: '组织2'},
-                          {value: 220, name: '组织3'},
-                          {value: 554, name: '组织4'},
-                          {value: 313, name: '组织5'},
-                      ],
-                      emphasis: {
-                          itemStyle: {
-                              shadowBlur: 10,
-                              shadowOffsetX: 0,
-                              shadowColor: 'rgba(0, 0, 0, 0.5)'
-                          }
-                      }
-                  }
-              ]
-      });
-      chartPersonActive.setOption({
-			title: {
-			        text: '老人重点数据统计'
-			    },
-			    tooltip: {
-			        trigger: 'axis',
-			        axisPointer: {
-			            type: 'shadow'
-			        }
-			    },
-			    legend: {
-					orient: 'vertical',
-					right: 'right',
-			        data: ['正常', '异常']
-			    },
-			    grid: {
-			        left: '3%',
-			        right: '4%',
-			        bottom: '3%',
-			        containLabel: true
-			    },
-			    xAxis: {
-					type: 'category',
-					data: ['Jan', 'Feb', 'Mar', 'Apr', 'May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-			    },
-			    yAxis: {
-			        type: 'value',
-			        boundaryGap: [0, 0.01]
-			    },
-			    series: [
-			        {
-			            name: '正常',
-			            type: 'bar',
-			            data: [30, 50, 85, 26, 33, 44,99,56,105,13,88,56]
-			        },
-			        {
-			            name: '异常',
-			            type: 'bar',
-			            data: [54, 68, 45, 86, 54, 77,63,78,99,12,99,20]
-			        }
-			    ]
-      });
+	  let option = {
+		  color: ['#23f39d','#c23531'],
+		  tooltip:{trigger: 'axis',},
+		  legend: {
+		    data:['正常人数','预警人数'],
+		  },
+		  grid:{
+		  	left:'10%',
+		  	right:'15%',
+		  },
+		  xAxis: {
+			show:false,
+		    type: 'category',
+		    boundaryGap: false,
+		    interval:4,
+		    data: ['周一', '周二', '周二', '周二', '周二', '周二', '周二']
+		  },
+		  yAxis: {
+		      type: 'value',
+		  },
+		  series: [
+			{
+		      name:"正常人数",
+		      data:[120, 132, 101, 134, 90, 230, 210],
+		      type: 'line',
+			  smooth: true,
+		      itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
+		          color: '#E6A23C',
+		          borderColor: '#E6A23C',
+		      },
+			},
+			{
+			  name:"预警人数",
+			  data:[120, 13, 104, 157, 44, 88, 26],
+			  type: 'line',
+			  smooth: true,
+			  itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
+			      color: '#E6A23C',
+			      borderColor: '#E6A23C',
+			  },
+			}
+		]
+	  }
+	  chartKeyPerson.setOption(option)
+	  let alertOption = {
+		  tooltip: {
+		          trigger: 'axis',
+		          axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+		              type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+		          }
+		      },
+			  color: ['#c23531','#61a0a8'],
+		      legend: {
+		          data: ['总预警数', '未处理预警数']
+		      },
+		      grid: {
+		          left: '3%',
+		          right: '4%',
+		          bottom: '3%',
+		          containLabel: true
+		      },
+		      xAxis: {
+				  show:false,//不显示坐标轴线、坐标轴刻度线和坐标轴上的文字
+				  type: 'category',
+				  data: this.weekData
+		      },
+		      yAxis: {
+		          type: 'value'
+		      },
+		      series: [
+		          {
+		              name: '总预警数',
+		              type: 'bar',
+		              stack: '总量',
+		              label: {
+		                  show: true,
+		                  position: 'insideRight'
+		              },
+		              data: this.alertNum
+		          },
+		          {
+		              name: '未处理预警数',
+		              type: 'bar',
+		              stack: '总量',
+		              label: {
+		                  show: true,
+		                  position: 'insideRight'
+		              },
+		              data: this.noHandle
+		          }
+		      ]
+	  }
+      chartManPerson.setOption(alertOption);
+	  let options = {
+		tooltip: {
+			trigger: 'axis',
+			axisPointer: {
+				type: 'shadow'
+			}
+		},
+		grid: {
+			left: '3%',
+			right: '4%',
+			bottom: '3%',
+			containLabel: true
+		},
+		xAxis: {
+			type: 'value',
+			boundaryGap: [0, 0.01]
+		},
+		yAxis: {
+			type: 'category',
+			data: this.orgName
+		},
+		series: [
+			{
+				type: 'bar',
+				data: this.orgData
+			}
+		]
+	  }
+      chartPersonActive.setOption(options);
       chartMonthWarn.setOption({
           title: {
               text: '当月预警分布类型',

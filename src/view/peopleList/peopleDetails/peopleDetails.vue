@@ -209,6 +209,10 @@
               bottom:'bottom',
               data:['今日'],
             },
+			grid:{
+				left:'10%',
+				right:'15%',
+			},
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
@@ -276,6 +280,10 @@
               bottom:'bottom',
               data:['高压','低压'],
             },
+			grid:{
+				left:'10%',
+				right:'15%',
+			},
             xAxis: {
               type: 'category',
               boundaryGap: false,
