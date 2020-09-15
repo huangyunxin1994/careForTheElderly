@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "3408491",
+      "name": "03监护人",
+      "font_class": "jianhuren",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "9250084",
+      "name": "老人",
+      "font_class": "laoren",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "10726054",
+      "name": "设备离线",
+      "font_class": "shebeilixian",
+      "unicode": "e66f",
+      "unicode_decimal": 58991
+    },
+    {
+      "icon_id": "10726057",
+      "name": "设备在线_1",
+      "font_class": "shebeizaixian_",
+      "unicode": "e671",
+      "unicode_decimal": 58993
+    },
+    {
       "icon_id": "435904",
       "name": "二维码",
       "font_class": "erweima",

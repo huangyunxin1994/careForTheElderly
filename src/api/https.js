@@ -4,8 +4,8 @@ import Qs from 'qs'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: "/api", // url = base url + request url
-  // baseURL: "http://47.115.89.236:8085/elderly", // url = base url + request url
+  // baseURL: "/api", // url = base url + request url
+  baseURL: "http://47.115.89.236:8085/elderly", // url = base url + request url
   timeout: 5000 // request timeout
 })
 

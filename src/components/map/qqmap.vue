@@ -150,7 +150,8 @@ export default {
                         zoom: this.zoomLevel,
                         draggable: this.dragging,               //设置是否可以拖拽
                         scrollwheel: this.zooming,             //设置是否可以滚动
-                        disableDefaultUI: true    //禁止所有控件
+                        disableDefaultUI: true,    //禁止所有控件
+                        mapStyleId: 'style2'  // 该key绑定的style1对应于经典地图样式，若未绑定将弹出无权限提示窗
                     }
                 )
             }

@@ -198,7 +198,7 @@
                 return row[column.property]
       },
       arrFormatter (value,name) {
-           if(name=='sex')
+          if(name=='sex')
            return value == 1 ? '男' : value == 0 ? '女' : '';
           else if(name=='equipmentState')
            return value == 2 ? '<span style="color:#909399">离线</span>' :( value == 1 ? '<span style="color:rgb(112, 182, 3)">在线</span>' : ( value == 3 ? '<span style="color:#e6a23c">预警</span>' : '' ));
@@ -256,44 +256,44 @@
 	  //页数大小
       handleSizeChange(val){
       	this.pageSize = val
-		this.page = 1
-		let param = {
-			currentPage:this.page,
-			pageSize:this.pageSize,
-			organizationId:this.organizationId,
-			isUseful:this.isUseful,
-			equipmentState:this.equipmentState,
-			parameter:this.parameter
-		}
-		this.getSearchData(param)
+        this.page = 1
+        let param = {
+          currentPage:this.page,
+          pageSize:this.pageSize,
+          organizationId:this.organizationId,
+          isUseful:this.isUseful,
+          equipmentState:this.equipmentState,
+          parameter:this.parameter
+        }
+        this.getSearchData(param)
       },
 	  //设备状态
       changeData(val){
 		  this.equipmentState = val
 		  this.page = 1
 		  let param = {
-			 currentPage:this.page,
-			 pageSize:this.pageSize,
-			 organizationId:this.organizationId,
-			 isUseful:this.isUseful,
-			 equipmentState:this.equipmentState,
-			 parameter:this.parameter
+        currentPage:this.page,
+        pageSize:this.pageSize,
+        organizationId:this.organizationId,
+        isUseful:this.isUseful,
+        equipmentState:this.equipmentState,
+        parameter:this.parameter
 		  }
-		  this.getSearchData(param)
+		    this.getSearchData(param)
       },
 	  //是否可用
       isUseW(val){
-		this.isUseful = val
-		this.page = 1
-		let param = {
-			currentPage:this.page,
-			pageSize:this.pageSize,
-			organizationId:this.organizationId,
-			isUseful:this.isUseful,
-			equipmentState:this.equipmentState,
-			parameter:this.parameter
-		}
-		this.getSearchData(param)
+        this.isUseful = val
+        this.page = 1
+        let param = {
+          currentPage:this.page,
+          pageSize:this.pageSize,
+          organizationId:this.organizationId,
+          isUseful:this.isUseful,
+          equipmentState:this.equipmentState,
+          parameter:this.parameter
+        }
+        this.getSearchData(param)
       },
       //修改
       handleEdit(index,row){
@@ -392,14 +392,13 @@
       //将tabledata的值传给tableAllData(到真正对接时就不用)
       getTableAllData(){
         getEquipment().then(res=>{
-			console.log(res)
-            if(res.code==0)
-			  this.tableData = res.data.data
-			  this.tableAllData = this.tableData
-			  this.count = res.data.count
-			}).catch(err=>{
+        if(res.code==0)
+          this.tableData = res.data.data
+          this.tableAllData = this.tableData
+          this.count = res.data.count
+        }).catch(err=>{
 
-			})
+        })
       },
 	  //获取组织列表
 	  getOrgList(){
@@ -470,8 +469,8 @@
     },
     mounted(){
       this.getTableAllData()
-	  this.getOrgList()
-	  this.getEqtime()
+      this.getOrgList()
+      this.getEqtime()
     },
     computed:{
       tables:function(){
@@ -495,9 +494,9 @@
 </script>
 
 <style lang="scss" scoped>
-    /deep/.el-table--mini td{
-      padding: 0px;
-    }
+  /deep/.el-table--mini td{
+    padding: 0px;
+  }
   .wrap{
     background-color: rgb(244, 244, 245);
     height: 100vh;
@@ -516,8 +515,7 @@
       .enroll-manage-container{
           padding: 20px;
           background: #fff;
-		  height: calc(100% - 40px);
-		  // height: calc(100vh - 105px);
+		      height: calc(100% - 40px);
           &-handle{
               display: flex;
               margin-bottom: 20px;
@@ -574,7 +572,7 @@
       width: 100%;
           height: 80px;
           background: #fff;
-      }
+  }
 
   .foot{
     margin-top: 20px;
