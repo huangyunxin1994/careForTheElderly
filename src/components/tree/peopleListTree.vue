@@ -12,6 +12,7 @@
           <el-scrollbar class="dashboard-scrollbar">
           <el-tree
               :data="data"
+			  :expand-on-click-node="false"
               :props="defaultProps"
               @node-click="handleNodeClick"
               :filter-node-method="filterNode"

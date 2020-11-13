@@ -48,8 +48,13 @@ export default {
       },
      initWebSocket(){ //初始化weosocket
       console.log(251)
-        const wsuri = "ws://47.115.89.236:8085/elderly/webSocket/123";
-        // const wsuri = "ws://192.168.1.9:8085/webSocket/123";
+         let wsuri = "";
+        if (window.location.protocol == 'http:') {
+           wsuri ='ws://47.115.89.236:8085/elderly/webSocket/123';  
+        } else { 
+          wsuri = 'wss://'+window.location.host+'/webSocket/webSocket/123'; 
+        } 
+        // const wsuri = "ws://192.168.1.9:8085/wss/123";
         this.websock = new WebSocket(wsuri);
         this.websock.onmessage = this.websocketonmessage;
         this.websock.onopen = this.websocketonopen;

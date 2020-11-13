@@ -11,53 +11,63 @@
         <div class="em-t-i">
           <div class="em-t-i-l">
             <span class="em-t-i-name">老人总数统计</span>
-            <span class="em-t-i-value">{{data.elderlyCount}}</span>
+            <span class="em-t-i-value">{{ data.elderlyCount }}</span>
           </div>
           <div class="em-t-i-m">
             <div id="chartElder"></div>
           </div>
           <div class="em-t-i-r">
-            <i class="iconfont icon-laoren em-t-i-icon" style="color:#E6A23C"></i>
+            <i
+              class="iconfont icon-laoren em-t-i-icon"
+              style="color: #E6A23C"
+            ></i>
           </div>
         </div>
         <div class="em-t-i">
           <div class="em-t-i-l">
             <span class="em-t-i-name">监护人总数统计</span>
-            <span class="em-t-i-value">{{data.familyCount}}</span>
+            <span class="em-t-i-value">{{ data.familyCount }}</span>
           </div>
           <div class="em-t-i-m">
             <div id="chartFamily"></div>
           </div>
           <div class="em-t-i-r">
-            <i class="iconfont icon-jianhuren em-t-i-icon" style="color:#409EFF"></i>
+            <i
+              class="iconfont icon-jianhuren em-t-i-icon"
+              style="color: #409EFF"
+            ></i>
           </div>
         </div>
         <div class="em-t-i">
           <div class="em-t-i-l">
             <span class="em-t-i-name">设备在线数统计</span>
-            <span
-              class="em-t-i-value"
-            >{{data.onLineNum}}</span>
+            <span class="em-t-i-value">{{ data.equipmentState.find((i) => i.equipmentState === 1)&&data.equipmentState.find((i) => i.equipmentState === 1)
+                    .count || 0 }}</span>
           </div>
           <div class="em-t-i-m2">
             <div id="chartOnline"></div>
           </div>
           <div class="em-t-i-r">
-            <i class="iconfont icon-shebeizaixian_ em-t-i-icon" style="color:#67C23A"></i>
+            <i
+              class="iconfont icon-shebeizaixian_ em-t-i-icon"
+              style="color: #67C23A"
+            ></i>
           </div>
         </div>
         <div class="em-t-i">
           <div class="em-t-i-l">
             <span class="em-t-i-name">设备离线数统计</span>
-            <span
-              class="em-t-i-value"
-            >{{data.offLineNum}}</span>
+            <span class="em-t-i-value">{{data.equipmentState.find((i) => i.equipmentState === 2)&&data.equipmentState.find((i) => i.equipmentState === 2)
+                    .count || 0 }}</span>
           </div>
           <div class="em-t-i-m2">
             <div id="chartOffline"></div>
           </div>
           <div class="em-t-i-r">
-            <i class="iconfont icon-shebeilixian em-t-i-icon" style="color:#909399"></i>
+            <i
+              class="iconfont icon-shebeilixian em-t-i-icon"
+              style="color: #909399"
+            ></i>
           </div>
         </div>
       </div>
@@ -97,16 +107,18 @@
             <div class="em-b-r-b-r">
               <div class="title">预警信息</div>
               <div class="warnMess" ref="warnMess">
-                <div :style="{'marginTop':marginTop+'px'}">
+                <div :style="{ marginTop: marginTop + 'px' }">
                   <div
-                    :ref="index==0?'text':''"
+                    :ref="index == 0 ? 'text' : ''"
                     class="warnMess-content"
-                    v-for="(i,index) in data.equipmentAlertList"
+                    v-for="(i, index) in data.equipmentAlertList"
                     :key="index"
-                    style="white-space:nowrap"
+                    style="white-space: nowrap"
                   >
                     <i class="el-icon-warning warnMess-content-icon"></i>
-                    &nbsp;&nbsp;[{{i.alertTime}}]&nbsp;&nbsp; 人员预警：{{i.name}}
+                    &nbsp;&nbsp;[{{ i.alertTime }}]&nbsp;&nbsp; 人员预警：{{
+                      i.name
+                    }}
                   </div>
                 </div>
               </div>
@@ -139,15 +151,7 @@ export default {
       markers: [],
       center: {},
       marginTop: 0,
-      warnData: [
-        { alertTime: "2020-06-18 15:25:01", name: "詹姆斯" },
-        { alertTime: "2020-06-18 15:25:02", name: "詹姆斯" },
-        { alertTime: "2020-06-18 15:25:03", name: "詹姆斯" },
-        { alertTime: "2020-06-18 15:25:04", name: "詹姆斯" },
-        { alertTime: "2020-06-18 15:25:05", name: "詹姆斯" },
-        { alertTime: "2020-06-18 15:25:06", name: "詹姆斯" },
-        { alertTime: "2020-06-18 15:25:07", name: "詹姆斯" }
-      ],
+      warnData: [],
       timer: "", // 定时器
       //最多的五个组织
       orgName: [],
@@ -159,19 +163,19 @@ export default {
       weekData: [],
 
       //老人,监护人总数
-      dataTime:[],
-      elderData:[],
-      familyData:[],
+      dataTime: [],
+      elderData: [],
+      familyData: [],
 
       //预警人数图表
-      alertPerson:[],
-      allPerson:[]
+      alertPerson: [],
+      allPerson: [],
     };
   },
   mounted() {
     this.getBulletinboardData();
     // this.getAllPeople();
-    console.log()
+    console.log();
   },
   created() {},
   methods: {
@@ -185,7 +189,7 @@ export default {
         if (res.code == 0) {
           this.data = res.data;
           let orgPeople = res.data.userDistribution;
-          
+
           orgPeople.forEach((item) => {
             this.orgName.unshift(item.name);
             this.orgData.unshift(item.count);
@@ -194,71 +198,72 @@ export default {
           //预警数和未处理数
           let weekAlert = res.data.weekAlert;
           let untreatedWeekAlert = res.data.untreatedWeekAlert;
-          let fenceAlertList = res.data.fenceAlertList
-          let fenceElderly = res.data.fenceElderly
-          let toWeek =  this.getWeekOfYear()
-          console.log(toWeek)
-          for(let i = toWeek;i>toWeek-6;i--){
-            let ndata = weekAlert.find(item => item.alertWeek == i)
-            console.log(ndata)
-            if(ndata) {
+          let fenceAlertList = res.data.fenceAlertList;
+          let fenceElderly = res.data.fenceElderly;
+          let toWeek = this.getWeekOfYear();
+          console.log(toWeek);
+          for (let i = toWeek; i > toWeek - 6; i--) {
+            let ndata = weekAlert.find((item) => item.alertWeek == i);
+            console.log(ndata);
+            if (ndata) {
               this.alertNum.push(ndata.count);
-            }else{
+            } else {
               this.alertNum.push(0);
             }
-            this.weekData.push("第"+i+"周");
-             let wdata = untreatedWeekAlert.find(item => item.alertWeek == i)
-              if(wdata) {
+            this.weekData.push("第" + i + "周");
+            let wdata = untreatedWeekAlert.find((item) => item.alertWeek == i);
+            if (wdata) {
               this.noHandle.push(wdata.count);
-            }else{
+            } else {
               this.noHandle.push(0);
             }
-            let pData = fenceAlertList.find(item =>item[i])
-            if(pData) {
+            let pData = fenceAlertList.find((item) => item[i]);
+            if (pData) {
               this.alertPerson.push(pData[i]);
-            }else{
+            } else {
               this.alertPerson.push(0);
             }
-            let pData1 = fenceElderly.find(item =>item[i])
-            if(pData1) {
+            let pData1 = fenceElderly.find((item) => item[i]);
+            if (pData1) {
               this.allPerson.push(pData1[i]);
-            }else{
+            } else {
               this.allPerson.push(0);
             }
           }
-          res.data.elderly.forEach((i,k)=>{
-            this.dataTime.push(i.time)
-            this.elderData.push(i.count)
-          })
-          res.data.familyMembers.forEach(j=>{
-            this.familyData.push(j.count)
-          })
+          res.data.elderly.forEach((i, k) => {
+            this.dataTime.push(i.time);
+            this.elderData.push(i.count);
+          });
+          res.data.familyMembers.forEach((j) => {
+            this.familyData.push(j.count);
+          });
           this.alertNum.reverse();
           this.weekData.reverse();
           this.noHandle.reverse();
           this.alertPerson.reverse();
-          this.allPerson.reverse()
+          this.allPerson.reverse();
           res.data.userDistribution.forEach((i) => {
             let para = {
               id: i.id,
               longitude: i.longitude,
               latitude: i.latitude,
               icon: {
-                name:home,
+                name: home,
                 size: [32, 32],
                 anchor: [16, 32],
               },
             };
             this.markers.push(para);
+            console.log(this.markers);
           });
           this.$nextTick((_) => {
             this.drawChart();
             this.$refs.myMap.getMap();
             let height = this.$refs.text[0].clientHeight;
             let pHeight = this.$refs.warnMess.clientHeight;
-            let num = Math.ceil(pHeight/height)
-            if(this.data.equipmentAlertList.length>=num)
-            this.timer = setInterval(this.showNotice, 50); //100表示间隔时间，数字越大滚得越快
+            let num = Math.ceil(pHeight / height);
+            if (this.data.equipmentAlertList.length >= num)
+              this.timer = setInterval(this.showNotice, 50); //100表示间隔时间，数字越大滚得越快
           });
         }
       });
@@ -413,7 +418,7 @@ export default {
         tooltip: {
           transitionDuration: 0,
           trigger: "axis",
-          
+
           // formatter: (params, ticket, callback) => {
           //   return (
           //     "第"+params[0].name+"周<br/>"+
@@ -493,16 +498,14 @@ export default {
       };
       chartWarnNum.setOption(option);
       let alertOption = {
-       
         tooltip: {
-           transitionDuration: 0,
+          transitionDuration: 0,
           trigger: "axis",
           axisPointer: {
             // 坐标轴指示器，坐标轴触发有效
             type: "shadow", // 默认为直线，可选为：'line' | 'shadow'
           },
           color: ["#28df99", "#3fc5f0"],
-         
         },
         legend: {
           bottom: "5%",
@@ -530,7 +533,7 @@ export default {
               type: "dashed",
             },
           },
-           axisLine: {
+          axisLine: {
             //y轴
             show: false,
           },
@@ -608,7 +611,7 @@ export default {
               type: "dashed",
             },
           },
-           axisLine: {
+          axisLine: {
             //y轴
             show: false,
           },
@@ -620,31 +623,30 @@ export default {
         yAxis: {
           type: "category",
           data: this.orgName,
-         axisLabel: {
+          axisLabel: {
             margin: 50,
-            align: 'left',
+            align: "left",
             formatter: function (value, index) {
-              console.log()
-              let num = Math.floor(value.length/4)
-              let str = ""
-              if(num>0){
-                
-                for(let i=0;i<=num;i++){
-                   console.log( value.slice(4*i, 4*(i+1)))
-                   if(i == num){
-                      str+=value.slice(4*i)
-                   }else{
-                     str+=value.slice(4*i, 4*(i+1))+"\n"
-                   }
+              console.log();
+              let num = Math.floor(value.length / 4);
+              let str = "";
+              if (num > 0) {
+                for (let i = 0; i <= num; i++) {
+                  console.log(value.slice(4 * i, 4 * (i + 1)));
+                  if (i == num) {
+                    str += value.slice(4 * i);
+                  } else {
+                    str += value.slice(4 * i, 4 * (i + 1)) + "\n";
+                  }
                 }
-                console.log(str)
-              }else{
-                str=value
+                console.log(str);
+              } else {
+                str = value;
               }
-                return str;
-            }
-        },
-           axisLine: {
+              return str;
+            },
+          },
+          axisLine: {
             //y轴
             show: false,
           },
@@ -685,7 +687,7 @@ export default {
           bottom: "3%",
         },
         xAxis: {
-          show:false,
+          show: false,
           type: "category",
           data: this.dataTime,
           boundaryGap: [0, 0.01],
@@ -694,8 +696,8 @@ export default {
           },
         },
         yAxis: {
-          show:false,
-         type: "value",
+          show: false,
+          type: "value",
         },
         series: [
           {
@@ -705,18 +707,21 @@ export default {
             itemStyle: {
               normal: {
                 color: new echarts.graphic.LinearGradient(
-                    0, 0, 0, 1,       //4个参数用于配置渐变色的起止位置, 这4个参数依次对应右/下/左/上四个方位. 而0 0 0 1则代表渐变色从正上方开始
-                    [
-                        {offset: 0, color: '#E6A23C'},
-                        {offset: 0.99, color: 'rgb(250, 236, 216)'},
-                        {offset: 1, color: 'rgb(253, 246, 236)'}
-                    ]                //数组, 用于配置颜色的渐变过程. 每一项为一个对象, 包含offset和color两个参数. offset的范围是0 ~ 1, 用于表示位置
-                )
+                  0,
+                  0,
+                  0,
+                  1, //4个参数用于配置渐变色的起止位置, 这4个参数依次对应右/下/左/上四个方位. 而0 0 0 1则代表渐变色从正上方开始
+                  [
+                    { offset: 0, color: "#E6A23C" },
+                    { offset: 0.99, color: "rgb(250, 236, 216)" },
+                    { offset: 1, color: "rgb(253, 246, 236)" },
+                  ] //数组, 用于配置颜色的渐变过程. 每一项为一个对象, 包含offset和color两个参数. offset的范围是0 ~ 1, 用于表示位置
+                ),
               },
             },
           },
         ],
-      })
+      });
       chartFamily.setOption({
         title: {
           show: false,
@@ -733,10 +738,9 @@ export default {
           left: "0%",
           top: "0%",
           bottom: "3%",
-         
         },
         xAxis: {
-          show:false,
+          show: false,
           type: "category",
           data: this.dataTime,
           boundaryGap: [0, 0.01],
@@ -745,8 +749,8 @@ export default {
           },
         },
         yAxis: {
-          show:false,
-         type: "value",
+          show: false,
+          type: "value",
         },
         series: [
           {
@@ -756,210 +760,241 @@ export default {
             itemStyle: {
               normal: {
                 color: new echarts.graphic.LinearGradient(
-                    0, 0, 0, 1,       //4个参数用于配置渐变色的起止位置, 这4个参数依次对应右/下/左/上四个方位. 而0 0 0 1则代表渐变色从正上方开始
-                    [
-                        {offset: 0, color: '#409EFF'},
-                        {offset: 0.99, color: 'rgb(179, 216, 255)'},
-                        {offset: 1, color: 'rgb(198, 226, 255)'}
-                    ]                //数组, 用于配置颜色的渐变过程. 每一项为一个对象, 包含offset和color两个参数. offset的范围是0 ~ 1, 用于表示位置
-                )
+                  0,
+                  0,
+                  0,
+                  1, //4个参数用于配置渐变色的起止位置, 这4个参数依次对应右/下/左/上四个方位. 而0 0 0 1则代表渐变色从正上方开始
+                  [
+                    { offset: 0, color: "#409EFF" },
+                    { offset: 0.99, color: "rgb(179, 216, 255)" },
+                    { offset: 1, color: "rgb(198, 226, 255)" },
+                  ] //数组, 用于配置颜色的渐变过程. 每一项为一个对象, 包含offset和color两个参数. offset的范围是0 ~ 1, 用于表示位置
+                ),
               },
             },
           },
         ],
-      })
+      });
       chartOnline.setOption({
         title: {
-text:3,
- textStyle: {
-      color: '#01c4a3',
-      fontSize: 14
-    },
-	subtextStyle: {
-		color: '#909090',
-	},
-	itemGap: -10, // 主副标题距离
-	left: 'center',
-	top: 'center'
-},
-angleAxis: {
-	max: parseInt(this.data.onLineNum+this.data.offLineNum), // 满分
-	clockwise: true, // 逆时针
-    // 隐藏刻度线
-	axisLine: {
-		show: false
-	},
-	axisTick: {
-		show: false
-	},
-	axisLabel: {
-		show: false
-	},
-	splitLine: {
-		show: false
-	}
-},
-radiusAxis: {
-	type: 'category',
-    // 隐藏刻度线
-	axisLine: {
-		show: false
-    },
-    axisTick: {
-		show: false
-    },
-    axisLabel: {
-		show: false
-    },
-    splitLine: {
-		show: false
-    }
-  },
-polar: {
-	center: ['50%', '50%'],
-	radius: '100%' //图形大小
-},
-series: [{
-	type: 'bar',
-    data: [{
-		name: '在线人数',
-		value: this.data.onLineNum,
-		itemStyle: {
-			normal: {
-				color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-					offset: 0,
-					color: '#aaf14f'
-				}, {
-					offset: 1,
-					color: '#0acfa1'
-				}])
-			}
-		},
-    }],
-	coordinateSystem: 'polar',
-	roundCap: true,
-	barWidth: 15,
-	barGap: '-100%', // 两环重叠
-	z: 2,
-},{ // 灰色环
-    type: 'bar',
-    data: [{
-		value: 4,
-		itemStyle: {
-			color: '#DCDFE6',
-			shadowColor: 'rgba(0, 0, 0, 0)',
-			shadowBlur: 5,
-			shadowOffsetY: 2
-		}
-    }],
-    coordinateSystem: 'polar',
-    roundCap: true,
-    barWidth: 15,
-    barGap: '-100%', // 两环重叠
-    z: 1
-  }]
-      })
+          text:
+            this.data.equipmentState.find((i) => i.equipmentState === 1)&&this.data.equipmentState.find((i) => i.equipmentState === 1)
+                    .count || 0,
+          textStyle: {
+            color: "#01c4a3",
+            fontSize: 14,
+          },
+          subtextStyle: {
+            color: "#909090",
+          },
+          itemGap: -10, // 主副标题距离
+          left: "center",
+          top: "center",
+        },
+        angleAxis: {
+          max: parseInt(this.data.onLineNum + this.data.offLineNum), // 满分
+          clockwise: true, // 逆时针
+          // 隐藏刻度线
+          axisLine: {
+            show: false,
+          },
+          axisTick: {
+            show: false,
+          },
+          axisLabel: {
+            show: false,
+          },
+          splitLine: {
+            show: false,
+          },
+        },
+        radiusAxis: {
+          type: "category",
+          // 隐藏刻度线
+          axisLine: {
+            show: false,
+          },
+          axisTick: {
+            show: false,
+          },
+          axisLabel: {
+            show: false,
+          },
+          splitLine: {
+            show: false,
+          },
+        },
+        polar: {
+          center: ["50%", "50%"],
+          radius: "100%", //图形大小
+        },
+        series: [
+          {
+            type: "bar",
+            data: [
+              {
+                name: "在线人数",
+                value:
+                  this.data.equipmentState.find((i) => i.equipmentState === 1)&&this.data.equipmentState.find((i) => i.equipmentState === 1)
+                    .count || 0,
+                itemStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [
+                      {
+                        offset: 0,
+                        color: "#aaf14f",
+                      },
+                      {
+                        offset: 1,
+                        color: "#0acfa1",
+                      },
+                    ]),
+                  },
+                },
+              },
+            ],
+            coordinateSystem: "polar",
+            roundCap: true,
+            barWidth: 15,
+            barGap: "-100%", // 两环重叠
+            z: 2,
+          },
+          {
+            // 灰色环
+            type: "bar",
+            data: [
+              {
+                value: parseInt(this.data.onLineNum + this.data.offLineNum),
+                itemStyle: {
+                  color: "#DCDFE6",
+                  shadowColor: "rgba(0, 0, 0, 0)",
+                  shadowBlur: 5,
+                  shadowOffsetY: 2,
+                },
+              },
+            ],
+            coordinateSystem: "polar",
+            roundCap: true,
+            barWidth: 15,
+            barGap: "-100%", // 两环重叠
+            z: 1,
+          },
+        ],
+      });
       chartOffline.setOption({
         title: {
-text:1,
- textStyle: {
-      color: '#606266',
-      fontSize: 14
-    },
-	subtextStyle: {
-		color: '#909090',
-	},
-	itemGap: -10, // 主副标题距离
-	left: 'center',
-	top: 'center'
-},
-angleAxis: {
-	max: 4, // 满分
-	clockwise: true, // 逆时针
-    // 隐藏刻度线
-	axisLine: {
-		show: false
-	},
-	axisTick: {
-		show: false
-	},
-	axisLabel: {
-		show: false
-	},
-	splitLine: {
-		show: false
-	}
-},
-radiusAxis: {
-	type: 'category',
-    // 隐藏刻度线
-	axisLine: {
-		show: false
-    },
-    axisTick: {
-		show: false
-    },
-    axisLabel: {
-		show: false
-    },
-    splitLine: {
-		show: false
-    }
-  },
-polar: {
-	center: ['50%', '50%'],
-	radius: '100%' //图形大小
-},
-series: [{
-	type: 'bar',
-    data: [{
-		name: '离线人数',
-		value: this.data.offLineNum,
-		itemStyle: {
-			normal: {
-				color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-					offset: 0,
-					color: '#606266'
-				}, {
-					offset: 1,
-					color: '#909399'
-				}])
-			}
-		},
-    }],
-	coordinateSystem: 'polar',
-	roundCap: true,
-	barWidth: 15,
-	barGap: '-100%', // 两环重叠
-	z: 2,
-},{ // 灰色环
-    type: 'bar',
-    data: [{
-		value: 4,
-		itemStyle: {
-			color: '#DCDFE6',
-			shadowColor: 'rgba(0, 0, 0, 0)',
-			shadowBlur: 5,
-			shadowOffsetY: 2
-		}
-    }],
-    coordinateSystem: 'polar',
-    roundCap: true,
-    barWidth: 15,
-    barGap: '-100%', // 两环重叠
-    z: 1
-  }]
-      })
+          text: this.data.equipmentState.find((i) => i.equipmentState === 2)&&this.data.equipmentState.find((i) => i.equipmentState === 2)
+                    .count || 0,
+          textStyle: {
+            color: "#606266",
+            fontSize: 14,
+          },
+          subtextStyle: {
+            color: "#909090",
+          },
+          itemGap: -10, // 主副标题距离
+          left: "center",
+          top: "center",
+        },
+        angleAxis: {
+          max: parseInt(this.data.onLineNum + this.data.offLineNum), // 满分
+          clockwise: true, // 逆时针
+          // 隐藏刻度线
+          axisLine: {
+            show: false,
+          },
+          axisTick: {
+            show: false,
+          },
+          axisLabel: {
+            show: false,
+          },
+          splitLine: {
+            show: false,
+          },
+        },
+        radiusAxis: {
+          type: "category",
+          // 隐藏刻度线
+          axisLine: {
+            show: false,
+          },
+          axisTick: {
+            show: false,
+          },
+          axisLabel: {
+            show: false,
+          },
+          splitLine: {
+            show: false,
+          },
+        },
+        polar: {
+          center: ["50%", "50%"],
+          radius: "100%", //图形大小
+        },
+        series: [
+          {
+            type: "bar",
+            data: [
+              {
+                name: "离线人数",
+                value: this.data.equipmentState.find((i) => i.equipmentState === 2)&&this.data.equipmentState.find((i) => i.equipmentState === 2)
+                    .count || 0,
+                itemStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [
+                      {
+                        offset: 0,
+                        color: "#606266",
+                      },
+                      {
+                        offset: 1,
+                        color: "#909399",
+                      },
+                    ]),
+                  },
+                },
+              },
+            ],
+            coordinateSystem: "polar",
+            roundCap: true,
+            barWidth: 15,
+            barGap: "-100%", // 两环重叠
+            z: 2,
+          },
+          {
+            // 灰色环
+            type: "bar",
+            data: [
+              {
+                value: parseInt(this.data.onLineNum + this.data.offLineNum),
+                itemStyle: {
+                  color: "#DCDFE6",
+                  shadowColor: "rgba(0, 0, 0, 0)",
+                  shadowBlur: 5,
+                  shadowOffsetY: 2,
+                },
+              },
+            ],
+            coordinateSystem: "polar",
+            roundCap: true,
+            barWidth: 15,
+            barGap: "-100%", // 两环重叠
+            z: 1,
+          },
+        ],
+      });
       window.onresize = function () {
         chartKeyPerson.resize();
         chartManPerson.resize();
         chartPersonActive.resize();
         chartMonthWarn.resize();
         chartWarnNum.resize();
-        chartElder.resize()
-         chartFamily.resize()
-          chartOnline.resize()
-          chartOffline.resize()
+        chartElder.resize();
+        chartFamily.resize();
+        chartOnline.resize();
+        chartOffline.resize();
       };
     },
 
@@ -967,30 +1002,30 @@ series: [{
       this.marginTop -= 1;
       let height = this.$refs.text[0].clientHeight;
       if (this.marginTop < -height) {
-        this.warnData.push(this.warnData[0]);
-        this.warnData.shift();
+        this.data.equipmentAlertList.push(this.data.equipmentAlertList[0]);
+        this.data.equipmentAlertList.shift();
         this.marginTop = 0;
       }
     },
     //计算当前日期为本年的第几周
-     getWeekOfYear(){
+    getWeekOfYear() {
       var today = new Date();
-      console.log(today.getDate())
-      var firstDay = new Date(today.getFullYear(),0, 1);
-      var dayOfWeek = firstDay.getDay(); 
-      console.log(firstDay,dayOfWeek)
-      var spendDay= 1;
-      if (dayOfWeek !=0) {
-        spendDay=7-dayOfWeek+1;
+      console.log(today.getDate());
+      var firstDay = new Date(today.getFullYear(), 0, 1);
+      var dayOfWeek = firstDay.getDay();
+      console.log(firstDay, dayOfWeek);
+      var spendDay = 1;
+      if (dayOfWeek != 0) {
+        spendDay = 7 - dayOfWeek + 1;
       }
-      console.log(spendDay)
-      firstDay = new Date(today.getFullYear(),0, 1+spendDay);
-      console.log(firstDay)
-      var d =Math.ceil((today.valueOf()- firstDay.valueOf())/ 86400000);
-      console.log(d)
-      var result =Math.ceil(d/7);
-      return result+1;
-    }
+      console.log(spendDay);
+      firstDay = new Date(today.getFullYear(), 0, 1 + spendDay);
+      console.log(firstDay);
+      var d = Math.ceil((today.valueOf() - firstDay.valueOf()) / 86400000);
+      console.log(d);
+      var result = Math.ceil(d / 7);
+      return result + 1;
+    },
   },
   destroyed() {
     clearInterval(this.timer);
@@ -1034,7 +1069,7 @@ $light_gray: rgba(51, 51, 51, 1);
       box-sizing: border-box;
       display: flex;
       justify-content: space-between;
-     
+
       &-i {
         width: calc(25% - 30px);
         height: 100%;
@@ -1045,11 +1080,11 @@ $light_gray: rgba(51, 51, 51, 1);
         border-radius: 5px;
         display: flex;
         justify-content: space-between;
-         align-items: center;
+        align-items: center;
         padding: 0 20px;
         box-sizing: border-box;
         position: relative;
-        
+
         &-l {
           display: flex;
           flex-direction: column;

@@ -69,7 +69,7 @@
                    cb(s)
                 }
             });
-            searchService.setLocation("南宁");
+            // searchService.setLocation("南宁");
           searchService.search(str);
       },
       //点击选中建议项时触发的方法

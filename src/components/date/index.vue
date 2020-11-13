@@ -90,6 +90,7 @@ export default {
       this.currentDayList = []
       for(let i in this.alertTimeList){
         var date = this.alertTimeList[i].hours
+        console.log(date)
         date = date.substring(0,11);    
         date = date.replace(/-/g,'/'); 
         var timestamp = new Date(date).getTime();
@@ -97,7 +98,7 @@ export default {
       }
       data.forEach((item)=> {
         let para = {month:new Date(item).getMonth()+1,day:new Date(item).getDate()}
-         return this.currentDayList.push(new Date(item).getMonth()+1+"-"+new Date(item).getDate())
+         return this.currentDayList.push(new Date(item).getFullYear()+"-"+parseInt(new Date(item).getMonth()+1)+"-"+new Date(item).getDate())
       })
     },
 
@@ -115,7 +116,7 @@ export default {
           dom.className.match(/hook-icon/i) && (dom.className = 'available')
           return false
         }
-        if (self.currentDayList.indexOf(self.showMonth+"-"+parseInt(i+1))!=-1) {
+        if (self.currentDayList.indexOf(self.showYear+"-"+self.showMonth+"-"+parseInt(i+1))!=-1) {
           dom.className.match(/warn-icon/i) && (dom.className = 'available hook-icon')
           dom.className.match(/hook-icon/i) || (dom.className += ' hook-icon')
         } else {

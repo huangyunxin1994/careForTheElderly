@@ -653,9 +653,10 @@
 	  getTimeOptions(){
 			 return{
 				disabledDate:(time)=>{
-					let disabledDate;
-					let nowDate = new Date();
-					nowDate.setDate(nowDate.getDate());
+          let nowDate = new Date();
+          nowDate.setHours(23)
+          nowDate.setMinutes(59)
+          nowDate.setSeconds(59)
 					return time.getTime() > nowDate.getTime()
 				}
 			 }  

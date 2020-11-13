@@ -13,6 +13,7 @@
           <el-tree
               :data="data"
               :props="defaultProps"
+			  :expand-on-click-node="false"
               @node-click="handleNodeClick"
               :filter-node-method="filterNode"
                node-key="id"
