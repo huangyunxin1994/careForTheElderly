@@ -132,9 +132,9 @@ export default {
 			    res.data.data.forEach(i => {
 			      let content =  `<div style='overflow-x: hidden;width: 250px;padding:10px;'>
 									<p class='mymap-item'>
-									  <span">家庭地址：${i.address}</span>
+									  <span">家庭地址：${i.address&&i.address||'无'}</span>
 									<p/>
-									<p>联系方式: ${i.sim}</p>
+									<p>联系方式: ${i.sim&&i.sim||'无'}</p>
 									<div style='display: flex;justify-content: space-between;align-items: center;'>
 										<div>姓名:${i.name}</div>
 									    <input class='mymap-button'

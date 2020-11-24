@@ -89,6 +89,7 @@
                   start-placeholder="开始日期"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   end-placeholder="结束日期"  size="small"
+                  :default-time="['00:00:00', '23:59:59']"
                   @change="selectCoordinate">
                 </el-date-picker>
               </div>
@@ -246,12 +247,12 @@
                       silent:false,             //鼠标悬停事件  true没有，false有
                       lineStyle:{               //警戒线的样式  ，虚实  颜色
                           type:"solid",
-                          color:"rgba(238, 99, 99)",
+                          color:"#f50",
                           width:2,
                       },
                       label:{
                           position:'end',
-                          formatter:"低心率(50)"
+                          formatter:""
                       },
                       name: '低心率',
                       yAxis: 50
@@ -259,12 +260,12 @@
                       silent:false,             //鼠标悬停事件  true没有，false有
                       lineStyle:{               //警戒线的样式  ，虚实  颜色
                           type:"solid",
-                          color:"rgba(238, 99, 99)",
+                          color:"#f50",
                           width:2,
                       },
                       label:{
                           position:'end',
-                          formatter:"高心率(100)"
+                          formatter:""
                       },
                       name: '高心率',
                       yAxis: 100
@@ -311,17 +312,17 @@
                 },
                 markLine : {
                   symbol:"none",               //去掉警戒线最后面的箭头
-                  label:{
-                      position:"end",         //将警示值放在哪个位置，三个值“start”,"middle","end"  开始  中点 结束
-                      formatter: "警戒线"
-                  },
                   data : [
                   {
                       silent:false,             //鼠标悬停事件  true没有，false有
                       lineStyle:{               //警戒线的样式  ，虚实  颜色
                           type:"solid",
-                          color:"rgba(238, 99, 99)",
+                          color:"#f50",
                           width:2,
+                      },
+                      label:{
+                          position:'end',
+                          formatter:""
                       },
                       name: '低血压',
                       yAxis: 60
@@ -329,8 +330,12 @@
                       silent:false,             //鼠标悬停事件  true没有，false有
                       lineStyle:{               //警戒线的样式  ，虚实  颜色
                           type:"solid",
-                          color:"rgba(238, 99, 99)",
+                          color:"#f50",
                           width:2,
+                      },
+                      label:{
+                          position:'end',
+                          formatter:""
                       },
                       name: '高血压',
                       yAxis: 140
@@ -338,8 +343,12 @@
                       silent:false,             //鼠标悬停事件  true没有，false有
                       lineStyle:{               //警戒线的样式  ，虚实  颜色
                           type:"solid",
-                          color:"rgba(238, 99, 99)",
+                          color:"#f50",
                           width:2,
+                      },
+                      label:{
+                          position:'end',
+                          formatter:""
                       },
                       name: '高血压',
                       yAxis: 90

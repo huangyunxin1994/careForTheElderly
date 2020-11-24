@@ -141,7 +141,7 @@ export default {
 	  },
       selectElec(){
 		    let user = JSON.parse(sessionStorage.getItem('user'))
-        getRailList().then((res)=>{
+        getRailList({organizationId:user.organizationId}).then((res)=>{
           if(res.code == 0){
             this.filterArr = res.data.list
 			
@@ -154,9 +154,8 @@ export default {
       },
 	  //获取电子围栏信息
 	  async getRailList(){
-		  
-		  let user = JSON.parse(sessionStorage.getItem('user'))
-		  await getRailList().then((res)=>{
+      let user = JSON.parse(sessionStorage.getItem('user'))
+		  await getRailList({organizationId:user.organizationId}).then((res)=>{
 			  if(res.code == 0){
 				  this.filterArr = res.data.list
 				  this.enterElecArr = res.data.list
@@ -168,7 +167,9 @@ export default {
 	  }
     },
     mounted(){
-	  this.getRailList()
+      
+      this.center
+	    this.getRailList()
     }
 }
 </script>

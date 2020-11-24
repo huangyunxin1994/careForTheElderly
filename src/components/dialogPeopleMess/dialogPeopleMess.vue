@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="人员信息"  :visible.sync="dialogVisible" center :append-to-body='true' :before-close="handleClose" :lock-scroll="false" :close-on-click-modal="false" width="600px">
+  <el-dialog title="人员信息"  :visible.sync="dialogVisible" center :append-to-body='true' :before-close="handleClose" :lock-scroll="false" :close-on-click-modal="false" width="600px" destroy-on-close>
     <div class="baseMess" v-show="isBaseMess">
       <el-form ref="form" :model="form" label-position="left" class="form" label-width="80px" >
           <div class="swrap">
@@ -120,7 +120,10 @@
               anchor:[24, 48]
             }
           }
-        this.markers.push(para)
+          let arr = []
+          arr.push(para)
+        this.markers=Object.assign([],arr)
+        console.log(this.markers)
 		this.$nextTick(_=>{
 			this.$refs.mymap.getMap()
 		})
